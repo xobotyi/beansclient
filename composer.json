@@ -1,0 +1,32 @@
+{
+  "name": "xobotyi/beansclient",
+  "description": "Simple client for Beanstalkd queue",
+  "type": "library",
+  "keywords": [
+    "php",
+    "beanstalk",
+    "beanstalkd",
+    "client"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Anton Zinovyev",
+      "email": "xog3@yandex.ru",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "php": ">=7.1",
+    "pda/pheanstalk": "^3.1"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^6.5.3",
+    "codacy/coverage": "^1.4.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "xobotyi\\beansclient\\": "src"
+    }
+  }
+}
