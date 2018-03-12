@@ -42,12 +42,12 @@
         }
 
         public
-        function parseResponse(array $reponseHeader, ?string $reponseStr) :bool {
-            if ($reponseHeader[0] === Response::RELEASED) {
+        function parseResponse(array $responseHeader, ?string $responseStr) :bool {
+            if ($responseHeader[0] === Response::RELEASED) {
                 return true;
             }
             else {
-                throw new Exception\Command("Got unexpected status code [${reponseHeader[0]}]");
+                throw new Exception\Command("Got unexpected status code [${responseHeader[0]}]");
             }
             // ToDo: make handle of BURIED and NOT_FOUND statuses
         }

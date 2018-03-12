@@ -33,19 +33,19 @@
         }
 
         public
-        function parseResponse(array $reponseHeader, ?string $reponseStr) :?array {
-            if ($reponseHeader[0] === Response::TIMED_OUT) {
+        function parseResponse(array $responseHeader, ?string $responseStr) :?array {
+            if ($responseHeader[0] === Response::TIMED_OUT) {
                 return null;
             }
-            else if ($reponseHeader[0] !== Response::RESERVED) {
-                throw new Exception\Command("Got unexpected status code [${reponseHeader[0]}]");
+            else if ($responseHeader[0] !== Response::RESERVED) {
+                throw new Exception\Command("Got unexpected status code [${responseHeader[0]}]");
             }
-            else if (!$reponseStr) {
+            else if (!$responseStr) {
                 throw new Exception\Command('Got unexpected empty response');
             }
 
-            $res['id']      = (int)$reponseHeader[1];
-            $res['payload'] = $this->payloadEncoder ? $this->payloadEncoder->decode($reponseStr) : $reponseStr;
+            $res['id']      = (int)$responseHeader[1];
+            $res['payload'] = $this->payloadEncoder ? $this->payloadEncoder->decode($responseStr) : $responseStr;
 
             return $res;
         }

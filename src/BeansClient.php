@@ -71,16 +71,16 @@
 
             $this->connection->write($request);
 
-            $reponseHeader = explode(' ', $this->connection->readln());
+            $responseHeader = explode(' ', $this->connection->readln());
 
             // throing exception if there is an error response
-            if (in_array($reponseHeader[0], Response::ERROR_RESPONSES)) {
-                throw new Exception\Server("Got {$reponseHeader[0]} in reponse to {$cmd->getCommandStr()}");
+            if (in_array($responseHeader[0], Response::ERROR_RESPONSES)) {
+                throw new Exception\Server("Got {$responseHeader[0]} in reponse to {$cmd->getCommandStr()}");
             }
 
             // if request contains data - read it
-            if (in_array($reponseHeader[0], Response::DATA_RESPONSES)) {
-                $data = $this->connection->read($reponseHeader[count($reponseHeader) - 1]);
+            if (in_array($responseHeader[0], Response::DATA_RESPONSES)) {
+                $data = $this->connection->read($responseHeader[count($responseHeader) - 1]);
                 $crlf = $this->connection->read(self::CRLF_LEN);
 
                 if ($crlf !== self::CRLF) {
@@ -90,7 +90,7 @@
                                                            "\\n",
                                                            "\\t",
                                                        ], self::CRLF),
-                                                       $reponseHeader[1],
+                                                       $responseHeader[1],
                                                        str_replace(["\r", "\n", "\t"], ["\\r", "\\n", "\\t"], $crlf)));
                 }
             }
@@ -98,7 +98,7 @@
                 $data = null;
             }
 
-            return $cmd->parseResponse($reponseHeader, $data);
+            return $cmd->parseResponse($responseHeader, $data);
         }
 
         // COMMANDS

@@ -24,11 +24,11 @@
         }
 
         public
-        function parseResponse(array $reponseHeader, ?string $reponseStr) {
-            if ($reponseHeader[0] !== Response::USING) {
-                throw new Command("Got unexpected status code [${reponseHeader[0]}]");
+        function parseResponse(array $responseHeader, ?string $responseStr) {
+            if ($responseHeader[0] !== Response::USING) {
+                throw new Command("Got unexpected status code [${responseHeader[0]}]");
             }
 
-            return $reponseHeader[1];
+            return $responseHeader[1];
         }
     }

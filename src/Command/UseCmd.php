@@ -32,11 +32,11 @@
         }
 
         public
-        function parseResponse(array $reponseHeader, ?string $reponseStr) :bool {
-            if ($reponseHeader[0] !== Response::USING) {
-                throw new Exception\Command("Got unexpected status code [${reponseHeader[0]}]");
+        function parseResponse(array $responseHeader, ?string $responseStr) :bool {
+            if ($responseHeader[0] !== Response::USING) {
+                throw new Exception\Command("Got unexpected status code [${responseHeader[0]}]");
             }
 
-            return $reponseHeader[1] === $this->tube;
+            return $responseHeader[1] === $this->tube;
         }
     }

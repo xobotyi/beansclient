@@ -73,5 +73,5 @@
         function getCommandStr() :string;
 
         public
-        function parseResponse(array $reponseHeader, ?string $reponseStr);
+        function parseResponse(array $responseHeader, ?string $responseStr);
     }

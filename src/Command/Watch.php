@@ -32,11 +32,11 @@
         }
 
         public
-        function parseResponse(array $reponseHeader, ?string $reponseStr) :int {
-            if ($reponseHeader[0] !== Response::WATCHING) {
-                throw new Exception\Command("Got unexpected status code [${reponseHeader[0]}]");
+        function parseResponse(array $responseHeader, ?string $responseStr) :int {
+            if ($responseHeader[0] !== Response::WATCHING) {
+                throw new Exception\Command("Got unexpected status code [${responseHeader[0]}]");
             }
 
-            return (int)$reponseHeader[1];
+            return (int)$responseHeader[1];
         }
     }

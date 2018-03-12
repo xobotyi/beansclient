@@ -24,14 +24,14 @@
         }
 
         public
-        function parseResponse(array $reponseHeader, ?string $reponseStr) {
-            if ($reponseHeader[0] !== Response::OK) {
-                throw new Exception\Command("Got unexpected status code [${reponseHeader[0]}]");
+        function parseResponse(array $responseHeader, ?string $responseStr) {
+            if ($responseHeader[0] !== Response::OK) {
+                throw new Exception\Command("Got unexpected status code [${responseHeader[0]}]");
             }
-            else if (!$reponseStr) {
+            else if (!$responseStr) {
                 throw new Exception\Command('Got unexpected empty response');
             }
 
-            return Response::YamlParse($reponseStr, true);
+            return Response::YamlParse($responseStr, true);
         }
     }
