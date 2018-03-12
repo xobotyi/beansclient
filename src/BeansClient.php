@@ -155,18 +155,18 @@
 
         // tubes
         public
-        function use(string $tube) {
-            return $this->dispatchCommand(new Command\UseCmd($tube));
+        function useTube(string $tube) {
+            return $this->dispatchCommand(new Command\UseTube($tube));
         }
 
         public
-        function watch(string $tube) {
-            return $this->dispatchCommand(new Command\Watch($tube));
+        function watchTube(string $tube) {
+            return $this->dispatchCommand(new Command\WatchTube($tube));
         }
 
         public
-        function ignore(string $tube) {
-            return $this->dispatchCommand(new Command\Ignore($tube));
+        function ignoreTube(string $tube) {
+            return $this->dispatchCommand(new Command\IgnoreTube($tube));
         }
 
         public

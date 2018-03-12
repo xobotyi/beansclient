@@ -11,7 +11,7 @@
     use xobotyi\beansclient\Interfaces;
     use xobotyi\beansclient\Response;
 
-    class Watch extends CommandAbstract
+    class IgnoreTube extends CommandAbstract
     {
         private $tube;
 
@@ -21,7 +21,7 @@
                 throw new Exception\Command('Tube name should be a valueable string');
             }
 
-            $this->commandName = Interfaces\Command::WATCH;
+            $this->commandName = Interfaces\Command::IGNORE;
 
             $this->tube = $tube;
         }

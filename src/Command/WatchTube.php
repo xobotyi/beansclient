@@ -11,7 +11,7 @@
     use xobotyi\beansclient\Interfaces;
     use xobotyi\beansclient\Response;
 
-    class UseCmd extends CommandAbstract
+    class WatchTube extends CommandAbstract
     {
         private $tube;
 
@@ -21,9 +21,9 @@
                 throw new Exception\Command('Tube name should be a valueable string');
             }
 
-            $this->commandName = Interfaces\Command::USE;
+            $this->commandName = Interfaces\Command::WATCH;
 
-            $this->tube        = $tube;
+            $this->tube = $tube;
         }
 
         public
@@ -32,11 +32,11 @@
         }
 
         public
-        function parseResponse(array $responseHeader, ?string $responseStr) :bool {
-            if ($responseHeader[0] !== Response::USING) {
+        function parseResponse(array $responseHeader, ?string $responseStr) :int {
+            if ($responseHeader[0] !== Response::WATCHING) {
                 throw new Exception\Command("Got unexpected status code [${responseHeader[0]}]");
             }
 
-            return $responseHeader[1] === $this->tube;
+            return (int)$responseHeader[1];
         }
     }
