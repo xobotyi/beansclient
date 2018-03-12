@@ -9,8 +9,8 @@
 
 
     use xobotyi\beansclient\Command;
-    use xobotyi\beansclient\Exception\Client;
-    use xobotyi\beansclient\Exception\Server;
+    use xobotyi\beansclient\Exception;
+    use xobotyi\beansclient\Interfaces;
 
     class BeansClient
     {
@@ -18,6 +18,11 @@
          * @var Interfaces\Connection
          */
         private $connection;
+
+        /**
+         * @var Interfaces\Encoder|null
+         */
+        private $encoder;
 
         public const CRLF     = "\r\n";
         public const CRLF_LEN = 2;
@@ -28,14 +33,15 @@
         public const DEFAULT_TUBE     = 'default';
 
         public
-        function __construct(Interfaces\Connection $connection) {
+        function __construct(Interfaces\Connection $connection, ?Interfaces\Encoder $encoder = null) {
             $this->setConnection($connection);
+            $this->setEncoder($encoder);
         }
 
         public
         function setConnection(Interfaces\Connection $connection) :self {
             if (!$connection->isActive()) {
-                throw new Client('Given connection is not active');
+                throw new Exception\Client('Given connection is not active');
             }
             $this->connection = $connection;
 
@@ -44,8 +50,19 @@
 
         public
         function getConnection() :Interfaces\Connection {
-
             return $this->connection;
+        }
+
+        public
+        function setEncoder(?Interfaces\Encoder $encoder) :self {
+            $this->encoder = $encoder;
+
+            return $this;
+        }
+
+        public
+        function getEncoder() :?Interfaces\Encoder {
+            return $this->encoder;
         }
 
         public
@@ -58,7 +75,7 @@
 
             // throing exception if there is an error response
             if (in_array($reponseHeader[0], Response::ERROR_RESPONSES)) {
-                throw new Server("Got {$reponseHeader[0]} in reponse to {$cmd->getCommandStr()}");
+                throw new Exception\Server("Got {$reponseHeader[0]} in reponse to {$cmd->getCommandStr()}");
             }
 
             // if request contains data - read it
@@ -67,10 +84,14 @@
                 $crlf = $this->connection->read(self::CRLF_LEN);
 
                 if ($crlf !== self::CRLF) {
-                    throw new Client(sprintf('Expected CRLF[%s] after %u byte(s) of data, got %s',
-                                             str_replace(["\r", "\n", "\t"], ["\\r", "\\n", "\\t",], self::CRLF),
-                                             $reponseHeader[1],
-                                             str_replace(["\r", "\n", "\t"], ["\\r", "\\n", "\\t"], $crlf)));
+                    throw new Exception\Client(sprintf('Expected CRLF[%s] after %u byte(s) of data, got %s',
+                                                       str_replace(["\r", "\n", "\t"], [
+                                                           "\\r",
+                                                           "\\n",
+                                                           "\\t",
+                                                       ], self::CRLF),
+                                                       $reponseHeader[1],
+                                                       str_replace(["\r", "\n", "\t"], ["\\r", "\\n", "\\t"], $crlf)));
                 }
             }
             else {
@@ -80,20 +101,16 @@
             return $cmd->parseResponse($reponseHeader, $data);
         }
 
-        // commands
+        // COMMANDS
+        // jobs
         public
         function put($payload, int $priority = self::DEFAULT_PRIORITY, int $delay = self::DEFAULT_DELAY, int $ttr = self::DEFAULT_TTR) {
-            return $this->dispatchCommand(new Command\Put($payload, $priority, $delay, $ttr));
-        }
-
-        public
-        function use(string $tube) {
-            return $this->dispatchCommand(new Command\UseCmd($tube));
+            return $this->dispatchCommand(new Command\Put($payload, $priority, $delay, $ttr, $this->encoder));
         }
 
         public
         function reserve(int $timeout = 0) {
-            return $this->dispatchCommand(new Command\Reserve($timeout));
+            return $this->dispatchCommand(new Command\Reserve($timeout, $this->encoder));
         }
 
         public
@@ -117,16 +134,6 @@
         }
 
         public
-        function watch(string $tube) {
-            return $this->dispatchCommand(new Command\Watch($tube));
-        }
-
-        public
-        function ignore(string $tube) {
-            return $this->dispatchCommand(new Command\Ignore($tube));
-        }
-
-        public
         function kick(int $count) {
             return $this->dispatchCommand(new Command\Kick($count));
         }
@@ -134,6 +141,32 @@
         public
         function kickJob(int $jobId) {
             return $this->dispatchCommand(new Command\KickJob($jobId));
+        }
+
+        public
+        function stats() {
+            return $this->dispatchCommand(new Command\Stats());
+        }
+
+        public
+        function statsJob(int $jobId) {
+            return $this->dispatchCommand(new Command\StatsJob($jobId));
+        }
+
+        // tubes
+        public
+        function use(string $tube) {
+            return $this->dispatchCommand(new Command\UseCmd($tube));
+        }
+
+        public
+        function watch(string $tube) {
+            return $this->dispatchCommand(new Command\Watch($tube));
+        }
+
+        public
+        function ignore(string $tube) {
+            return $this->dispatchCommand(new Command\Ignore($tube));
         }
 
         public
@@ -149,16 +182,6 @@
         public
         function listTubesWatched() {
             return $this->dispatchCommand(new Command\ListTubesWatched());
-        }
-
-        public
-        function stats() {
-            return $this->dispatchCommand(new Command\Stats());
-        }
-
-        public
-        function statsJob(int $jobId) {
-            return $this->dispatchCommand(new Command\StatsJob($jobId));
         }
 
         public
