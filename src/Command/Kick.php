@@ -1,0 +1,42 @@
+<?php
+    /**
+     * @Author : a.zinovyev
+     * @Package: beansclient
+     * @License: http://www.opensource.org/licenses/mit-license.php
+     */
+
+    namespace xobotyi\beansclient\Command;
+
+    use xobotyi\beansclient\Exception;
+    use xobotyi\beansclient\Interfaces;
+    use xobotyi\beansclient\Response;
+
+    class Kick extends CommandAbstract
+    {
+        private $count;
+
+        public
+        function __construct(int $count) {
+            if ($count <= 0) {
+                throw new Exception\Command('Kick count should be a positive integer');
+            }
+
+            $this->commandName = Interfaces\Command::KICK;
+
+            $this->count = $count;
+        }
+
+        public
+        function getCommandStr() :string {
+            return $this->commandName . ' ' . $this->count;
+        }
+
+        public
+        function parseResponse(array $reponseHeader, ?string $reponseStr) :int {
+            if ($reponseHeader[0] !== Response::KICKED) {
+                throw new Exception\Command("Got unexpected status code [${reponseHeader[0]}]");
+            }
+
+            return (int)$reponseHeader[1];
+        }
+    }

@@ -8,11 +8,11 @@
     namespace xobotyi\beansclient\Interfaces;
 
 
-    interface DataEncoder
+    interface Encoder
     {
         public
-        function encode($data);
+        function encode($data) :string;
 
         public
-        function decide(string $data);
+        function decode(string $str);
     }

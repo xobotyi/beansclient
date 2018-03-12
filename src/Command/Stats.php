@@ -7,39 +7,20 @@
 
     namespace xobotyi\beansclient\Command;
 
-
     use xobotyi\beansclient\Exception;
     use xobotyi\beansclient\Interfaces;
     use xobotyi\beansclient\Response;
 
-    abstract
-    class CommandAbstract implements Interfaces\Command
+    class Stats extends CommandAbstract
     {
-        protected $payload;
-        protected $payloadEncoder;
-
-        protected $commandName;
-
         public
-        function __toString() :string {
-            return $this->getCommandStr();
+        function __construct() {
+            $this->commandName = Interfaces\Command::STATS;
         }
 
         public
-        function hasPayload() :bool {
-            return (bool)$this->payload;
-        }
-
-        public
-        function getPayload() {
-            return $this->payload;
-        }
-
-        public
-        function setPayloadEncoder(?Interfaces\Encoder $encoder) :self {
-            $this->payloadEncoder = $encoder;
-
-            return $this;
+        function getCommandStr() :string {
+            return $this->commandName;
         }
 
         public
@@ -51,6 +32,6 @@
                 throw new Exception\Command('Got unexpected empty response');
             }
 
-            return Response::YamlParse($reponseStr);
+            return Response::YamlParse($reponseStr, true);
         }
     }

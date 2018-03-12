@@ -8,8 +8,9 @@
     namespace xobotyi\beansclient;
 
 
-    use xobotyi\beansclient\Command\CommandAbstract;
+    use xobotyi\beansclient\Command;
     use xobotyi\beansclient\Exception\Client;
+    use xobotyi\beansclient\Exception\Server;
 
     class BeansClient
     {
@@ -18,8 +19,13 @@
          */
         private $connection;
 
-        const CRLF     = "\r\n";
-        const CRLF_LEN = 2;
+        public const CRLF     = "\r\n";
+        public const CRLF_LEN = 2;
+
+        public const DEFAULT_PRIORITY = 2048;
+        public const DEFAULT_DELAY    = 0;
+        public const DEFAULT_TTR      = 30;
+        public const DEFAULT_TUBE     = 'default';
 
         public
         function __construct(Interfaces\Connection $connection) {
@@ -43,14 +49,120 @@
         }
 
         public
-        function dispatchCommand(CommandAbstract $cmd) {
+        function dispatchCommand(Command\CommandAbstract $cmd) {
             $request = $cmd->getCommandStr() . self::CRLF;
 
             $this->connection->write($request);
 
-            $response = $this->connection->readln();
+            $reponseHeader = explode(' ', $this->connection->readln());
 
-            list($status, $dataLength) = explode(' ', $response);
-            var_dump($status, $dataLength);
+            // throing exception if there is an error response
+            if (in_array($reponseHeader[0], Response::ERROR_RESPONSES)) {
+                throw new Server("Got {$reponseHeader[0]} in reponse to {$cmd->getCommandStr()}");
+            }
+
+            // if request contains data - read it
+            if (in_array($reponseHeader[0], Response::DATA_RESPONSES)) {
+                $data = $this->connection->read($reponseHeader[count($reponseHeader) - 1]);
+                $crlf = $this->connection->read(self::CRLF_LEN);
+
+                if ($crlf !== self::CRLF) {
+                    throw new Client(sprintf('Expected CRLF[%s] after %u byte(s) of data, got %s',
+                                             str_replace(["\r", "\n", "\t"], ["\\r", "\\n", "\\t",], self::CRLF),
+                                             $reponseHeader[1],
+                                             str_replace(["\r", "\n", "\t"], ["\\r", "\\n", "\\t"], $crlf)));
+                }
+            }
+            else {
+                $data = null;
+            }
+
+            return $cmd->parseResponse($reponseHeader, $data);
+        }
+
+        // commands
+        public
+        function put($payload, int $priority = self::DEFAULT_PRIORITY, int $delay = self::DEFAULT_DELAY, int $ttr = self::DEFAULT_TTR) {
+            return $this->dispatchCommand(new Command\Put($payload, $priority, $delay, $ttr));
+        }
+
+        public
+        function use(string $tube) {
+            return $this->dispatchCommand(new Command\UseCmd($tube));
+        }
+
+        public
+        function reserve(int $timeout = 0) {
+            return $this->dispatchCommand(new Command\Reserve($timeout));
+        }
+
+        public
+        function delete(int $jobId) {
+            return $this->dispatchCommand(new Command\Delete($jobId));
+        }
+
+        public
+        function release(int $jobId, int $priority = self::DEFAULT_PRIORITY, int $delay = self::DEFAULT_DELAY) {
+            return $this->dispatchCommand(new Command\Release($jobId, $priority, $delay));
+        }
+
+        public
+        function bury(int $jobId, int $priority = self::DEFAULT_PRIORITY) {
+            return $this->dispatchCommand(new Command\Bury($jobId, $priority));
+        }
+
+        public
+        function touch(int $jobId) {
+            return $this->dispatchCommand(new Command\Touch($jobId));
+        }
+
+        public
+        function watch(string $tube) {
+            return $this->dispatchCommand(new Command\Watch($tube));
+        }
+
+        public
+        function ignore(string $tube) {
+            return $this->dispatchCommand(new Command\Ignore($tube));
+        }
+
+        public
+        function kick(int $count) {
+            return $this->dispatchCommand(new Command\Kick($count));
+        }
+
+        public
+        function kickJob(int $jobId) {
+            return $this->dispatchCommand(new Command\KickJob($jobId));
+        }
+
+        public
+        function listTubeUsed() {
+            return $this->dispatchCommand(new Command\ListTubeUsed());
+        }
+
+        public
+        function listTubes() {
+            return $this->dispatchCommand(new Command\ListTubes());
+        }
+
+        public
+        function listTubesWatched() {
+            return $this->dispatchCommand(new Command\ListTubesWatched());
+        }
+
+        public
+        function stats() {
+            return $this->dispatchCommand(new Command\Stats());
+        }
+
+        public
+        function statsJob(int $jobId) {
+            return $this->dispatchCommand(new Command\StatsJob($jobId));
+        }
+
+        public
+        function statsTube(string $tubeName) {
+            return $this->dispatchCommand(new Command\StatsTube($tubeName));
         }
     }

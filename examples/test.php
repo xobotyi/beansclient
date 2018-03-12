@@ -11,6 +11,3 @@
 
     $connection = new beansclient\Connection('127.0.0.1', 11300);
     $client     = new beansclient\BeansClient($connection);
-
-    $client->dispatchCommand(new beansclient\Command\ListTubes());
-

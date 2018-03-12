@@ -9,11 +9,11 @@
 
     use xobotyi\beansclient\Interfaces;
 
-    class ListTubes extends CommandAbstract
+    class ListTubesWatched extends CommandAbstract
     {
         public
         function __construct() {
-            $this->commandName = Interfaces\Command::LIST_TUBES;
+            $this->commandName = Interfaces\Command::LIST_TUBES_WATCHED;
         }
 
         public

@@ -7,39 +7,28 @@
 
     namespace xobotyi\beansclient\Command;
 
-
     use xobotyi\beansclient\Exception;
     use xobotyi\beansclient\Interfaces;
     use xobotyi\beansclient\Response;
 
-    abstract
-    class CommandAbstract implements Interfaces\Command
+    class StatsTube extends CommandAbstract
     {
-        protected $payload;
-        protected $payloadEncoder;
-
-        protected $commandName;
+        private $tube;
 
         public
-        function __toString() :string {
-            return $this->getCommandStr();
+        function __construct(string $tube) {
+            if (!($tube = trim($tube))) {
+                throw new Exception\Command('Tube name should be a valueable string');
+            }
+
+            $this->commandName = Interfaces\Command::STATS_TUBE;
+
+            $this->tube        = $tube;
         }
 
         public
-        function hasPayload() :bool {
-            return (bool)$this->payload;
-        }
-
-        public
-        function getPayload() {
-            return $this->payload;
-        }
-
-        public
-        function setPayloadEncoder(?Interfaces\Encoder $encoder) :self {
-            $this->payloadEncoder = $encoder;
-
-            return $this;
+        function getCommandStr() :string {
+            return $this->commandName . ' ' . $this->tube;
         }
 
         public
@@ -51,6 +40,8 @@
                 throw new Exception\Command('Got unexpected empty response');
             }
 
-            return Response::YamlParse($reponseStr);
+            // ToDo: make handle of NOT_FOUND status
+
+            return Response::YamlParse($reponseStr, true);
         }
     }

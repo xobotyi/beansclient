@@ -5,11 +5,9 @@
      * @License: http://www.opensource.org/licenses/mit-license.php
      */
 
-    namespace xobotyi\beansclient\Interfaces;
+    namespace xobotyi\beansclient\Exception;
 
 
-    interface Parser
+    class Command extends \Exception
     {
-        public
-        function parseResponse($data) :Response;
     }
