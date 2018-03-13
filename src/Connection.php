@@ -16,6 +16,7 @@
 
         private $host;
         private $port;
+        private $timeout;
         private $persistent;
 
         private $socket;
@@ -34,11 +35,12 @@
         function __construct(string $host = 'localhost', int $port = -1, int $connectionTimeout = null, bool $persistent = false) {
             $this->host       = $host;
             $this->port       = $port;
+            $this->timeout    = $connectionTimeout === null ? self::SOCK_CONNECTION_TIMEOUT : $connectionTimeout;
             $this->persistent = $persistent;
 
             $this->socket = $persistent
-                ? $this->pfsockopen($this->host, $this->port, $errNo, $errStr, $connectionTimeout === null ? self::SOCK_CONNECTION_TIMEOUT : $connectionTimeout)
-                : $this->fsockopen($this->host, $this->port, $errNo, $errStr, $connectionTimeout === null ? self::SOCK_CONNECTION_TIMEOUT : $connectionTimeout);
+                ? $this->pfsockopen($this->host, $this->port, $errNo, $errStr, $this->timeout)
+                : $this->fsockopen($this->host, $this->port, $errNo, $errStr, $this->timeout);
 
             if (!$this->socket) {
                 throw new Exception\Connection($errNo, $errStr . " (while connecting to {$this->host}:{$this->port})");
@@ -76,6 +78,14 @@
         public
         function getPort() :int {
             return $this->host;
+        }
+
+        /**
+         * @return int
+         */
+        public
+        function getTimeout() :int {
+            return $this->timeout;
         }
 
         /**

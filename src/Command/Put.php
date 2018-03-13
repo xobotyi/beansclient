@@ -15,7 +15,7 @@
     class Put extends CommandAbstract
     {
         public const MAX_PRIORITY                = 4294967295;
-        public const MAX_SERIALOZED_PAYLOAD_SIZE = 65536;
+        public const MAX_SERIALIZED_PAYLOAD_SIZE = 65536;
 
         private $priority;
         private $delay;
@@ -57,8 +57,8 @@
                 $serializedPayload = (string)$this->payload;
             }
 
-            if (strlen($serializedPayload) > self::MAX_SERIALOZED_PAYLOAD_SIZE) {
-                throw new Exception\Command('Job serialized payload size exceeded maximum: ' . self::MAX_SERIALOZED_PAYLOAD_SIZE);
+            if (strlen($serializedPayload) > self::MAX_SERIALIZED_PAYLOAD_SIZE) {
+                throw new Exception\Command('Job serialized payload size exceeded maximum: ' . self::MAX_SERIALIZED_PAYLOAD_SIZE);
             }
 
             return $mainCommand . strlen($serializedPayload) . BeansClient::CRLF . $serializedPayload;

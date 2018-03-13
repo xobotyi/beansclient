@@ -26,4 +26,13 @@
             self::assertEquals(['a:b', 'a:b'], Response::YamlParse($str));
             self::assertEquals(['a:b', 'a' => 'b'], Response::YamlParse($str, true));
         }
+
+        public
+        function testYamlParseException() :void {
+
+            $str = "---\r\n-  ";
+
+            $this->expectException(\Exception::class);
+            Response::YamlParse($str, true);
+        }
     }
