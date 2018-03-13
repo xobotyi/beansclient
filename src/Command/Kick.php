@@ -18,7 +18,7 @@
         public
         function __construct(int $count) {
             if ($count <= 0) {
-                throw new Exception\Command('Kick count should be a positive integer');
+                throw new Exception\Command('Kick count must be a positive integer');
             }
 
             $this->commandName = Interfaces\Command::KICK;

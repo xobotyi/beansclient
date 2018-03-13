@@ -19,7 +19,7 @@
         public
         function __construct(int $jobId, int $priority) {
             if ($jobId <= 0) {
-                throw new Exception\Command('Job id should be a positive integer');
+                throw new Exception\Command('Job id must be a positive integer');
             }
             if ($priority < 0 || $priority > Put::MAX_PRIORITY) {
                 throw new Exception\Command('Job priority must be between 0 and ' . Put::MAX_PRIORITY);

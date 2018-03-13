@@ -18,7 +18,7 @@
         public
         function __construct(int $jobId) {
             if ($jobId <= 0) {
-                throw new Exception\Command('Job id should be a positive integer');
+                throw new Exception\Command('Job id must be a positive integer');
             }
 
             $this->commandName = Interfaces\Command::DELETE;

@@ -18,7 +18,7 @@
         public
         function __construct(string $tube) {
             if (!($tube = trim($tube))) {
-                throw new Exception\Command('Tube name should be a valueable string');
+                throw new Exception\Command('Tube name must be a valueable string');
             }
 
             $this->commandName = Interfaces\Command::IGNORE;
