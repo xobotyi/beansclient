@@ -39,8 +39,7 @@
             else if ($responseHeader[0] === Response::NOT_FOUND) {
                 return false;
             }
-            else {
-                throw new Exception\Command("Got unexpected status code [${responseHeader[0]}]");
-            }
+
+            throw new Exception\Command("Got unexpected status code [${responseHeader[0]}]");
         }
     }

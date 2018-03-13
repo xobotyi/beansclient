@@ -7,7 +7,6 @@
 
     namespace xobotyi\beansclient;
 
-
     use PHPUnit\Framework\TestCase;
 
     class ResponseTest extends TestCase
