@@ -1,11 +1,12 @@
 {
   "name": "xobotyi/beansclient",
-  "description": "Simple client for Beanstalkd queue",
+  "description": "Simple client for beanstalkd queue",
   "type": "library",
   "keywords": [
     "php",
     "beanstalk",
     "beanstalkd",
+    "queue",
     "client"
   ],
   "license": "MIT",

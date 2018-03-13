@@ -52,7 +52,7 @@
 
         //ToDo: replace it with any normal YAML parser
         public static
-        function YamlParse(string $str, bool $assoc = false) {
+        function YamlParse(string $str, bool $assoc = false) :?array {
             if (!($str = trim($str))) {
                 return null;
             }

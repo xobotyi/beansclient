@@ -8,7 +8,7 @@
     namespace xobotyi\beansclient;
 
 
-    class Connection extends Socket implements Interfaces\Connection
+    class Connection extends SocketFunctions implements Interfaces\Connection
     {
         const SOCK_CONNECTION_TIMEOUT = 1;
         const SOCK_READ_TIMEOUT       = 1;

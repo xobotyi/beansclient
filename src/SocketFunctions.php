@@ -8,7 +8,7 @@
     namespace xobotyi\beansclient;
 
 
-    class Socket
+    class SocketFunctions
     {
         public
         function fsockopen(string $hostName, int $port = -1, &$errNo = null, &$errStr = null, int $timeout = null) {
