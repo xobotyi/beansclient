@@ -65,16 +65,17 @@
         }
 
         public
-        function parseResponse(array $responseHeader, ?string $responseStr) {
+        function parseResponse(array $responseHeader, ?string $responseStr) :?array {
             if ($responseHeader[0] === Response::JOB_TOO_BIG) {
                 throw new Exception\Command('Job\'s payload size exceeds max-job-size config');
             }
-            else if ($responseHeader[0] !== Response::INSERTED) {
-                throw new Exception\Command("Got unexpected status code [${responseHeader[0]}]");
+            else if ($responseHeader[0] === Response::INSERTED || $responseHeader[0] === Response::BURIED) {
+                return [
+                    'id'     => (int)$responseHeader[1],
+                    'status' => $responseHeader[0],
+                ];
             }
 
-            // ToDo: make handle of BURIED status
-
-            return (int)$responseHeader[1];
+            throw new Exception\Command("Got unexpected status code [${responseHeader[0]}]");
         }
     }

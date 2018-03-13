@@ -24,7 +24,7 @@
         }
 
         public
-        function parseResponse(array $responseHeader, ?string $responseStr) {
+        function parseResponse(array $responseHeader, ?string $responseStr) :array {
             if ($responseHeader[0] !== Response::OK) {
                 throw new Exception\Command("Got unexpected status code [${responseHeader[0]}]");
             }

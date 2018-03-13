@@ -42,13 +42,14 @@
         }
 
         public
-        function parseResponse(array $responseHeader, ?string $responseStr) :bool {
-            if ($responseHeader[0] === Response::RELEASED) {
-                return true;
+        function parseResponse(array $responseHeader, ?string $responseStr) :?string {
+            if ($responseHeader[0] === Response::RELEASED || $responseHeader[0] === Response::BURIED) {
+                return $responseHeader[0];
             }
-            else {
-                throw new Exception\Command("Got unexpected status code [${responseHeader[0]}]");
+            else if ($responseHeader[0] === Response::NOT_FOUND) {
+                return null;
             }
-            // ToDo: make handle of BURIED and NOT_FOUND statuses
+
+            throw new Exception\Command("Got unexpected status code [${responseHeader[0]}]");
         }
     }

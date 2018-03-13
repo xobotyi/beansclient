@@ -33,10 +33,10 @@
 
         public
         function parseResponse(array $responseHeader, ?string $responseStr) :int {
-            if ($responseHeader[0] !== Response::WATCHING) {
-                throw new Exception\Command("Got unexpected status code [${responseHeader[0]}]");
+            if ($responseHeader[0] === Response::WATCHING) {
+                return (int)$responseHeader[1];
             }
 
-            return (int)$responseHeader[1];
+            throw new Exception\Command("Got unexpected status code [${responseHeader[0]}]");
         }
     }

@@ -25,10 +25,10 @@
 
         public
         function parseResponse(array $responseHeader, ?string $responseStr) {
-            if ($responseHeader[0] !== Response::USING) {
-                throw new Command("Got unexpected status code [${responseHeader[0]}]");
+            if ($responseHeader[0] === Response::USING) {
+                return $responseHeader[1];
             }
 
-            return $responseHeader[1];
+            throw new Command("Got unexpected status code [${responseHeader[0]}]");
         }
     }

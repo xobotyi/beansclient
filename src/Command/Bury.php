@@ -41,9 +41,10 @@
             if ($responseHeader[0] === Response::BURIED) {
                 return true;
             }
-            else {
-                throw new Exception\Command("Got unexpected status code [${responseHeader[0]}]");
+            else if ($responseHeader[0] === Response::NOT_FOUND) {
+                return false;
             }
-            // ToDo: make handle of NOT_FOUND status
+
+            throw new Exception\Command("Got unexpected status code [${responseHeader[0]}]");
         }
     }

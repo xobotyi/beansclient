@@ -36,9 +36,11 @@
             if ($responseHeader[0] === Response::TOUCHED) {
                 return true;
             }
+            else if ($responseHeader[0] === Response::NOT_FOUND) {
+                return false;
+            }
             else {
                 throw new Exception\Command("Got unexpected status code [${responseHeader[0]}]");
             }
-            // ToDo: make handle of NOT_FOUND status
         }
     }

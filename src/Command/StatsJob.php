@@ -23,7 +23,7 @@
 
             $this->commandName = Interfaces\Command::STATS_JOB;
 
-            $this->jobId       = $jobId;
+            $this->jobId = $jobId;
         }
 
         public
@@ -32,15 +32,16 @@
         }
 
         public
-        function parseResponse(array $responseHeader, ?string $responseStr) {
-            if ($responseHeader[0] !== Response::OK) {
+        function parseResponse(array $responseHeader, ?string $responseStr) :?array {
+            if ($responseHeader[0] === Response::NOT_FOUND) {
+                return null;
+            }
+            else if ($responseHeader[0] !== Response::OK) {
                 throw new Exception\Command("Got unexpected status code [${responseHeader[0]}]");
             }
             else if (!$responseStr) {
                 throw new Exception\Command('Got unexpected empty response');
             }
-
-            // ToDo: make handle of NOT_FOUND status
 
             return Response::YamlParse($responseStr, true);
         }
