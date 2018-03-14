@@ -53,7 +53,7 @@
             if ($this->payloadEncoder) {
                 $serializedPayload = $this->payloadEncoder->encode($this->payload);
             }
-            else if (!is_string($this->payload) || is_numeric($this->payload)) {
+            else if (!is_string($this->payload) && !is_numeric($this->payload)) {
                 throw new Exception\Command('Due to turned off payload encoder, job payload must be a string or number');
             }
             else {
