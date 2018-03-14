@@ -22,9 +22,12 @@
         private $ttr;
 
         public
-        function __construct($payload, int $priority, int $delay, int $ttr, ?Interfaces\Encoder $encoder = null) {
+        function __construct($payload, $priority, int $delay, int $ttr, ?Interfaces\Encoder $encoder = null) {
+            if (!is_numeric($priority)) {
+                throw new Exception\Command('Argument 2 passed to xobotyi\beansclient\BeansClient::put() must be a number, got ' . gettype($priority));
+            }
             if ($priority < 0 || $priority > self::MAX_PRIORITY) {
-                throw new Exception\Command('Job priority must be between 0 and ' . self::MAX_PRIORITY);
+                throw new Exception\Command('Job priority must be integer between 0 and ' . self::MAX_PRIORITY);
             }
             if ($delay < 0) {
                 throw new Exception\Command('Job delay must be a positive integer');
@@ -35,7 +38,7 @@
 
             $this->commandName = Interfaces\Command::PUT;
 
-            $this->priority = $priority;
+            $this->priority = floor($priority);
             $this->delay    = $delay;
             $this->ttr      = $ttr;
             $this->payload  = $payload;
@@ -69,13 +72,16 @@
             if ($responseHeader[0] === Response::JOB_TOO_BIG) {
                 throw new Exception\Command('Job\'s payload size exceeds max-job-size config');
             }
-            else if ($responseHeader[0] === Response::INSERTED || $responseHeader[0] === Response::BURIED) {
-                return [
-                    'id'     => (int)$responseHeader[1],
-                    'status' => $responseHeader[0],
-                ];
+            else if ($responseHeader[0] !== Response::INSERTED && $responseHeader[0] !== Response::BURIED) {
+                throw new Exception\Command("Got unexpected status code [${responseHeader[0]}]");
+            }
+            else if (!isset($responseHeader[1])) {
+                throw new Exception\Command("Missing job id [" . implode('', $responseHeader) . "]");
             }
 
-            throw new Exception\Command("Got unexpected status code [${responseHeader[0]}]");
+            return [
+                'id'     => (int)$responseHeader[1],
+                'status' => $responseHeader[0],
+            ];
         }
     }

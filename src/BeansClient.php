@@ -104,7 +104,7 @@
         // COMMANDS
         // jobs
         public
-        function put($payload, int $priority = self::DEFAULT_PRIORITY, int $delay = self::DEFAULT_DELAY, int $ttr = self::DEFAULT_TTR) {
+        function put($payload, $priority = self::DEFAULT_PRIORITY, int $delay = self::DEFAULT_DELAY, int $ttr = self::DEFAULT_TTR) {
             return $this->dispatchCommand(new Command\Put($payload, $priority, $delay, $ttr, $this->encoder));
         }
 

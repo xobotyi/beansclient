@@ -8,6 +8,8 @@
     namespace xobotyi\beansclient;
 
     use PHPUnit\Framework\TestCase;
+    use xobotyi\beansclient\Command\Put;
+    use xobotyi\beansclient\Encoder\Json;
     use xobotyi\beansclient\Exception\Client;
     use xobotyi\beansclient\Exception\Command;
     use xobotyi\beansclient\Exception\Server;
@@ -121,6 +123,89 @@
 
             $this->expectException(Server::class);
             self::assertEquals([], $client->put('test'));
+        }
+
+        public
+        function testPutException4() {
+            $conn = $this->getConnection();
+            $conn->method('readln')
+                 ->will($this->returnValue("INSERTED"));
+            $client = new BeansClient($conn);
+
+            $this->expectException(Command::class);
+            self::assertEquals([], $client->put('test', -1));
+        }
+
+        public
+        function testPutException5() {
+            $conn = $this->getConnection();
+            $conn->method('readln')
+                 ->will($this->returnValue("INSERTED"));
+            $client = new BeansClient($conn);
+
+            $this->expectException(Command::class);
+            self::assertEquals([], $client->put('test', 0, -1));
+        }
+
+        public
+        function testPutException6() {
+            $conn = $this->getConnection();
+            $conn->method('readln')
+                 ->will($this->returnValue("INSERTED"));
+            $client = new BeansClient($conn);
+
+            $this->expectException(Command::class);
+            self::assertEquals([], $client->put('test', 0, -1, 0));
+        }
+
+        public
+        function testPutException7() {
+            $conn = $this->getConnection();
+            $conn->method('readln')
+                 ->will($this->returnValue("INSERTED"));
+            $client = new BeansClient($conn);
+
+            $this->expectException(Command::class);
+            self::assertEquals([], $client->put('test', Put::MAX_PRIORITY + 1));
+        }
+
+        public
+        function testPutException8() {
+            $conn = $this->getConnection();
+            $conn->method('readln')
+                 ->will($this->returnValue("INSERTED"));
+            $client = new BeansClient($conn, new Json());
+
+            $this->expectException(Command::class);
+            self::assertEquals([], $client->put([1, 2, 3]));
+        }
+
+        public
+        function testPutException9() {
+            $conn = $this->getConnection();
+            $conn->method('readln')
+                 ->will($this->returnValue("INSERTED"));
+            $client = new BeansClient($conn, new Json());
+
+            $this->expectException(Command::class);
+            self::assertEquals([], $client->put(''));
+        }
+
+        public
+        function testPutException10() {
+            $conn = $this->getConnection();
+            $conn->method('readln')
+                 ->will($this->returnValue("INSERTED"));
+            $client = new BeansClient($conn, new Json());
+
+            $str   = '';
+            $chars = 'abdefhiknrstyzABDEFGHKNQRSTYZ23456789';
+            for ($i = 0; $i <= Put::MAX_SERIALIZED_PAYLOAD_SIZE + 1; $i++) {
+                $str .= $chars[rand(0, 36)];
+            }
+
+            $this->expectException(Command::class);
+            self::assertEquals([], $client->put($str));
         }
 
         private
