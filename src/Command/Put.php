@@ -76,7 +76,7 @@
                 throw new Exception\Command("Got unexpected status code [${responseHeader[0]}]");
             }
             else if (!isset($responseHeader[1])) {
-                throw new Exception\Command("Missing job id [" . implode('', $responseHeader) . "]");
+                throw new Exception\Command("Response is missing job id [" . implode('', $responseHeader) . "]");
             }
 
             return [

@@ -26,6 +26,10 @@
         public
         function parseResponse(array $responseHeader, ?string $responseStr) {
             if ($responseHeader[0] === Response::USING) {
+                if (!isset($responseHeader[1])) {
+                    throw new Command("Response is missing tube name [" . implode('', $responseHeader) . "]");
+                }
+
                 return $responseHeader[1];
             }
 

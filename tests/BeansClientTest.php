@@ -49,11 +49,13 @@
 
         public
         function testGetters() :void {
-            $conn = $this->getConnection();
+            $conn    = $this->getConnection();
+            $encoder = new Json();
 
-            $client = new BeansClient($conn);
+            $client = new BeansClient($conn, $encoder);
 
             self::assertEquals($conn, $client->getConnection());
+            self::assertEquals($encoder, $client->getEncoder());
         }
 
         private
