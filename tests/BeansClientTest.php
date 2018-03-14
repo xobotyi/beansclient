@@ -58,6 +58,19 @@
             self::assertEquals($encoder, $client->getEncoder());
         }
 
+        // test if response suppose to have data, but has to content length header
+        public
+        function testException() :void {
+            $conn = $this->getConnection();
+            $conn->method('readln')
+                 ->will($this->returnValue("OK"));
+
+            $client = new BeansClient($conn);
+
+            $this->expectException(Client::class);
+            $client->release(13);
+        }
+
         private
         function getConnection(bool $active = true) {
             $conn = $this->getMockBuilder('\xobotyi\beansclient\Connection')

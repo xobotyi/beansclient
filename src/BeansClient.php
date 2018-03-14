@@ -73,13 +73,17 @@
 
             $responseHeader = explode(' ', $this->connection->readln());
 
-            // throing exception if there is an error response
+            // throwing exception if there is an error response
             if (in_array($responseHeader[0], Response::ERROR_RESPONSES)) {
-                throw new Exception\Server("Got {$responseHeader[0]} in reponse to {$cmd->getCommandStr()}");
+                throw new Exception\Server("Got {$responseHeader[0]} in response to {$cmd->getCommandStr()}");
             }
 
             // if request contains data - read it
             if (in_array($responseHeader[0], Response::DATA_RESPONSES)) {
+                if (count($responseHeader) === 1) {
+                    throw new Exception\Client("Got no data length in response to {$cmd->getCommandStr()} [" . implode(' ', $responseHeader) . "]");
+                }
+
                 $data = $this->connection->read($responseHeader[count($responseHeader) - 1]);
                 $crlf = $this->connection->read(self::CRLF_LEN);
 
@@ -119,7 +123,7 @@
         }
 
         public
-        function release(int $jobId, int $priority = self::DEFAULT_PRIORITY, int $delay = self::DEFAULT_DELAY) {
+        function release(int $jobId, $priority = self::DEFAULT_PRIORITY, int $delay = self::DEFAULT_DELAY) {
             return $this->dispatchCommand(new Command\Release($jobId, $priority, $delay));
         }
 

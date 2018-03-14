@@ -24,16 +24,12 @@
         function testPut() {
             $conn = $this->getConnection();
             $conn->method('readln')
-                 ->will($this->returnValue("INSERTED 1"));
+                 ->withConsecutive()
+                 ->willReturnOnConsecutiveCalls("INSERTED 1", "BURIED 2");
 
             $client = new BeansClient($conn);
 
             self::assertEquals(['id' => 1, 'status' => 'INSERTED'], $client->put('test'));
-
-            $conn = $this->getConnection();
-            $conn->method('readln')
-                 ->will($this->returnValue("BURIED 2"));
-            $client->setConnection($conn);
             self::assertEquals(['id' => 2, 'status' => 'BURIED'], $client->put('test'));
         }
 
