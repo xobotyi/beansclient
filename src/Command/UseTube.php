@@ -36,6 +36,9 @@
             if ($responseHeader[0] !== Response::USING) {
                 throw new Exception\Command("Got unexpected status code [${responseHeader[0]}]");
             }
+            else if ($responseStr) {
+                throw new Exception\Command("Unexpected response data passed");
+            }
 
             return $responseHeader[1] === $this->tube;
         }

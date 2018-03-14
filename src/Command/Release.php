@@ -43,7 +43,10 @@
 
         public
         function parseResponse(array $responseHeader, ?string $responseStr) :?string {
-            if ($responseHeader[0] === Response::RELEASED || $responseHeader[0] === Response::BURIED) {
+            if ($responseStr) {
+                throw new Exception\Command("Unexpected response data passed");
+            }
+            else if ($responseHeader[0] === Response::RELEASED || $responseHeader[0] === Response::BURIED) {
                 return $responseHeader[0];
             }
             else if ($responseHeader[0] === Response::NOT_FOUND) {

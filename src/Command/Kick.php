@@ -33,7 +33,10 @@
 
         public
         function parseResponse(array $responseHeader, ?string $responseStr) :int {
-            if ($responseHeader[0] === Response::KICKED) {
+            if ($responseStr) {
+                throw new Exception\Command("Unexpected response data passed");
+            }
+            else if ($responseHeader[0] === Response::KICKED) {
                 return (int)$responseHeader[1];
             }
 

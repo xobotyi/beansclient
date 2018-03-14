@@ -36,6 +36,9 @@
             if ($responseHeader[0] !== Response::WATCHING) {
                 throw new Exception\Command("Got unexpected status code [${responseHeader[0]}]");
             }
+            else if ($responseStr) {
+                throw new Exception\Command("Unexpected response data passed");
+            }
 
             return (int)$responseHeader[1];
         }

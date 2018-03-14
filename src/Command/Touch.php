@@ -33,7 +33,10 @@
 
         public
         function parseResponse(array $responseHeader, ?string $responseStr) :bool {
-            if ($responseHeader[0] === Response::TOUCHED) {
+            if ($responseStr) {
+                throw new Exception\Command("Unexpected response data passed");
+            }
+            else if ($responseHeader[0] === Response::TOUCHED) {
                 return true;
             }
             else if ($responseHeader[0] === Response::NOT_FOUND) {
