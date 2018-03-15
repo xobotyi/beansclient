@@ -43,7 +43,7 @@
             $this->ttr      = $ttr;
             $this->payload  = $payload;
 
-            $this->payloadEncoder = $encoder;
+            $this->setPayloadEncoder($encoder);
         }
 
         public

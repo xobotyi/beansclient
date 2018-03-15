@@ -23,8 +23,9 @@
 
             $this->commandName = Interfaces\Command::RESERVE;
 
-            $this->payloadEncoder = $encoder;
-            $this->timeout        = $timeout;
+            $this->timeout = $timeout;
+
+            $this->setPayloadEncoder($encoder);
         }
 
         public

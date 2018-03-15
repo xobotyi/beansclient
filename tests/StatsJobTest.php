@@ -8,38 +8,35 @@
     namespace xobotyi\beansclient;
 
     use PHPUnit\Framework\TestCase;
-    use xobotyi\beansclient\Encoder\Json;
     use xobotyi\beansclient\Exception\Command;
 
-    class ReserveTest extends TestCase
+    class StatsJobTest extends TestCase
     {
         const HOST    = 'localhost';
         const PORT    = 11300;
         const TIMEOUT = 2;
 
         public
-        function testReserve() :void {
+        function testStatsJob() :void {
             $conn = $this->getConnection();
 
             $conn->method('readln')
                  ->withConsecutive()
-                 ->willReturnOnConsecutiveCalls("TIMED_OUT", "RESERVED 1 9", "RESERVED 1 9");
+                 ->willReturnOnConsecutiveCalls("OK 25", 'NOT_FOUND');
+
             $conn->method('read')
-                 ->withConsecutive([9], [2], [9], [2])
-                 ->willReturnOnConsecutiveCalls("[1,2,3,4]", "\r\n", "[1,2,3,4]", "\r\n");
+                 ->withConsecutive([25], [2])
+                 ->willReturnOnConsecutiveCalls("---\r\n- default\r\n- test1\r\njobs: 25\r\nrequests: 100", "\r\n");
 
             $client = new BeansClient($conn);
 
-            self::assertEquals(null, $client->reserve());
-            self::assertEquals(['id' => 1, 'payload' => '[1,2,3,4]'], $client->reserve());
-
-            $client = new BeansClient($conn, new Json());
-            self::assertEquals(['id' => 1, 'payload' => [1, 2, 3, 4]], $client->reserve());
+            self::assertEquals(['default', 'test1', 'jobs' => 25, 'requests' => 100], $client->statsJob(1));
+            self::assertEquals(null, $client->statsJob(1));
         }
 
         // test if response has wrong status name
         public
-        function testReserveException1() :void {
+        function testStatsJobException1() :void {
             $conn = $this->getConnection();
 
             $conn->method('readln')
@@ -48,12 +45,12 @@
             $client = new BeansClient($conn);
 
             $this->expectException(Command::class);
-            $client->reserve();
+            $client->statsJob(2);
         }
 
         // test if response has no data in
         public
-        function testReserveException2() :void {
+        function testStatsJobException2() :void {
             $conn = $this->getConnection();
 
             $conn->method('readln')
@@ -66,21 +63,21 @@
             $client = new BeansClient($conn);
 
             $this->expectException(Command::class);
-            $client->reserve();
+            $client->statsJob(3);
         }
 
-        // test if timeout < 0
+        // test if job id <=0
         public
-        function testReserveException3() :void {
+        function testStatsJobException3() :void {
             $conn = $this->getConnection();
 
             $conn->method('readln')
-                 ->will($this->returnValue("TOUCHED"));
+                 ->will($this->returnValue("BURIED"));
 
             $client = new BeansClient($conn);
 
             $this->expectException(Command::class);
-            $client->reserve(-1);
+            $client->statsJob(0);
         }
 
         private

@@ -8,11 +8,8 @@
     namespace xobotyi\beansclient;
 
     use PHPUnit\Framework\TestCase;
-    use xobotyi\beansclient\Command\Put;
     use xobotyi\beansclient\Encoder\Json;
     use xobotyi\beansclient\Exception\Client;
-    use xobotyi\beansclient\Exception\Command;
-    use xobotyi\beansclient\Exception\Server;
 
     class BeansClientTest extends TestCase
     {
@@ -64,6 +61,24 @@
             $conn = $this->getConnection();
             $conn->method('readln')
                  ->will($this->returnValue("OK"));
+
+            $client = new BeansClient($conn);
+
+            $this->expectException(Client::class);
+            $client->release(13);
+        }
+
+        // test if response has no or incorrect CRLF after data
+        public
+        function testException2() :void {
+            $conn = $this->getConnection();
+
+            $conn->method('readln')
+                 ->withConsecutive()
+                 ->willReturnOnConsecutiveCalls("RESERVED 1 9");
+            $conn->method('read')
+                 ->withConsecutive([9], [2], [9], [2])
+                 ->willReturnOnConsecutiveCalls("[1,2,3,4]", "  ");
 
             $client = new BeansClient($conn);
 
