@@ -1,6 +1,6 @@
 {
   "name": "xobotyi/beansclient",
-  "description": "Simple client for beanstalkd queue",
+  "description": "Client for beanstalkd queue",
   "type": "library",
   "keywords": [
     "php",
@@ -10,6 +10,10 @@
     "client"
   ],
   "license": "MIT",
+  "homepage": "https://github.com/xobotyi/beansclient",
+  "support": {
+    "issues": "https://github.com/xobotyi/beansclient/issues"
+  },
   "authors": [
     {
       "name": "Anton Zinovyev",
