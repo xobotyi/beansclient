@@ -8,6 +8,7 @@
     namespace xobotyi\beansclient;
 
     use PHPUnit\Framework\TestCase;
+    use xobotyi\beansclient\Command\UseTube;
     use xobotyi\beansclient\Exception\Command;
 
     class UseTubeTest extends TestCase
@@ -22,11 +23,27 @@
 
             $conn->method('readln')
                  ->withConsecutive()
-                 ->willReturnOnConsecutiveCalls("USING test1");
+                 ->willReturnOnConsecutiveCalls("USING test1", "USING test1");
 
             $client = new BeansClient($conn);
 
-            self::assertEquals('test1', $client->useTube('test1'));
+            $client->useTube('test1');
+            self::assertEquals('test1', $client->dispatchCommand(new UseTube('test1')));
+        }
+
+        // test if response has another tube name
+        public
+        function testUseTubeException() :void {
+            $conn = $this->getConnection();
+
+            $conn->method('readln')
+                 ->withConsecutive()
+                 ->willReturnOnConsecutiveCalls("USING test2");
+
+            $client = new BeansClient($conn);
+
+            $this->expectException(Command::class);
+            $client->useTube('test1');
         }
 
         // test if response has wrong status name

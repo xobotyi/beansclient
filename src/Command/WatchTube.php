@@ -32,14 +32,14 @@
         }
 
         public
-        function parseResponse(array $responseHeader, ?string $responseStr) :int {
+        function parseResponse(array $responseHeader, ?string $responseStr) :string {
             if ($responseStr) {
                 throw new Exception\Command("Unexpected response data passed");
             }
-            else if ($responseHeader[0] !== Response::WATCHING) {
-                throw new Exception\Command("Got unexpected status code [${responseHeader[0]}]");
+            else if ($responseHeader[0] == Response::WATCHING) {
+                return (int)$responseHeader[1];
             }
 
-            return (int)$responseHeader[1];
+            throw new Exception\Command("Got unexpected status code [${responseHeader[0]}]");
         }
     }

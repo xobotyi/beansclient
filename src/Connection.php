@@ -32,7 +32,7 @@
          * @throws Exception\Connection
          */
         public
-        function __construct(string $host = 'localhost', int $port = -1, int $connectionTimeout = null, bool $persistent = false) {
+        function __construct(string $host = 'localhost', int $port = 11300, int $connectionTimeout = null, bool $persistent = false) {
             $this->host       = $host;
             $this->port       = $port;
             $this->timeout    = $connectionTimeout === null ? self::SOCK_CONNECTION_TIMEOUT : $connectionTimeout;

@@ -8,6 +8,7 @@
     namespace xobotyi\beansclient;
 
     use PHPUnit\Framework\TestCase;
+    use xobotyi\beansclient\Command\WatchTube;
     use xobotyi\beansclient\Exception\Command;
 
     class WatchTubeTest extends TestCase
@@ -22,11 +23,12 @@
 
             $conn->method('readln')
                  ->withConsecutive()
-                 ->willReturnOnConsecutiveCalls("WATCHING 123");
+                 ->willReturnOnConsecutiveCalls("WATCHING 123", "WATCHING 123");
 
             $client = new BeansClient($conn);
 
-            self::assertEquals(123, $client->watchTube('test1'));
+            $client->watchTube('test1');
+            self::assertEquals(123, $client->dispatchCommand(new WatchTube('test1')));
         }
 
         // test if response has wrong status name

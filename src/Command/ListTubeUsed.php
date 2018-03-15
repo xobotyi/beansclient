@@ -24,7 +24,7 @@
         }
 
         public
-        function parseResponse(array $responseHeader, ?string $responseStr) {
+        function parseResponse(array $responseHeader, ?string $responseStr) :string {
             if ($responseStr) {
                 throw new Command("Unexpected response data passed");
             }

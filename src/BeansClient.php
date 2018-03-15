@@ -159,37 +159,45 @@
 
         // tubes
         public
-        function useTube(string $tube) {
-            return $this->dispatchCommand(new Command\UseTube($tube));
+        function useTube(string $tube) :self {
+            if ($tube !== $this->dispatchCommand(new Command\UseTube($tube))) {
+                throw new Exception\Command("Tube used not matches requested tube");
+            }
+
+            return $this;
         }
 
         public
-        function watchTube(string $tube) {
-            return $this->dispatchCommand(new Command\WatchTube($tube));
+        function watchTube(string $tube) :self {
+            $this->dispatchCommand(new Command\WatchTube($tube));
+
+            return $this;
         }
 
         public
-        function ignoreTube(string $tube) {
-            return $this->dispatchCommand(new Command\IgnoreTube($tube));
+        function ignoreTube(string $tube) :self {
+            $this->dispatchCommand(new Command\IgnoreTube($tube));
+
+            return $this;
         }
 
         public
-        function listTubeUsed() {
+        function listTubeUsed() :string {
             return $this->dispatchCommand(new Command\ListTubeUsed());
         }
 
         public
-        function listTubes() {
+        function listTubes() :array {
             return $this->dispatchCommand(new Command\ListTubes());
         }
 
         public
-        function listTubesWatched() {
+        function listTubesWatched() :array {
             return $this->dispatchCommand(new Command\ListTubesWatched());
         }
 
         public
-        function statsTube(string $tubeName) {
+        function statsTube(string $tubeName) :?array {
             return $this->dispatchCommand(new Command\StatsTube($tubeName));
         }
     }
