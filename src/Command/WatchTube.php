@@ -18,7 +18,7 @@
         public
         function __construct(string $tube) {
             if (!($tube = trim($tube))) {
-                throw new Exception\Command('Tube name must be a valueable string');
+                throw new Exception\Command('Tube name must be a valuable string');
             }
 
             $this->commandName = Interfaces\Command::WATCH;
@@ -33,11 +33,11 @@
 
         public
         function parseResponse(array $responseHeader, ?string $responseStr) :int {
-            if ($responseHeader[0] !== Response::WATCHING) {
-                throw new Exception\Command("Got unexpected status code [${responseHeader[0]}]");
-            }
-            else if ($responseStr) {
+            if ($responseStr) {
                 throw new Exception\Command("Unexpected response data passed");
+            }
+            else if ($responseHeader[0] !== Response::WATCHING) {
+                throw new Exception\Command("Got unexpected status code [${responseHeader[0]}]");
             }
 
             return (int)$responseHeader[1];

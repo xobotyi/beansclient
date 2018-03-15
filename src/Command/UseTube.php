@@ -18,12 +18,12 @@
         public
         function __construct(string $tube) {
             if (!($tube = trim($tube))) {
-                throw new Exception\Command('Tube name must be a valueable string');
+                throw new Exception\Command('Tube name must be a valuable string');
             }
 
             $this->commandName = Interfaces\Command::USE;
 
-            $this->tube        = $tube;
+            $this->tube = $tube;
         }
 
         public
@@ -32,14 +32,14 @@
         }
 
         public
-        function parseResponse(array $responseHeader, ?string $responseStr) :bool {
-            if ($responseHeader[0] !== Response::USING) {
-                throw new Exception\Command("Got unexpected status code [${responseHeader[0]}]");
-            }
-            else if ($responseStr) {
+        function parseResponse(array $responseHeader, ?string $responseStr) :string {
+            if ($responseStr) {
                 throw new Exception\Command("Unexpected response data passed");
             }
+            else if ($responseHeader[0] !== Response::USING) {
+                throw new Exception\Command("Got unexpected status code [${responseHeader[0]}]");
+            }
 
-            return $responseHeader[1] === $this->tube;
+            return $responseHeader[1];
         }
     }
