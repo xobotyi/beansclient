@@ -22,13 +22,18 @@
     </a>
 </p>
 
-# BeansClient
+<h1 align="center">BeansClient</h1>
 here should be some description
 
-# Contents
+<h2 align="center">Contents</h2>
+<div align="center">
+
 1. [Requirements](#requirements)
 2. [Installation](#installation)
-3. [Docs](#docs)
+3. [Usage](#usage)
+4. [Docs](#docs)
+
+</div>
 
 <h2 align="center">Requirements</h2>
 
@@ -42,6 +47,9 @@ Install with composer
 composer require xobotyi/beansclient
 ```
 
-<h2 align="center">Docs</h2>
+<h2 align="center">Usage</h2>
+```php
+use xobotyi\beansclient;
+```
 
-ToDo
+<h2 align="center">Docs</h2>

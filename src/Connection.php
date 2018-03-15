@@ -52,12 +52,11 @@
         public
         function __destruct() {
             if (!$this->persistent) {
-                if ($this->fclose($this->socket)) {
-                    $this->socket = null;
-                }
-                else {
+                if (!$this->fclose($this->socket)) {
                     throw new Exception\Connection(0, "Unable to close connection");
                 }
+
+                $this->socket = null;
             }
         }
 

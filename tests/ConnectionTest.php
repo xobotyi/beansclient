@@ -1,9 +1,8 @@
 <?php
     /**
-     * Created by PhpStorm.
-     * User: xobotyi
-     * Date: 15.03.2018
-     * Time: 16:09
+     * @Author : a.zinovyev
+     * @Package: beansclient
+     * @License: http://www.opensource.org/licenses/mit-license.php
      */
 
     namespace xobotyi\beansclient;
