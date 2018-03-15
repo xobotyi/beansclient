@@ -21,11 +21,6 @@
         }
 
         public
-        function fopen($filename, $mode) {
-            return fopen($filename, $mode);
-        }
-
-        public
         function fclose($stream) :bool {
             return fclose($stream);
         }

@@ -29,7 +29,7 @@
          * @param int    $connectionTimeout
          * @param bool   $persistent
          *
-         * @throws \xobotyi\beansclient\Exception\Connection
+         * @throws Exception\Connection
          */
         public
         function __construct(string $host = 'localhost', int $port = -1, int $connectionTimeout = null, bool $persistent = false) {
@@ -52,7 +52,12 @@
         public
         function __destruct() {
             if (!$this->persistent) {
-                $this->fclose($this->socket);
+                if ($this->fclose($this->socket)) {
+                    $this->socket = null;
+                }
+                else {
+                    throw new Exception\Connection(0, "Unable to close connection");
+                }
             }
         }
 
@@ -60,8 +65,19 @@
          *  Disconnect the socket
          */
         public
-        function disconnect() :void {
-            $this->fclose($this->socket);
+        function disconnect() :bool {
+            if (!$this->socket) {
+                return false;
+            }
+
+            if ($this->fclose($this->socket)) {
+                $this->socket = null;
+            }
+            else {
+                throw new Exception\Connection(0, "Unable to close connection");
+            }
+
+            return !$this->isActive();
         }
 
         /**
@@ -77,7 +93,7 @@
          */
         public
         function getPort() :int {
-            return $this->host;
+            return $this->port;
         }
 
         /**
@@ -109,10 +125,15 @@
          *
          * Writes data to the socket
          *
+         * @throws \xobotyi\beansclient\Exception\Connection
          * @throws \xobotyi\beansclient\Exception\Socket
          */
         public
         function write(string $str) :void {
+            if (!$this->socket) {
+                throw new Exception\Connection(0, "Unable to write into closed connection");
+            }
+
             for ($attempt = $written = $iterWritten = 0; $written < strlen($str); $written += $iterWritten) {
                 $iterWritten = $this->fwrite($this->socket, substr($str, $written));
 
@@ -128,10 +149,15 @@
          * @param int|null $length
          *
          * @return string
+         * @throws \xobotyi\beansclient\Exception\Connection
          * @throws \xobotyi\beansclient\Exception\Socket
          */
         public
         function read(int $length) :string {
+            if (!$this->socket) {
+                throw new Exception\Connection(0, "Unable to read from closed connection");
+            }
+
             $str  = '';
             $read = 0;
 
@@ -155,10 +181,15 @@
          * @param int|null $length
          *
          * @return string
+         * @throws \xobotyi\beansclient\Exception\Connection
          * @throws \xobotyi\beansclient\Exception\Socket
          */
         public
         function readln(int $length = null) :string {
+            if (!$this->socket) {
+                throw new Exception\Connection(0, "Unable to read from closed connection");
+            }
+
             $str = false;
 
             while ($str === false) {

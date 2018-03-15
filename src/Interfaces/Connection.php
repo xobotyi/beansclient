@@ -14,7 +14,7 @@
         function __construct(string $host = 'localhost', int $port = -1, int $connectionTimeout = null, bool $persistent = false);
 
         public
-        function disconnect() :void;
+        function disconnect() :bool;
 
         public
         function getHost() :string;
