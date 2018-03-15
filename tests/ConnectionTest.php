@@ -8,19 +8,41 @@
 
     namespace xobotyi\beansclient;
 
-    function fsockopen(string $hostname, int $port = null, int &$errno = null, string &$errstr = null, float $timeout = null) {
-        return true;
+    function fsockopen($hostname, $port = null, &$errno = null, &$errstr = null, $timeout = null, $mockResponse = null) {
+        static $res = true;
+
+        $res = $mockResponse === null ? $res : $mockResponse;
+
+        if (!$res) {
+            $errno  = 0;
+            $errstr = 'Unable to establish connection';
+        }
+
+        return $res;
     }
 
-    function pfsockopen(string $hostname, int $port = null, int &$errno = null, string &$errstr = null, float $timeout = null) {
-        return true;
+    function pfsockopen($hostname, $port = null, &$errno = null, &$errstr = null, $timeout = null, $mockResponse = null) {
+        static $res = true;
+
+        $res = $mockResponse === null ? $res : $mockResponse;
+
+        if (!$res) {
+            $errno  = 0;
+            $errstr = 'Unable to establish connection';
+        }
+
+        return $res;
     }
 
-    function fclose($handle) {
-        return true;
+    function fclose($handle, $mockResponse = null) {
+        static $res = true;
+
+        $res = $mockResponse === null ? $res : $mockResponse;
+
+        return $res;
     }
 
-    function feof($handle = null, bool $stateOverride = null) {
+    function feof($handle = null, $stateOverride = null) {
         static $state = true;
 
         $state = $stateOverride === null ? $state : !$stateOverride;
@@ -28,7 +50,7 @@
         return $state = !$state;
     }
 
-    function fgets($handle, int $length = null) {
+    function fgets($handle, $length = null) {
         if ($length === null) {
             return '123456789';
         }
@@ -42,7 +64,16 @@
         return $str;
     }
 
-    function fread($handle, int $length) {
+    function fread($handle, $length, $mockResponse = null) {
+        static $res = true;
+
+        $res = $mockResponse === null ? $res : $mockResponse;
+
+
+        if ($res === false) {
+            return false;
+        }
+
         $str   = '';
         $chars = 'abdefhiknrstyzABDEFGHKNQRSTYZ23456789';
         for ($i = 0; $i < $length; $i++) {
@@ -52,9 +83,15 @@
         return $str;
     }
 
-    function fwrite($handle, string $string, int $length = null) { return strlen($string); }
+    function fwrite($handle, $string, $length = null, $mockResponse = null) {
+        static $res = 2;
 
-    function stream_set_timeout($stream, int $seconds, int $microseconds = null) { }
+        $res = $mockResponse === null ? $res : $mockResponse;
+
+        return $res;
+    }
+
+    function stream_set_timeout($stream, $seconds, $microseconds = null) { }
 
     use PHPUnit\Framework\TestCase;
 
@@ -76,7 +113,9 @@
             self::assertEquals(2, $conn->getTimeout());
             self::assertTrue($conn->isPersistent());
             self::assertTrue($conn->disconnect());
+            self::assertFalse($conn->disconnect());
 
+            $conn = new Connection('localhost', 11300, 2);
             $conn->write('stuff');
             self::assertEquals(15, strlen($conn->read(15)));
             self::assertEquals(2, $conn->fwrite(null, 'ab', 2));
@@ -85,5 +124,95 @@
             self::assertEquals('123456789', $conn->readln());
             feof(null, true);
             self::assertEquals(15, strlen($conn->readln(15)));
+        }
+
+        public
+        function testConnectionException() {
+            $conn = new Connection('localhost', 11300, 2);
+            self::assertTrue($conn->disconnect());
+
+            $this->expectException(Exception\Connection::class);
+            $conn->write(123);
+        }
+
+        public
+        function testConnectionException1() {
+            $conn = new Connection('localhost', 11300, 2);
+            self::assertTrue($conn->disconnect());
+
+            $this->expectException(Exception\Connection::class);
+            $conn->readln();
+        }
+
+        public
+        function testConnectionException2() {
+            $conn = new Connection('localhost', 11300, 2);
+            self::assertTrue($conn->disconnect());
+
+            $this->expectException(Exception\Connection::class);
+            $conn->read(15);
+        }
+
+        public
+        function testConnectionException3() {
+            $conn = new Connection('localhost', 11300, 2);
+
+            $this->expectException(Exception\Connection::class);
+
+            fclose(null, false);
+            self::assertTrue($conn->disconnect());
+        }
+
+        public
+        function testConnectionException4() {
+            $conn = new Connection('localhost', 11300, 2);
+
+            fclose(null, false);
+
+            $this->expectException(Exception\Connection::class);
+            unset($conn);
+        }
+
+        public
+        function testConnectionException5() {
+            fclose(null, true);
+            fsockopen(null, null, $errno, $errstr, null, false);
+
+            $this->expectException(Exception\Connection::class);
+            $conn = new Connection('localhost', 11300, 2);
+        }
+
+        public
+        function testConnectionException6() {
+            fsockopen(null, null, $errno, $errstr, null, true);
+
+            $conn = new Connection('localhost', 11300, 2);
+
+            feof(null, false);
+
+            $this->expectException(Exception\Socket::class);
+            $conn->readln();
+        }
+
+        public
+        function testConnectionException7() {
+            feof(null, true);
+            fwrite(null, null, null, 0);
+
+            $conn = new Connection('localhost', 11300, 2);
+
+            $this->expectException(Exception\Socket::class);
+            $conn->write(123);
+        }
+
+        public
+        function testConnectionException8() {
+            fwrite(null, null, null, 2);
+            fread(null, null, false);
+
+            $conn = new Connection('localhost', 11300, 2);
+
+            $this->expectException(Exception\Socket::class);
+            $conn->read(123);
         }
     }
