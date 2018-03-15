@@ -128,7 +128,7 @@
         }
 
         public
-        function bury(int $jobId, int $priority = self::DEFAULT_PRIORITY) {
+        function bury(int $jobId, $priority = self::DEFAULT_PRIORITY) {
             return $this->dispatchCommand(new Command\Bury($jobId, $priority));
         }
 

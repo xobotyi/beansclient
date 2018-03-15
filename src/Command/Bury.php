@@ -17,9 +17,12 @@
         private $priority;
 
         public
-        function __construct(int $jobId, int $priority) {
+        function __construct(int $jobId, $priority) {
             if ($jobId <= 0) {
                 throw new Exception\Command('Job id must be a positive integer');
+            }
+            if (!is_numeric($priority)) {
+                throw new Exception\Command('Argument 2 passed to xobotyi\beansclient\BeansClient::put() must be a number, got ' . gettype($priority));
             }
             if ($priority < 0 || $priority > Put::MAX_PRIORITY) {
                 throw new Exception\Command('Job priority must be between 0 and ' . Put::MAX_PRIORITY);

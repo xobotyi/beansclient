@@ -25,7 +25,10 @@
 
         public
         function parseResponse(array $responseHeader, ?string $responseStr) {
-            if ($responseHeader[0] === Response::USING) {
+            if ($responseStr) {
+                throw new Command("Unexpected response data passed");
+            }
+            else if ($responseHeader[0] === Response::USING) {
                 if (!isset($responseHeader[1])) {
                     throw new Command("Response is missing tube name [" . implode('', $responseHeader) . "]");
                 }
