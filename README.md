@@ -31,13 +31,16 @@ here should be some description
 3. [Docs](#docs)
 
 <h2 align="center">Requirements<h2>
+
 - [PHP](//php.net/) 7.1+
 
 <h2 align="center">Installation<h2>
+
 Install with composer
 ```bash
 composer require xobotyi/beansclient
 ```
 
 <h2 align="center">Docs<h2>
+
 ToDo
