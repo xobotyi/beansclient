@@ -38,6 +38,9 @@ BeansClient supports whole bunch of commands and responses specified in [protoco
 2. [Installation](#installation)
 3. [Usage](#usage)
 4. [Docs](#docs)
+    * [Jobs](#jobs)
+    * [Tubes](#tubes)
+    * [Stats](#stats)
 
 <h2 align="center">Requirements</h2>
 
@@ -90,6 +93,8 @@ echo "Am I still connected? \n" . ($beansClient->getConnection()->isActive() ? '
 
 <h2 align="center">Docs</h2>
 
+### Jobs
+-----
 #### `put($payload[, int $priority[, int $delay[, int $ttr]]])`
 _**Description:**_ inserts a job into the client's currently used tube (see the "useTube")  
 _**Return value:**_  
@@ -132,6 +137,8 @@ _**Return value:**_
 _**Example:**_  
 
 
+### Tubes
+-----
 #### `useTube(string $tube)`
 _**Description:**_ Subsequent put commands will put jobs into the tube specified by this command. If no use command has been issued, jobs will be put into the tube named "default"  
 _**Return value:**_  
@@ -163,6 +170,8 @@ _**Return value:**_
 _**Example:**_  
 
 
+### Stats
+-----
 #### `stats()`
 _**Description:**_ gives statistical information about the system as a whole.  
 _**Return value:**_  
