@@ -89,3 +89,23 @@ echo "Am I still connected? \n" . ($beansClient->getConnection()->isActive() ? '
 ```
 
 <h2 align="center">Docs</h2>
+
+#### put($payload, [int $priority, [int $delay, [int $ttr]]])
+#### reserve([int $timeout])
+#### delete(int $jobId)
+#### release(int $jobId, [int $priority, [int $delay]])
+#### bury(int $jobId, [int $priority])
+#### touch(int $jobId)
+#### kick(int $count)
+#### kickJob(int $jobId)
+
+#### useTube(string $tube)
+#### watchTube(string $tube)
+#### ignoreTube(string $tube)
+#### listTubeUsed()
+#### listTubes()
+#### listTubesWatched()
+
+#### stats()
+#### statsTube(string $tube)
+#### statsJob(int $jobId)
