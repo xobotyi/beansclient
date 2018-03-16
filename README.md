@@ -1,3 +1,4 @@
+<h1 align="center">BeansClient</h1>
 <p align="center">
     <a href="https://packagist.org/packages/xobotyi/beansclient">
         <img alt="License" src="https://poser.pugx.org/xobotyi/beansclient/license" />
@@ -22,22 +23,18 @@
     </a>
 </p>
 
-<h1 align="center">BeansClient</h1>
-here should be some description
+<h2 align="center">About</h2>
+BeansClient is a pure 7.1+ dependency-free client for [beanstalkd work queue](https://github.com/kr/beanstalkd) with thorough unit-testing. Library uses PSR-4 autoloader standard and always 100% tests covered.  
+BeansClient supports whole bunch of commands and responses specified in [protocol](https://github.com/kr/beanstalkd/blob/master/doc/protocol.txt) for version 1.10
+
 
 <h2 align="center">Contents</h2>
-<div align="center">
-
 1. [Requirements](#requirements)
 2. [Installation](#installation)
 3. [Usage](#usage)
 4. [Docs](#docs)
 
-</div>
-
 <h2 align="center">Requirements</h2>
-
-
 - [PHP](//php.net/) 7.1+
 
 <h2 align="center">Installation</h2>
@@ -49,6 +46,7 @@ composer require xobotyi/beansclient
 
 <h2 align="center">Usage</h2>
 ```php
+<?php
 use xobotyi\beansclient\BeansClient;
 use xobotyi\beansclient\Connection;
 
