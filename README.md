@@ -1,5 +1,4 @@
 <h1 align="center">BeansClient</h1>
-
 <p align="center">
     <a href="https://packagist.org/packages/xobotyi/beansclient">
         <img alt="License" src="https://poser.pugx.org/xobotyi/beansclient/license" />
@@ -24,15 +23,14 @@
     </a>
 </p>
 
-<h2 align="center">About</h2>
-
+## About
 BeansClient is a pure 7.1+ dependency-free client for [beanstalkd work queue](https://github.com/kr/beanstalkd) with thorough unit-testing. Library uses PSR-4 autoloader standard and always has 100% tests coverage.    
 Library gives you a simple way to provide your own Connection implementation, in cases when you need to log requests and responses or to proxy traffic to non-standard transport. 
 
 BeansClient supports whole bunch of commands and responses specified in [protocol](https://github.com/kr/beanstalkd/blob/master/doc/protocol.txt) for version 1.10
 
   
-<h2 align="center">Contents</h2>
+## Contents
 
 1. [Requirements](#requirements)
 2. [Installation](#installation)
@@ -43,22 +41,20 @@ BeansClient supports whole bunch of commands and responses specified in [protoco
     * [Stats](#stats)
 
   
-<h2 align="center">Requirements</h2>
+## Requirements
 
 - [PHP](//php.net/) 7.1+
 
 
   
-<h2 align="center">Installation</h2>
-
+## Installation
 Install with composer
 ```bash
 composer require xobotyi/beansclient
 ```
 
   
-<h2 align="center">Usage</h2>
-
+## Usage
 ```php
 <?php
 use xobotyi\beansclient\BeansClient;
@@ -96,8 +92,7 @@ echo "Am I still connected? \n" . ($beansClient->getConnection()->isActive() ? '
 ```
 
   
-<h2 align="center">Docs</h2>
-
+## Docs
 ### Jobs
 -----
 #### `put($payload[, int $priority[, int $delay[, int $ttr]]])`
