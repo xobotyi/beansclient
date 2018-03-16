@@ -113,7 +113,7 @@
         }
 
         public
-        function reserve(int $timeout = 0) {
+        function reserve(?int $timeout = 0) {
             return $this->dispatchCommand(new Command\Reserve($timeout, $this->encoder));
         }
 
