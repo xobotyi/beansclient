@@ -90,22 +90,89 @@ echo "Am I still connected? \n" . ($beansClient->getConnection()->isActive() ? '
 
 <h2 align="center">Docs</h2>
 
-#### put($payload, [int $priority, [int $delay, [int $ttr]]])
-#### reserve([int $timeout])
-#### delete(int $jobId)
-#### release(int $jobId, [int $priority, [int $delay]])
-#### bury(int $jobId, [int $priority])
-#### touch(int $jobId)
-#### kick(int $count)
-#### kickJob(int $jobId)
+#### `put($payload[, int $priority[, int $delay[, int $ttr]]])`
+##### Description
+##### Return value
+##### Example
+    
+#### `reserve([int $timeout])`
+##### Description
+##### Return value
+##### Example
 
-#### useTube(string $tube)
-#### watchTube(string $tube)
-#### ignoreTube(string $tube)
-#### listTubeUsed()
-#### listTubes()
-#### listTubesWatched()
+#### `delete(int $jobId)`
+##### Description
+##### Return value
+##### Example
 
-#### stats()
-#### statsTube(string $tube)
-#### statsJob(int $jobId)
+#### `release(int $jobId[, int $priority[, int $delay]])`
+##### Description
+##### Return value
+##### Example
+
+#### `bury(int $jobId[, int $priority])`
+##### Description
+##### Return value
+##### Example
+
+#### `touch(int $jobId)`
+##### Description
+##### Return value
+##### Example
+
+#### `kick(int $count)`
+##### Description
+##### Return value
+##### Example
+
+#### `kickJob(int $jobId)`
+##### Description
+##### Return value
+##### Example
+
+
+#### `useTube(string $tube)`
+##### Description
+##### Return value
+##### Example
+
+#### `watchTube(string $tube)`
+##### Description
+##### Return value
+##### Example
+
+#### `ignoreTube(string $tube)`
+##### Description
+##### Return value
+##### Example
+
+#### `listTubeUsed()`
+##### Description
+##### Return value
+##### Example
+
+#### `listTubes()`
+##### Description
+##### Return value
+##### Example
+
+#### `listTubesWatched()`
+##### Description
+##### Return value
+##### Example
+
+
+#### `stats()`
+##### Description
+##### Return value
+##### Example
+
+#### `statsTube(string $tube)`
+##### Description
+##### Return value
+##### Example
+
+#### `statsJob(int $jobId)`
+##### Description
+##### Return value
+##### Example
