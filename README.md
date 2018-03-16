@@ -131,11 +131,11 @@ $client->getSerializer(); //  instance of \xobotyi\beansclient\Serializer\Json
 
 #or
 
-$client = new BeansClient(new Connection(), new Json());
+$client = new BeansClient(new Connection());
 $beansClient->setSerializer(new Json())
             ->getSerializer(); //  instance of \xobotyi\beansclient\Serializer\Json
 ```
-If you will not provide serializer with second parameter of `BeansClient` constructor.
+If you will not provide serializer with second parameter of `BeansClient` constructor, payload in `put` command mist be string or stringable value.
 
 ### Job commands
 -----
