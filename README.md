@@ -111,6 +111,11 @@ _**Return value:**_
     * 'BURIED' if the server ran out of memory trying to grow the priority queue data structure.
  
 _**Example:**_  
+```php
+$client->put('myAwesomePayload', 2048, 0, 60); // ['id'=>1, 'status'=>'INSERTED']
+# or, if we use payload encoder 
+$client->put(['it'=>'can be any', 'thing'], 2048, 0, 60); // ['id'=>2, 'status'=>'INSERTED']
+```
     
 #### `reserve([?int $timeout])`
 Returns a newly-reserved job. Once a job is reserved for the client, the client has limited time to run (TTR) the job before the job times out. When the job times out, the server will put the job back into the ready queue. Both the TTR and the actual time left can be found in response to the statsJob command.
@@ -125,6 +130,11 @@ If BeansClient was initialised with encoder - payload will be decoded automatica
 `NULL` if there is no ready jobs in queue  
 
 _**Example:**_  
+```php
+$client->reserve(); // ['id'=>1, 'payload'=>'myAwesomePayload']
+# or, if we use payload encoder 
+$client->reserve(); // [id=>2, 'payload'=>['it'=>'can be any', 'thing']]
+```
 
 #### `delete(int $jobId)`
 Removes a job from the server entirely. It is normally used by the client when the job has successfully run to completion. A client can delete jobs that it has reserved, ready jobs, delayed jobs, and jobs that are buried.  
@@ -135,6 +145,10 @@ _**Return value:**_
 * `false` if job not exists.
 
 _**Example:**_  
+```php
+$client->delete(1); // true
+$client->delete(3); // false
+```
 
 #### `release(int $jobId[, int $priority[, int $delay]])`
 Puts a reserved job back into the ready queue (and marks its state as "ready") to be run by any client. It is normally used when the job fails because of a transitory error.  
@@ -147,6 +161,10 @@ _**Return value:**_
 `NULL` if job not exists
 
 _**Example:**_  
+```php
+$client->delete(2, 2048, 0); // 'RELEASED'
+$client->delete(3); // null
+```
 
 #### `bury(int $jobId[, int $priority])`
 Puts a job into the "buried" state. Buried jobs are put into a FIFO linked list and will not be touched by the server again until a client kicks them with the kick or kickJob command.  
@@ -157,6 +175,10 @@ _**Return value:**_
 * `false` if job not exists.
 
 _**Example:**_  
+```php
+$client->bury(2, 2048, 0); // true
+$client->bury(3); // false
+```
 
 #### `touch(int $jobId)`
 Allows a worker to request more time to work on a job. This is useful for jobs that potentially take a long time, but you still want the benefits of a TTR pulling a job away from an unresponsive worker. A worker may periodically tell the server that it's still alive and processing a job (e.g. it may do this on DEADLINE_SOON). The command postpones the auto release of a reserved job until TTR seconds from when the command is issued.  
@@ -167,6 +189,10 @@ _**Return value:**_
 * `false` if job not exists.
 
 _**Example:**_  
+```php
+$client->touch(2); // true
+$client->touch(3); // false
+```
 
 #### `kick(int $count)`
 Applies only to the currently used tube. It moves jobs into the ready queue. If there are any buried jobs, it will only kick buried jobs. Otherwise it will kick delayed jobs.  
@@ -175,6 +201,10 @@ _**Return value:**_
 `INTEGER` number of jobs actually kicked.  
 
 _**Example:**_  
+```php
+$client->kick(3); // 1
+$client->kick(3); // 0
+```
 
 #### `kickJob(int $jobId)`
 A variant of kick that operates with a single job identified by its job id. If the given job id exists and is in a buried or delayed state, it will be moved to the ready queue of the the same tube where it currently belongs.  
@@ -185,35 +215,15 @@ _**Return value:**_
 * `false` if job not exists.
 
 _**Example:**_  
+```php
+$client->kickJob(2); // true
+$client->kickJob(3); // false
+```
 
 
   
 ### Tubes
 -----
-#### `useTube(string $tube)`
-Subsequent put commands will put jobs into the tube specified by this command. If no use command has been issued, jobs will be put into the tube named "default"  
-
-_**Return value:**_  
-`xobotyi\beansclient\BeansClient` instance  
-
-_**Example:**_  
-
-#### `watchTube(string $tube)`
-Command adds the named tube to the watch list for the current connection. A reserve command will take a job from any of the tubes in the watch list. For each new connection, the watch list initially consists of one tube, named "default".  
-
-_**Return value:**_  
-`xobotyi\beansclient\BeansClient` instance  
-
-_**Example:**_  
-
-#### `ignoreTube(string $tube)`
-Removes the named tube from the watch list for the current connection.  
-
-_**Return value:**_  
-`xobotyi\beansclient\BeansClient` instance  
-
-_**Example:**_  
-
 #### `listTubeUsed()`
 Returns the tube currently being used by the client.  
 
@@ -221,6 +231,21 @@ _**Return value:**_
 `STRING`  
 
 _**Example:**_  
+```php
+$client->listTubeUsed(); // 'default'
+```
+
+#### `useTube(string $tube)`
+Subsequent put commands will put jobs into the tube specified by this command. If no use command has been issued, jobs will be put into the tube named "default"  
+
+_**Return value:**_  
+`xobotyi\beansclient\BeansClient` instance  
+
+_**Example:**_  
+```php
+$client->useTube('awesomeTube')
+       ->listTubeUsed(); // 'awesomeTube'
+```
 
 #### `listTubes()`
 Returns a list of all existing tubes.  
@@ -229,6 +254,9 @@ _**Return value:**_
 `ARRAY`  
 
 _**Example:**_  
+```php
+$client->listTubes(); // ['default', 'awesomeTube']
+```
 
 #### `listTubesWatched()`
 Returns a list tubes currently being watched by the client.  
@@ -237,6 +265,41 @@ _**Return value:**_
 `ARRAY`  
 
 _**Example:**_  
+```php
+$client->listTubesWatched(); // ['default']
+```
+
+#### `watchTube(string $tube)`
+Command adds the named tube to the watch list for the current connection. A reserve command will take a job from any of the tubes in the watch list. For each new connection, the watch list initially consists of one tube, named "default".  
+
+_**Return value:**_  
+`xobotyi\beansclient\BeansClient` instance  
+
+_**Example:**_  
+```php
+$client->listTubesWatched(); // ['default']
+
+$client->watchTube('awesomeTube')
+       ->listTubesWatched(); // ['default', 'awesomeTube']
+```
+
+#### `ignoreTube(string $tube)`
+Removes the named tube from the watch list for the current connection.  
+
+_**Return value:**_  
+`xobotyi\beansclient\BeansClient` instance  
+
+_**Example:**_  
+```php
+$client->listTubesWatched(); // ['default']
+
+$client->watchTube('awesomeTube')
+       ->listTubesWatched(); // ['default', 'awesomeTube']
+       
+$client->ignoreTube('awesomeTube')
+       ->ignoreTube('myAwesomeTube2')
+       ->listTubesWatched(); // ['default']
+```
 
 
   
@@ -249,15 +312,87 @@ _**Return value:**_
 `ARRAY`  
 
 _**Example:**_  
+```php
+$client->stats();
+/*[
+    'current-jobs-urgent' => '0',
+    'current-jobs-ready' => '0',
+    'current-jobs-reserved' => '0',
+    'current-jobs-delayed' => '0',
+    'current-jobs-buried' => '0',
+    'cmd-put' => '12',
+    'cmd-peek' => '0',
+    'cmd-peek-ready' => '0',
+    'cmd-peek-delayed' => '0',
+    'cmd-peek-buried' => '0',
+    'cmd-reserve' => '0',
+    'cmd-reserve-with-timeout' => '12',
+    'cmd-delete' => '12',
+    'cmd-release' => '0',
+    'cmd-use' => '12',
+    'cmd-watch' => '14',
+    'cmd-ignore' => '0',
+    'cmd-bury' => '0',
+    'cmd-kick' => '0',
+    'cmd-touch' => '0',
+    'cmd-stats' => '1',
+    'cmd-stats-job' => '0',
+    'cmd-stats-tube' => '0',
+    'cmd-list-tubes' => '6',
+    'cmd-list-tube-used' => '0',
+    'cmd-list-tubes-watched' => '15',
+    'cmd-pause-tube' => '0',
+    'job-timeouts' => '0',
+    'total-jobs' => '12',
+    'max-job-size' => '65535',
+    'current-tubes' => '3',
+    'current-connections' => '2',
+    'current-producers' => '2',
+    'current-workers' => '2',
+    'current-waiting' => '0',
+    'total-connections' => '6',
+    'pid' => '1',
+    'version' => '1.10' (length=4),
+    'rusage-utime' => '0.040000',
+    'rusage-stime' => '0.000000',
+    'uptime' => '41384',
+    'binlog-oldest-index' => '0',
+    'binlog-current-index' => '0',
+    'binlog-records-migrated' => '0',
+    'binlog-records-written' => '0',
+    'binlog-max-size' => '10485760',
+    'id' => 'f7546f4280926fcd',
+    'hostname' => '2feafb46e549'
+]*/
+```
 
 #### `statsTube(string $tube)`
 Gives statistical information about the specified tube if it exists.  
 
 _**Return value:**_  
-`ARRAY`
+`ARRAY`  
 `NULL` if tube not exists.  
 
 _**Example:**_  
+```php
+$client->statsTube('myAwesomeTube');
+/*[
+    'name' => 'myAwesomeTube',
+    'current-jobs-urgent' => '0',
+    'current-jobs-ready' => '0',
+    'current-jobs-reserved' => '0',
+    'current-jobs-delayed' => '0',
+    'current-jobs-buried' => '0',
+    'total-jobs' => '0',
+    'current-using' => '0',
+    'current-watching' => '1',
+    'current-waiting' => '0',
+    'cmd-delete' => '0',
+    'cmd-pause-tube' => '0',
+    'pause' => '0',
+    'pause-time-left' => '0'
+]*/
+```
 
 #### `statsJob(int $jobId)`
 Gives statistical information about the specified job if it exists.  
@@ -267,3 +402,22 @@ _**Return value:**_
 `NULL` if job not exists.  
 
 _**Example:**_  
+```php
+$client->statsJob(2);
+/*[
+    'id' => '2',
+    'tube' => 'myAwesomeTube',
+    'state' => 'reserved',
+    'pri' => '2048',
+    'age' => '0',
+    'delay' => '0',
+    'ttr' => '30',
+    'time-left' => '29',
+    'file' => '0',
+    'reserves' => '1',
+    'timeouts' => '0',
+    'releases' => '0',
+    'buries' => '0',
+    'kicks' => '0'
+]*/
+```

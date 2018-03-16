@@ -10,7 +10,7 @@
     use xobotyi\beansclient\BeansClient;
     use xobotyi\beansclient\Connection;
 
-    $connection  = new Connection('127.0.0.1', 11300, 2, true);
+    $connection  = new Connection('127.0.0.1', 11300, 2, false);
     $beansClient = new BeansClient($connection);
 
     ##            ##
@@ -25,6 +25,7 @@
     ##            ##
 
     $job = $beansClient->watchTube('myAwesomeTube')
+                       ->watchTube('myAwesomeTube2')
                        ->reserve();
 
     if ($job) {
