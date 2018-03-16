@@ -106,8 +106,7 @@ _**Parameters:**_
 * persistent`bool` _[optional, default: false]_ - whether to use persistent connection or not. If `true` - connection will not be closed with destruction of Connection instance
 
 _**Throws:**_  
-`xobotyi\beansclient\Exception\Connection` - on inability to open/close connection or read/write attempts on closed connection
-`xobotyi\beansclient\Exception\Socket` - on inability to read/write from(to) the socket
+`xobotyi\beansclient\Exception\Connection` - on inability to open connection
 
 _**Example:**_  
 ```php
@@ -115,6 +114,25 @@ use xobotyi\beansclient\Connection;
 
 $socket = new Connection(); // defaults
 $socket = new Connection('/tmp/beanstalkd.sock', -1); // unix domain socket.
+```
+
+#### `BeansClient`
+The main class of library. Puts everything together and makes the magic!
+_**Parameters:**_  
+* connection`xobotyi\beansclient\Exception\Connection` - Connection instance 
+* serializer`xobotyi\beansclient\Serializer\Json` _[optional, default: null]_ - Serializer instance
+
+_**Throws:**_  
+`xobotyi\beansclient\Exception\Client` - if constructor got inactive connection
+
+_**Example:**_  
+```php
+use xobotyi\beansclient\BeansClient;
+use xobotyi\beansclient\Connection;
+
+$client = new BeansClient(new Connection());
+$client->getConnection()->isActive();   // true
+$client->getConnection()->getHost();    // 127.0.0.1
 ```
 
 #### `Serializer`
