@@ -22,7 +22,7 @@
         private $ttr;
 
         public
-        function __construct($payload, $priority, int $delay, int $ttr, ?Interfaces\Encoder $encoder = null) {
+        function __construct($payload, $priority, int $delay, int $ttr, ?Interfaces\Serializer $serializer = null) {
             if (!is_numeric($priority)) {
                 throw new Exception\Command('Argument 2 passed to xobotyi\beansclient\BeansClient::put() must be a number, got ' . gettype($priority));
             }
@@ -43,18 +43,18 @@
             $this->ttr      = $ttr;
             $this->payload  = $payload;
 
-            $this->setPayloadEncoder($encoder);
+            $this->setSerializer($serializer);
         }
 
         public
         function getCommandStr() :string {
             $mainCommand = $this->commandName . ' ' . $this->priority . ' ' . $this->delay . ' ' . $this->ttr . ' ';
 
-            if ($this->payloadEncoder) {
-                $serializedPayload = $this->payloadEncoder->encode($this->payload);
+            if ($this->serializer) {
+                $serializedPayload = $this->serializer->serialize($this->payload);
             }
             else if (!is_string($this->payload) && !is_numeric($this->payload)) {
-                throw new Exception\Command('Due to turned off payload encoder, job payload must be a string or number');
+                throw new Exception\Command('Due to turned off payload serializer, job payload must be a string or number');
             }
             else {
                 $serializedPayload = (string)$this->payload;

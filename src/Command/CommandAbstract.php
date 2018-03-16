@@ -16,7 +16,11 @@
     class CommandAbstract implements Interfaces\Command
     {
         protected $payload;
-        protected $payloadEncoder;
+
+        /**
+         * @var \xobotyi\beansclient\Interfaces\Serializer
+         */
+        protected $serializer;
 
         protected $commandName;
 
@@ -36,8 +40,8 @@
         }
 
         public
-        function setPayloadEncoder(?Interfaces\Encoder $encoder) :self {
-            $this->payloadEncoder = $encoder;
+        function setSerializer(?Interfaces\Serializer $serialize) :self {
+            $this->serializer = $serialize;
 
             return $this;
         }

@@ -16,7 +16,7 @@
         private $timeout;
 
         public
-        function __construct(?int $timeout = 0, ?Interfaces\Encoder $encoder = null) {
+        function __construct(?int $timeout = 0, ?Interfaces\Serializer $serializer = null) {
             if ($timeout < 0) {
                 throw new Exception\Command('Timeout must be greater or equal than 0');
             }
@@ -25,7 +25,7 @@
 
             $this->timeout = $timeout;
 
-            $this->setPayloadEncoder($encoder);
+            $this->setSerializer($serializer);
         }
 
         public
@@ -46,7 +46,7 @@
             }
 
             $res['id']      = (int)$responseHeader[1];
-            $res['payload'] = $this->payloadEncoder ? $this->payloadEncoder->decode($responseStr) : $responseStr;
+            $res['payload'] = $this->serializer ? $this->serializer->unserialize($responseStr) : $responseStr;
 
             return $res;
         }

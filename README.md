@@ -36,9 +36,10 @@ BeansClient supports whole bunch of commands and responses specified in [protoco
 2. [Installation](#installation)
 3. [Usage](#usage)
 4. [Docs](#docs)
-    * [Jobs](#jobs)
-    * [Tubes](#tubes)
-    * [Stats](#stats)
+    * [Classes](#classes)
+    * [Job commands](#job-commands)
+    * [Tube commands](#tube-commands)
+    * [Stats commands](#stats-commands)
 
   
 ## Requirements
@@ -93,7 +94,50 @@ echo "Am I still connected? \n" . ($beansClient->getConnection()->isActive() ? '
 
   
 ## Docs
-### Jobs
+### Classes
+---
+#### `Connection`
+Connection class responsible for transport between client and beanstalkd server.
+
+_**Parameters:**_  
+* host`string` _[optional, default: 127.0.0.1]_ - can be a host, or the path to a unix domain socket
+* port`int` _[optional, default: 11300]_ - port to connect, -1 for sockets
+* connectionTimeout`int` _[optional, default: 2]_ - connection timeout in seconds, 0 means unlimited
+* persistent`bool` _[optional, default: false]_ - whether to use persistent connection or not. If `true` - connection will not be closed with destruction of Connection instance
+
+_**Throws:**_  
+`xobotyi\beansclient\Exception\Connection` - on inability to open/close connection or read/write attempts on closed connection
+`xobotyi\beansclient\Exception\Socket` - on inability to read/write from(to) the socket
+
+_**Example:**_  
+```php
+use xobotyi\beansclient\Connection;
+
+$socket = new Connection(); // defaults
+$socket = new Connection('/tmp/beanstalkd.sock', -1); // unix domain socket.
+```
+
+#### `Serializer`
+Beanstalkd job's payload can be only a string, so if we want to use non-string payload we have to serialize it.
+`Serializer` is an interface that requires only 2 methods: `serialize(mixed $data):string` and `unserialize(string $str):mixed`  
+
+Beansclient provides JSON serializer out of the box, but you can use any serializer you want, just implement the `Serializer` interface.
+```php
+use xobotyi\beansclient\BeansClient;
+use xobotyi\beansclient\Serializer\Json;
+
+$client = new BeansClient(new Connection(), new Json());
+$client->getSerializer(); //  instance of \xobotyi\beansclient\Serializer\Json
+
+#or
+
+$client = new BeansClient(new Connection(), new Json());
+$beansClient->setSerializer(new Json())
+            ->getSerializer(); //  instance of \xobotyi\beansclient\Serializer\Json
+```
+If you will not provide serializer with second parameter of `BeansClient` constructor.
+
+### Job commands
 -----
 #### `put($payload[, int $priority[, int $delay[, int $ttr]]])`
 Inserts a job into the client's currently used tube (see the "useTube")  
@@ -120,14 +164,14 @@ _**Return value:**_
 `ARRAY`  
 * 'id'`int` - id of reserved job;
 * 'payload'`mixed` - payload of reserved job.  
-If BeansClient was initialised with encoder - payload will be decoded automatically, otherwise payload is always of type `string`.
+If BeansClient was initialised with serializer - payload will be decoded automatically, otherwise payload is always of type `string`.
 
 `NULL` if there is no ready jobs in queue  
 
 _**Example:**_  
 ```php
 $client->reserve(); // ['id'=>1, 'payload'=>'myAwesomePayload']
-# or, if we use payload encoder 
+# or, if we use payload serializer 
 $client->reserve(); // [id=>2, 'payload'=>['it'=>'can be any', 'thing']]
 ```
 
@@ -217,7 +261,7 @@ $client->kickJob(3); // false
 
 
   
-### Tubes
+### Tube commands
 -----
 #### `listTubeUsed()`
 Returns the tube currently being used by the client.  
@@ -298,7 +342,7 @@ $client->ignoreTube('awesomeTube')
 
 
   
-### Stats
+### Stats commands
 -----
 #### `stats()`
 Gives statistical information about the system as a whole.  

@@ -9,10 +9,9 @@
 
     use PHPUnit\Framework\TestCase;
     use xobotyi\beansclient\Command\Put;
-    use xobotyi\beansclient\Encoder\Json;
-    use xobotyi\beansclient\Exception\Client;
     use xobotyi\beansclient\Exception\Command;
     use xobotyi\beansclient\Exception\Server;
+    use xobotyi\beansclient\Serializer\Json;
 
     class PutTest extends TestCase
     {
@@ -117,7 +116,7 @@
             self::assertEquals([], $client->put('test', Put::MAX_PRIORITY + 1));
         }
 
-        // test if payload is non-string value and encoder is not set
+        // test if payload is non-string value and serializer is not set
         public
         function testPutException8() {
             $conn = $this->getConnection();

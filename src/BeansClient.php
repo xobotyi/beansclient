@@ -20,9 +20,9 @@
         private $connection;
 
         /**
-         * @var Interfaces\Encoder|null
+         * @var Interfaces\Serializer|null
          */
-        private $encoder;
+        private $serializer;
 
         public const CRLF     = "\r\n";
         public const CRLF_LEN = 2;
@@ -33,9 +33,9 @@
         public const DEFAULT_TUBE     = 'default';
 
         public
-        function __construct(Interfaces\Connection $connection, ?Interfaces\Encoder $encoder = null) {
+        function __construct(Interfaces\Connection $connection, ?Interfaces\Serializer $serializer = null) {
             $this->setConnection($connection);
-            $this->setEncoder($encoder);
+            $this->setSerializer($serializer);
         }
 
         public
@@ -54,15 +54,15 @@
         }
 
         public
-        function setEncoder(?Interfaces\Encoder $encoder) :self {
-            $this->encoder = $encoder;
+        function setSerializer(?Interfaces\Serializer $serializer) :self {
+            $this->serializer = $serializer;
 
             return $this;
         }
 
         public
-        function getEncoder() :?Interfaces\Encoder {
-            return $this->encoder;
+        function getSerializer() :?Interfaces\Serializer {
+            return $this->serializer;
         }
 
         public
@@ -109,12 +109,12 @@
         // jobs
         public
         function put($payload, $priority = self::DEFAULT_PRIORITY, int $delay = self::DEFAULT_DELAY, int $ttr = self::DEFAULT_TTR) {
-            return $this->dispatchCommand(new Command\Put($payload, $priority, $delay, $ttr, $this->encoder));
+            return $this->dispatchCommand(new Command\Put($payload, $priority, $delay, $ttr, $this->serializer));
         }
 
         public
         function reserve(?int $timeout = 0) {
-            return $this->dispatchCommand(new Command\Reserve($timeout, $this->encoder));
+            return $this->dispatchCommand(new Command\Reserve($timeout, $this->serializer));
         }
 
         public

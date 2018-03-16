@@ -8,11 +8,11 @@
     namespace xobotyi\beansclient\Interfaces;
 
 
-    interface Encoder
+    interface Serializer
     {
         public
-        function encode($data) :string;
+        function serialize($data) :string;
 
         public
-        function decode(string $str);
+        function unserialize(string $str);
     }

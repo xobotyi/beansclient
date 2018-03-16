@@ -10,7 +10,7 @@
     use PHPUnit\Framework\TestCase;
     use xobotyi\beansclient\Command\Put;
     use xobotyi\beansclient\Command\release;
-    use xobotyi\beansclient\Encoder\Json;
+    use xobotyi\beansclient\Serializer\Json;
     use xobotyi\beansclient\Exception\Client;
     use xobotyi\beansclient\Exception\Command;
     use xobotyi\beansclient\Exception\Server;

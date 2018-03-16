@@ -8,7 +8,7 @@
     namespace xobotyi\beansclient;
 
     use PHPUnit\Framework\TestCase;
-    use xobotyi\beansclient\Encoder\Json;
+    use xobotyi\beansclient\Serializer\Json;
     use xobotyi\beansclient\Exception\Client;
 
     class BeansClientTest extends TestCase
@@ -47,12 +47,12 @@
         public
         function testGetters() :void {
             $conn    = $this->getConnection();
-            $encoder = new Json();
+            $serializer = new Json();
 
-            $client = new BeansClient($conn, $encoder);
+            $client = new BeansClient($conn, $serializer);
 
             self::assertEquals($conn, $client->getConnection());
-            self::assertEquals($encoder, $client->getEncoder());
+            self::assertEquals($serializer, $client->getSerializer());
         }
 
         // test if response suppose to have data, but has to content length header

@@ -8,7 +8,7 @@
     namespace xobotyi\beansclient;
 
     use PHPUnit\Framework\TestCase;
-    use xobotyi\beansclient\Encoder\Json;
+    use xobotyi\beansclient\Serializer\Json;
     use xobotyi\beansclient\Exception\Command;
 
     class ReserveTest extends TestCase

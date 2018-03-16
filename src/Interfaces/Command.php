@@ -67,7 +67,7 @@
         function getPayload();
 
         public
-        function setPayloadEncoder(Encoder $encoder);
+        function setSerializer(Serializer $serialize);
 
         public
         function getCommandStr() :string;
