@@ -69,12 +69,10 @@
                 return false;
             }
 
-            if ($this->fclose($this->socket)) {
-                $this->socket = null;
-            }
-            else {
+            if (!$this->fclose($this->socket)) {
                 throw new Exception\Connection(0, "Unable to close connection");
             }
+            $this->socket = null;
 
             return !$this->isActive();
         }
