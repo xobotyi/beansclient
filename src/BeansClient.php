@@ -99,6 +99,7 @@
          * @param \xobotyi\beansclient\Command\CommandAbstract $cmd
          *
          * @return array|string|int|null
+         * @throws \Exception
          * @throws \xobotyi\beansclient\Exception\Client
          * @throws \xobotyi\beansclient\Exception\Command
          * @throws \xobotyi\beansclient\Exception\Server
@@ -152,6 +153,7 @@
          * @param int $ttr
          *
          * @return array|null
+         * @throws \Exception
          * @throws \xobotyi\beansclient\Exception\Client
          * @throws \xobotyi\beansclient\Exception\Command
          * @throws \xobotyi\beansclient\Exception\Server
@@ -165,6 +167,7 @@
          * @param int|null $timeout
          *
          * @return array|null
+         * @throws \Exception
          * @throws \xobotyi\beansclient\Exception\Client
          * @throws \xobotyi\beansclient\Exception\Command
          * @throws \xobotyi\beansclient\Exception\Server
@@ -178,6 +181,7 @@
          * @param int $jobId
          *
          * @return array|null
+         * @throws \Exception
          * @throws \xobotyi\beansclient\Exception\Client
          * @throws \xobotyi\beansclient\Exception\Command
          * @throws \xobotyi\beansclient\Exception\Server
@@ -193,6 +197,7 @@
          * @param int $delay
          *
          * @return array|null
+         * @throws \Exception
          * @throws \xobotyi\beansclient\Exception\Client
          * @throws \xobotyi\beansclient\Exception\Command
          * @throws \xobotyi\beansclient\Exception\Server
@@ -207,6 +212,7 @@
          * @param int $priority
          *
          * @return array|null
+         * @throws \Exception
          * @throws \xobotyi\beansclient\Exception\Client
          * @throws \xobotyi\beansclient\Exception\Command
          * @throws \xobotyi\beansclient\Exception\Server
@@ -220,6 +226,7 @@
          * @param int $jobId
          *
          * @return array|null
+         * @throws \Exception
          * @throws \xobotyi\beansclient\Exception\Client
          * @throws \xobotyi\beansclient\Exception\Command
          * @throws \xobotyi\beansclient\Exception\Server
@@ -233,6 +240,7 @@
          * @param int $count
          *
          * @return array|null
+         * @throws \Exception
          * @throws \xobotyi\beansclient\Exception\Client
          * @throws \xobotyi\beansclient\Exception\Command
          * @throws \xobotyi\beansclient\Exception\Server
@@ -246,6 +254,7 @@
          * @param int $jobId
          *
          * @return array|null
+         * @throws \Exception
          * @throws \xobotyi\beansclient\Exception\Client
          * @throws \xobotyi\beansclient\Exception\Command
          * @throws \xobotyi\beansclient\Exception\Server
@@ -257,6 +266,7 @@
 
         /**
          * @return array|null
+         * @throws \Exception
          * @throws \xobotyi\beansclient\Exception\Client
          * @throws \xobotyi\beansclient\Exception\Command
          * @throws \xobotyi\beansclient\Exception\Server
@@ -270,6 +280,7 @@
          * @param int $jobId
          *
          * @return array|null
+         * @throws \Exception
          * @throws \xobotyi\beansclient\Exception\Client
          * @throws \xobotyi\beansclient\Exception\Command
          * @throws \xobotyi\beansclient\Exception\Server
@@ -285,6 +296,7 @@
          * @param string $tube
          *
          * @return \xobotyi\beansclient\BeansClient
+         * @throws \Exception
          * @throws \xobotyi\beansclient\Exception\Client
          * @throws \xobotyi\beansclient\Exception\Command
          * @throws \xobotyi\beansclient\Exception\Server
@@ -302,6 +314,7 @@
          * @param string $tube
          *
          * @return \xobotyi\beansclient\BeansClient
+         * @throws \Exception
          * @throws \xobotyi\beansclient\Exception\Client
          * @throws \xobotyi\beansclient\Exception\Command
          * @throws \xobotyi\beansclient\Exception\Server
@@ -317,6 +330,7 @@
          * @param string $tube
          *
          * @return \xobotyi\beansclient\BeansClient
+         * @throws \Exception
          * @throws \xobotyi\beansclient\Exception\Client
          * @throws \xobotyi\beansclient\Exception\Command
          * @throws \xobotyi\beansclient\Exception\Server
@@ -330,6 +344,7 @@
 
         /**
          * @return string
+         * @throws \Exception
          * @throws \xobotyi\beansclient\Exception\Client
          * @throws \xobotyi\beansclient\Exception\Command
          * @throws \xobotyi\beansclient\Exception\Server
@@ -341,6 +356,7 @@
 
         /**
          * @return array
+         * @throws \Exception
          * @throws \xobotyi\beansclient\Exception\Client
          * @throws \xobotyi\beansclient\Exception\Command
          * @throws \xobotyi\beansclient\Exception\Server
@@ -352,6 +368,7 @@
 
         /**
          * @return array
+         * @throws \Exception
          * @throws \xobotyi\beansclient\Exception\Client
          * @throws \xobotyi\beansclient\Exception\Command
          * @throws \xobotyi\beansclient\Exception\Server
@@ -365,6 +382,7 @@
          * @param string $tubeName
          *
          * @return array|null
+         * @throws \Exception
          * @throws \xobotyi\beansclient\Exception\Client
          * @throws \xobotyi\beansclient\Exception\Command
          * @throws \xobotyi\beansclient\Exception\Server
@@ -372,5 +390,19 @@
         public
         function statsTube(string $tubeName) :?array {
             return $this->dispatchCommand(new Command\StatsTube($tubeName));
+        }
+
+        /**
+         * @param $subject
+         *
+         * @return array|null
+         * @throws \Exception
+         * @throws \xobotyi\beansclient\Exception\Client
+         * @throws \xobotyi\beansclient\Exception\Command
+         * @throws \xobotyi\beansclient\Exception\Server
+         */
+        public
+        function peek($subject) {
+            return $this->dispatchCommand(new Command\Peek($subject, $this->serializer));
         }
     }

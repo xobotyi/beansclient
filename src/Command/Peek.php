@@ -12,34 +12,53 @@
     use xobotyi\beansclient\Response;
 
     /**
-     * Class Reserve
+     * Class Peek
      *
      * @package xobotyi\beansclient\Command
      */
-    class Reserve extends CommandAbstract
+    class Peek extends CommandAbstract
     {
-        /**
-         * @var int|null
-         */
-        private $timeout;
+        public const TYPE_ID      = 'id';
+        public const TYPE_READY   = 'ready';
+        public const TYPE_DELAYED = 'delayed';
+        public const TYPE_BURIED  = 'buried';
+
+        private const SUBCOMMANDS = [
+            self::TYPE_READY   => self::PEEK_READY,
+            self::TYPE_DELAYED => self::PEEK_DELAYED,
+            self::TYPE_BURIED  => self::PEEK_BURIED,
+        ];
 
         /**
-         * Reserve constructor.
+         * @var null
+         */
+        private $jobId;
+
+        /**
+         * Peek constructor.
          *
-         * @param int|null                                        $timeout
+         * @param                                                 $subject
          * @param null|\xobotyi\beansclient\Interfaces\Serializer $serializer
          *
          * @throws \xobotyi\beansclient\Exception\Command
          */
         public
-        function __construct(?int $timeout = 0, ?Interfaces\Serializer $serializer = null) {
-            if ($timeout < 0) {
-                throw new Exception\Command('Timeout must be greater or equal than 0');
+        function __construct($subject, ?Interfaces\Serializer $serializer = null) {
+            if (is_numeric($subject)) {
+                if ($subject <= 0) {
+                    throw new Exception\Command('Job id must be a positive integer');
+                }
+
+                $this->commandName = Interfaces\Command::PEEK;
+                $this->jobId       = (int)$subject;
             }
-
-            $this->commandName = Interfaces\Command::RESERVE;
-
-            $this->timeout = $timeout;
+            else if (is_string($subject) && isset(self::SUBCOMMANDS[$subject])) {
+                $this->commandName = self::SUBCOMMANDS[$subject];
+                $this->jobId       = null;
+            }
+            else {
+                throw new Exception\Command("Invalid peek subject [{$subject}]");
+            }
 
             $this->setSerializer($serializer);
         }
@@ -49,7 +68,9 @@
          */
         public
         function getCommandStr() :string {
-            return $this->timeout === null ? $this->commandName : Interfaces\Command::RESERVE_WITH_TIMEOUT . ' ' . $this->timeout;
+            return $this->jobId
+                ? $this->commandName . ' ' . $this->jobId
+                : $this->commandName;
         }
 
         /**
@@ -61,10 +82,10 @@
          */
         public
         function parseResponse(array $responseHeader, ?string $responseStr) :?array {
-            if ($responseHeader[0] === Response::TIMED_OUT) {
+            if ($responseHeader[0] === Response::NOT_FOUND) {
                 return null;
             }
-            else if ($responseHeader[0] !== Response::RESERVED) {
+            else if ($responseHeader[0] !== Response::FOUND) {
                 throw new Exception\Command("Got unexpected status code [${responseHeader[0]}]");
             }
             else if (!$responseStr) {

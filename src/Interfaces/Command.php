@@ -27,6 +27,7 @@
         public const IGNORE               = 'ignore';
         public const PEEK                 = 'peek';
         public const PEEK_READY           = 'peek-ready';
+        public const PEEK_DELAYED         = 'peek-delayed';
         public const PEEK_BURIED          = 'peek-buried';
         public const KICK                 = 'kick';
         public const KICK_JOB             = 'kick-job';
