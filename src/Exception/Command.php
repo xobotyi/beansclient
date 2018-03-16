@@ -8,6 +8,11 @@
     namespace xobotyi\beansclient\Exception;
 
 
+    /**
+     * Class Command
+     *
+     * @package xobotyi\beansclient\Exception
+     */
     class Command extends \Exception
     {
     }

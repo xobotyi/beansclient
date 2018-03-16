@@ -11,18 +11,36 @@
     use xobotyi\beansclient\Interfaces;
     use xobotyi\beansclient\Response;
 
+    /**
+     * Class ListTubeUsed
+     *
+     * @package xobotyi\beansclient\Command
+     */
     class ListTubeUsed extends CommandAbstract
     {
+        /**
+         * ListTubeUsed constructor.
+         */
         public
         function __construct() {
             $this->commandName = Interfaces\Command::LIST_TUBE_USED;
         }
 
+        /**
+         * @return string
+         */
         public
         function getCommandStr() :string {
             return $this->commandName;
         }
 
+        /**
+         * @param array       $responseHeader
+         * @param null|string $responseStr
+         *
+         * @return string
+         * @throws \xobotyi\beansclient\Exception\Command
+         */
         public
         function parseResponse(array $responseHeader, ?string $responseStr) :string {
             if ($responseStr) {

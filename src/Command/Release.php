@@ -11,12 +11,35 @@
     use xobotyi\beansclient\Interfaces;
     use xobotyi\beansclient\Response;
 
+    /**
+     * Class Release
+     *
+     * @package xobotyi\beansclient\Command
+     */
     class Release extends CommandAbstract
     {
+        /**
+         * @var int
+         */
         private $jobId;
+        /**
+         * @var int|float
+         */
         private $priority;
+        /**
+         * @var int
+         */
         private $delay;
 
+        /**
+         * Release constructor.
+         *
+         * @param int $jobId
+         * @param     $priority
+         * @param int $delay
+         *
+         * @throws \xobotyi\beansclient\Exception\Command
+         */
         public
         function __construct(int $jobId, $priority, int $delay) {
             if ($jobId <= 0) {
@@ -39,11 +62,21 @@
             $this->delay    = $delay;
         }
 
+        /**
+         * @return string
+         */
         public
         function getCommandStr() :string {
             return $this->commandName . ' ' . $this->jobId . ' ' . $this->priority . ' ' . $this->delay;
         }
 
+        /**
+         * @param array       $responseHeader
+         * @param null|string $responseStr
+         *
+         * @return null|string
+         * @throws \xobotyi\beansclient\Exception\Command
+         */
         public
         function parseResponse(array $responseHeader, ?string $responseStr) :?string {
             if ($responseStr) {

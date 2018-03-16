@@ -8,6 +8,11 @@
     namespace xobotyi\beansclient;
 
 
+    /**
+     * Class Response
+     *
+     * @package xobotyi\beansclient
+     */
     class Response
     {
         public const OUT_OF_MEMORY   = 'OUT_OF_MEMORY';
@@ -51,6 +56,14 @@
         ];
 
         //ToDo: replace it with any normal YAML parser
+
+        /**
+         * @param string $str
+         * @param bool   $assoc
+         *
+         * @return array|null
+         * @throws \Exception
+         */
         public static
         function YamlParse(string $str, bool $assoc = false) :?array {
             if (!($str = trim($str))) {

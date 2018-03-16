@@ -11,10 +11,25 @@
     use xobotyi\beansclient\Interfaces;
     use xobotyi\beansclient\Response;
 
+    /**
+     * Class Kick
+     *
+     * @package xobotyi\beansclient\Command
+     */
     class Kick extends CommandAbstract
     {
+        /**
+         * @var int
+         */
         private $count;
 
+        /**
+         * Kick constructor.
+         *
+         * @param int $count
+         *
+         * @throws \xobotyi\beansclient\Exception\Command
+         */
         public
         function __construct(int $count) {
             if ($count <= 0) {
@@ -26,11 +41,21 @@
             $this->count = $count;
         }
 
+        /**
+         * @return string
+         */
         public
         function getCommandStr() :string {
             return $this->commandName . ' ' . $this->count;
         }
 
+        /**
+         * @param array       $responseHeader
+         * @param null|string $responseStr
+         *
+         * @return int
+         * @throws \xobotyi\beansclient\Exception\Command
+         */
         public
         function parseResponse(array $responseHeader, ?string $responseStr) :int {
             if ($responseStr) {

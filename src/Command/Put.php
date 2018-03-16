@@ -12,15 +12,40 @@
     use xobotyi\beansclient\Interfaces;
     use xobotyi\beansclient\Response;
 
+    /**
+     * Class Put
+     *
+     * @package xobotyi\beansclient\Command
+     */
     class Put extends CommandAbstract
     {
         public const MAX_PRIORITY                = 4294967295;
         public const MAX_SERIALIZED_PAYLOAD_SIZE = 65536;
 
+        /**
+         * @var int|float
+         */
         private $priority;
+        /**
+         * @var int
+         */
         private $delay;
+        /**
+         * @var int
+         */
         private $ttr;
 
+        /**
+         * Put constructor.
+         *
+         * @param                                                 $payload
+         * @param                                                 $priority
+         * @param int                                             $delay
+         * @param int                                             $ttr
+         * @param null|\xobotyi\beansclient\Interfaces\Serializer $serializer
+         *
+         * @throws \xobotyi\beansclient\Exception\Command
+         */
         public
         function __construct($payload, $priority, int $delay, int $ttr, ?Interfaces\Serializer $serializer = null) {
             if (!is_numeric($priority)) {
@@ -46,6 +71,10 @@
             $this->setSerializer($serializer);
         }
 
+        /**
+         * @return string
+         * @throws \xobotyi\beansclient\Exception\Command
+         */
         public
         function getCommandStr() :string {
             $mainCommand = $this->commandName . ' ' . $this->priority . ' ' . $this->delay . ' ' . $this->ttr . ' ';
@@ -67,6 +96,13 @@
             return $mainCommand . strlen($serializedPayload) . BeansClient::CRLF . $serializedPayload;
         }
 
+        /**
+         * @param array       $responseHeader
+         * @param null|string $responseStr
+         *
+         * @return array|null
+         * @throws \xobotyi\beansclient\Exception\Command
+         */
         public
         function parseResponse(array $responseHeader, ?string $responseStr) :?array {
             if ($responseHeader[0] === Response::JOB_TOO_BIG) {

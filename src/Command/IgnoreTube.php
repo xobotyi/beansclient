@@ -11,10 +11,25 @@
     use xobotyi\beansclient\Interfaces;
     use xobotyi\beansclient\Response;
 
+    /**
+     * Class IgnoreTube
+     *
+     * @package xobotyi\beansclient\Command
+     */
     class IgnoreTube extends CommandAbstract
     {
+        /**
+         * @var string
+         */
         private $tube;
 
+        /**
+         * IgnoreTube constructor.
+         *
+         * @param string $tube
+         *
+         * @throws \xobotyi\beansclient\Exception\Command
+         */
         public
         function __construct(string $tube) {
             if (!($tube = trim($tube))) {
@@ -26,11 +41,21 @@
             $this->tube = $tube;
         }
 
+        /**
+         * @return string
+         */
         public
         function getCommandStr() :string {
             return $this->commandName . ' ' . $this->tube;
         }
 
+        /**
+         * @param array       $responseHeader
+         * @param null|string $responseStr
+         *
+         * @return int
+         * @throws \xobotyi\beansclient\Exception\Command
+         */
         public
         function parseResponse(array $responseHeader, ?string $responseStr) :int {
             if ($responseStr) {

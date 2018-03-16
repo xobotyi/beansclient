@@ -11,11 +11,30 @@
     use xobotyi\beansclient\Interfaces;
     use xobotyi\beansclient\Response;
 
+    /**
+     * Class Bury
+     *
+     * @package xobotyi\beansclient\Command
+     */
     class Bury extends CommandAbstract
     {
+        /**
+         * @var int
+         */
         private $jobId;
+        /**
+         * @var int|float
+         */
         private $priority;
 
+        /**
+         * Bury constructor.
+         *
+         * @param int $jobId
+         * @param     $priority
+         *
+         * @throws \xobotyi\beansclient\Exception\Command
+         */
         public
         function __construct(int $jobId, $priority) {
             if ($jobId <= 0) {
@@ -34,11 +53,21 @@
             $this->priority = $priority;
         }
 
+        /**
+         * @return string
+         */
         public
         function getCommandStr() :string {
             return $this->commandName . ' ' . $this->jobId . ' ' . $this->priority;
         }
 
+        /**
+         * @param array       $responseHeader
+         * @param null|string $responseStr
+         *
+         * @return bool
+         * @throws \xobotyi\beansclient\Exception\Command
+         */
         public
         function parseResponse(array $responseHeader, ?string $responseStr) :bool {
             if ($responseStr) {

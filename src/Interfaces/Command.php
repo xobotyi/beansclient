@@ -8,6 +8,11 @@
     namespace xobotyi\beansclient\Interfaces;
 
 
+    /**
+     * Interface Command
+     *
+     * @package xobotyi\beansclient\Interfaces
+     */
     interface Command
     {
         public const PUT                  = 'put';
@@ -60,18 +65,38 @@
             self::QUIT,
         ];
 
+        /**
+         * @return bool
+         */
         public
         function hasPayload() :bool;
 
+        /**
+         * @return mixed
+         */
         public
         function getPayload();
 
+        /**
+         * @param \xobotyi\beansclient\Interfaces\Serializer $serialize
+         *
+         * @return mixed
+         */
         public
         function setSerializer(Serializer $serialize);
 
+        /**
+         * @return string
+         */
         public
         function getCommandStr() :string;
 
+        /**
+         * @param array       $responseHeader
+         * @param null|string $responseStr
+         *
+         * @return mixed
+         */
         public
         function parseResponse(array $responseHeader, ?string $responseStr);
     }

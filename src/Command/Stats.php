@@ -11,18 +11,37 @@
     use xobotyi\beansclient\Interfaces;
     use xobotyi\beansclient\Response;
 
+    /**
+     * Class Stats
+     *
+     * @package xobotyi\beansclient\Command
+     */
     class Stats extends CommandAbstract
     {
+        /**
+         * Stats constructor.
+         */
         public
         function __construct() {
             $this->commandName = Interfaces\Command::STATS;
         }
 
+        /**
+         * @return string
+         */
         public
         function getCommandStr() :string {
             return $this->commandName;
         }
 
+        /**
+         * @param array       $responseHeader
+         * @param null|string $responseStr
+         *
+         * @return array
+         * @throws \Exception
+         * @throws \xobotyi\beansclient\Exception\Command
+         */
         public
         function parseResponse(array $responseHeader, ?string $responseStr) :array {
             if ($responseHeader[0] !== Response::OK) {

@@ -11,10 +11,25 @@
     use xobotyi\beansclient\Interfaces;
     use xobotyi\beansclient\Response;
 
+    /**
+     * Class StatsTube
+     *
+     * @package xobotyi\beansclient\Command
+     */
     class StatsTube extends CommandAbstract
     {
+        /**
+         * @var string
+         */
         private $tube;
 
+        /**
+         * StatsTube constructor.
+         *
+         * @param string $tube
+         *
+         * @throws \xobotyi\beansclient\Exception\Command
+         */
         public
         function __construct(string $tube) {
             if (!($tube = trim($tube))) {
@@ -26,11 +41,22 @@
             $this->tube = $tube;
         }
 
+        /**
+         * @return string
+         */
         public
         function getCommandStr() :string {
             return $this->commandName . ' ' . $this->tube;
         }
 
+        /**
+         * @param array       $responseHeader
+         * @param null|string $responseStr
+         *
+         * @return array|null
+         * @throws \Exception
+         * @throws \xobotyi\beansclient\Exception\Command
+         */
         public
         function parseResponse(array $responseHeader, ?string $responseStr) :?array {
             if ($responseHeader[0] === Response::NOT_FOUND) {

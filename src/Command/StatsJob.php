@@ -11,10 +11,25 @@
     use xobotyi\beansclient\Interfaces;
     use xobotyi\beansclient\Response;
 
+    /**
+     * Class StatsJob
+     *
+     * @package xobotyi\beansclient\Command
+     */
     class StatsJob extends CommandAbstract
     {
+        /**
+         * @var int
+         */
         private $jobId;
 
+        /**
+         * StatsJob constructor.
+         *
+         * @param int $jobId
+         *
+         * @throws \xobotyi\beansclient\Exception\Command
+         */
         public
         function __construct(int $jobId) {
             if ($jobId <= 0) {
@@ -26,11 +41,22 @@
             $this->jobId = $jobId;
         }
 
+        /**
+         * @return string
+         */
         public
         function getCommandStr() :string {
             return $this->commandName . ' ' . $this->jobId;
         }
 
+        /**
+         * @param array       $responseHeader
+         * @param null|string $responseStr
+         *
+         * @return array|null
+         * @throws \Exception
+         * @throws \xobotyi\beansclient\Exception\Command
+         */
         public
         function parseResponse(array $responseHeader, ?string $responseStr) :?array {
             if ($responseHeader[0] === Response::NOT_FOUND) {

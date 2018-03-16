@@ -8,6 +8,11 @@
     namespace xobotyi\beansclient\Exception;
 
 
+    /**
+     * Class Client
+     *
+     * @package xobotyi\beansclient\Exception
+     */
     class Client extends \Exception
     {
     }

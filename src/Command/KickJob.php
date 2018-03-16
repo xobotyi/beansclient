@@ -11,10 +11,25 @@
     use xobotyi\beansclient\Interfaces;
     use xobotyi\beansclient\Response;
 
+    /**
+     * Class KickJob
+     *
+     * @package xobotyi\beansclient\Command
+     */
     class KickJob extends CommandAbstract
     {
+        /**
+         * @var int
+         */
         private $jobId;
 
+        /**
+         * KickJob constructor.
+         *
+         * @param int $jobId
+         *
+         * @throws \xobotyi\beansclient\Exception\Command
+         */
         public
         function __construct(int $jobId) {
             if ($jobId <= 0) {
@@ -26,11 +41,21 @@
             $this->jobId = $jobId;
         }
 
+        /**
+         * @return string
+         */
         public
         function getCommandStr() :string {
             return $this->commandName . ' ' . $this->jobId;
         }
 
+        /**
+         * @param array       $responseHeader
+         * @param null|string $responseStr
+         *
+         * @return bool
+         * @throws \xobotyi\beansclient\Exception\Command
+         */
         public
         function parseResponse(array $responseHeader, ?string $responseStr) :bool {
             if ($responseStr) {

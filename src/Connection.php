@@ -8,6 +8,11 @@
     namespace xobotyi\beansclient;
 
 
+    /**
+     * Class Connection
+     *
+     * @package xobotyi\beansclient
+     */
     class Connection extends SocketFunctions implements Interfaces\Connection
     {
         const SOCK_CONNECTION_TIMEOUT = 1;
@@ -49,6 +54,9 @@
             $this->setReadTimeout($this->socket, self::SOCK_READ_TIMEOUT);
         }
 
+        /**
+         * @throws \xobotyi\beansclient\Exception\Connection
+         */
         public
         function __destruct() {
             if (!$this->persistent) {
