@@ -90,7 +90,7 @@
         return $res;
     }
 
-    function stream_set_timeout($stream, $seconds, $microseconds = null) { }
+    function stream_set_timeout($stream, $seconds, $microseconds = null) { return true; }
 
     use PHPUnit\Framework\TestCase;
 
