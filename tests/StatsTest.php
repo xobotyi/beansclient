@@ -16,8 +16,7 @@
         const PORT    = 11300;
         const TIMEOUT = 2;
 
-        public
-        function testStats() :void {
+        public function testStats() :void {
             $conn = $this->getConnection();
 
             $conn->method('readln')
@@ -33,8 +32,7 @@
         }
 
         // test if response has wrong status name
-        public
-        function testReserveException1() :void {
+        public function testReserveException1() :void {
             $conn = $this->getConnection();
 
             $conn->method('readln')
@@ -47,8 +45,7 @@
         }
 
         // test if response has no data in
-        public
-        function testReserveException2() :void {
+        public function testReserveException2() :void {
             $conn = $this->getConnection();
 
             $conn->method('readln')
@@ -64,8 +61,7 @@
             $client->stats();
         }
 
-        private
-        function getConnection(bool $active = true) {
+        private function getConnection(bool $active = true) {
             $conn = $this->getMockBuilder('\xobotyi\beansclient\Connection')
                          ->disableOriginalConstructor()
                          ->getMock();

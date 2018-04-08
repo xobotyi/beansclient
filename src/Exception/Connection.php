@@ -21,8 +21,7 @@
          * @param int    $errNo
          * @param string $errStr
          */
-        public
-        function __construct(int $errNo, string $errStr) {
+        public function __construct(int $errNo, string $errStr) {
             parent::__construct("Connection error {$errNo}: {$errStr}");
         }
     }

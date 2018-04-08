@@ -17,16 +17,14 @@
         const PORT    = 11300;
         const TIMEOUT = 2;
 
-        public
-        function testInactiveConnectionException1() :void {
+        public function testInactiveConnectionException1() :void {
             $connInactive = $this->getConnection(false);
 
             $this->expectException(Client::class);
             $client = new BeansClient($connInactive);
         }
 
-        public
-        function testInactiveConnectionException2() :void {
+        public function testInactiveConnectionException2() :void {
             $connInactive = $this->getConnection(false);
 
             $connActive = $this->getConnection(true);
@@ -36,16 +34,14 @@
             $client->setConnection($connInactive);
         }
 
-        public
-        function testActiveConnectionException() :void {
+        public function testActiveConnectionException() :void {
             $connActive = $this->getConnection(true);
             $client     = new BeansClient($connActive);
 
             self::assertEquals($connActive, $client->getConnection());
         }
 
-        public
-        function testGetters() :void {
+        public function testGetters() :void {
             $conn    = $this->getConnection();
             $serializer = new Json();
 
@@ -56,8 +52,7 @@
         }
 
         // test if response suppose to have data, but has to content length header
-        public
-        function testException() :void {
+        public function testException() :void {
             $conn = $this->getConnection();
             $conn->method('readln')
                  ->will($this->returnValue("OK"));
@@ -69,8 +64,7 @@
         }
 
         // test if response has no or incorrect CRLF after data
-        public
-        function testException2() :void {
+        public function testException2() :void {
             $conn = $this->getConnection();
 
             $conn->method('readln')
@@ -86,8 +80,7 @@
             $client->release(13);
         }
 
-        private
-        function getConnection(bool $active = true) {
+        private function getConnection(bool $active = true) {
             $conn = $this->getMockBuilder('\xobotyi\beansclient\Connection')
                          ->disableOriginalConstructor()
                          ->getMock();

@@ -31,8 +31,7 @@
          *
          * @throws \xobotyi\beansclient\Exception\Command
          */
-        public
-        function __construct(?int $timeout = 0, ?Interfaces\Serializer $serializer = null) {
+        public function __construct(?int $timeout = 0, ?Interfaces\Serializer $serializer = null) {
             if ($timeout < 0) {
                 throw new Exception\Command('Timeout must be greater or equal than 0');
             }
@@ -47,8 +46,7 @@
         /**
          * @return string
          */
-        public
-        function getCommandStr() :string {
+        public function getCommandStr() :string {
             return $this->timeout === null ? $this->commandName : Interfaces\Command::RESERVE_WITH_TIMEOUT . ' ' . $this->timeout;
         }
 
@@ -59,8 +57,7 @@
          * @return array|null
          * @throws \xobotyi\beansclient\Exception\Command
          */
-        public
-        function parseResponse(array $responseHeader, ?string $responseStr) :?array {
+        public function parseResponse(array $responseHeader, ?string $responseStr) :?array {
             if ($responseHeader[0] === Response::TIMED_OUT) {
                 return null;
             }

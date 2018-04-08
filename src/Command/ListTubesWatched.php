@@ -19,16 +19,14 @@
         /**
          * ListTubesWatched constructor.
          */
-        public
-        function __construct() {
+        public function __construct() {
             $this->commandName = Interfaces\Command::LIST_TUBES_WATCHED;
         }
 
         /**
          * @return string
          */
-        public
-        function getCommandStr() :string {
+        public function getCommandStr() :string {
             return $this->commandName;
         }
     }

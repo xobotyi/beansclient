@@ -12,7 +12,7 @@
     use xobotyi\beansclient\Serializer\Json;
     use xobotyi\beansclient\Exception\Client;
     use xobotyi\beansclient\Exception\Command;
-    use xobotyi\beansclient\Exception\Server;
+    use xobotyi\beansclient\Exception\Job;
 
     class ListTubeUsedTest extends TestCase
     {
@@ -20,8 +20,7 @@
         const PORT    = 11300;
         const TIMEOUT = 2;
 
-        public
-        function testListTubeUsed() :void {
+        public function testListTubeUsed() :void {
             $conn = $this->getConnection();
 
             $conn->method('readln')
@@ -33,8 +32,7 @@
         }
 
         // test if tube name in response is missing
-        public
-        function testListTubeUsedException1() :void {
+        public function testListTubeUsedException1() :void {
             $conn = $this->getConnection();
 
             $conn->method('readln')
@@ -47,8 +45,7 @@
         }
 
         // test if response has wrong status name
-        public
-        function testListTubeUsedException2() :void {
+        public function testListTubeUsedException2() :void {
             $conn = $this->getConnection();
 
             $conn->method('readln')
@@ -61,8 +58,7 @@
         }
 
         // test if response has data in
-        public
-        function testListTubeUsedException3() :void {
+        public function testListTubeUsedException3() :void {
             $conn = $this->getConnection();
 
             $conn->method('readln')
@@ -78,8 +74,7 @@
             $client->listTubeUsed();
         }
 
-        private
-        function getConnection(bool $active = true) {
+        private function getConnection(bool $active = true) {
             $conn = $this->getMockBuilder('\xobotyi\beansclient\Connection')
                          ->disableOriginalConstructor()
                          ->getMock();

@@ -30,8 +30,7 @@
          *
          * @throws \xobotyi\beansclient\Exception\Command
          */
-        public
-        function __construct(string $tube) {
+        public function __construct(string $tube) {
             if (!($tube = trim($tube))) {
                 throw new Exception\Command('Tube name must be a valuable string');
             }
@@ -44,8 +43,7 @@
         /**
          * @return string
          */
-        public
-        function getCommandStr() :string {
+        public function getCommandStr() :string {
             return $this->commandName . ' ' . $this->tube;
         }
 
@@ -56,8 +54,7 @@
          * @return string
          * @throws \xobotyi\beansclient\Exception\Command
          */
-        public
-        function parseResponse(array $responseHeader, ?string $responseStr) :string {
+        public function parseResponse(array $responseHeader, ?string $responseStr) :string {
             if ($responseStr) {
                 throw new Exception\Command("Unexpected response data passed");
             }

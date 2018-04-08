@@ -30,8 +30,7 @@
          *
          * @throws \xobotyi\beansclient\Exception\Command
          */
-        public
-        function __construct(int $count) {
+        public function __construct(int $count) {
             if ($count <= 0) {
                 throw new Exception\Command('Kick count must be a positive integer');
             }
@@ -44,8 +43,7 @@
         /**
          * @return string
          */
-        public
-        function getCommandStr() :string {
+        public function getCommandStr() :string {
             return $this->commandName . ' ' . $this->count;
         }
 
@@ -56,8 +54,7 @@
          * @return int
          * @throws \xobotyi\beansclient\Exception\Command
          */
-        public
-        function parseResponse(array $responseHeader, ?string $responseStr) :int {
+        public function parseResponse(array $responseHeader, ?string $responseStr) :int {
             if ($responseStr) {
                 throw new Exception\Command("Unexpected response data passed");
             }

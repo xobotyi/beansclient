@@ -16,8 +16,7 @@
         const PORT    = 11300;
         const TIMEOUT = 2;
 
-        public
-        function testKickJob() :void {
+        public function testKickJob() :void {
             $conn = $this->getConnection();
 
             $conn->method('readln')
@@ -31,8 +30,7 @@
         }
 
         // test if response has wrong status name
-        public
-        function testKickJobException1() :void {
+        public function testKickJobException1() :void {
             $conn = $this->getConnection();
 
             $conn->method('readln')
@@ -45,8 +43,7 @@
         }
 
         // test if response has data in
-        public
-        function testKickJobException2() :void {
+        public function testKickJobException2() :void {
             $conn = $this->getConnection();
 
             $conn->method('readln')
@@ -63,8 +60,7 @@
         }
 
         // test if job id <=0
-        public
-        function testKickJobException3() :void {
+        public function testKickJobException3() :void {
             $conn = $this->getConnection();
 
             $conn->method('readln')
@@ -76,8 +72,7 @@
             $client->kickJob(0);
         }
 
-        private
-        function getConnection(bool $active = true) {
+        private function getConnection(bool $active = true) {
             $conn = $this->getMockBuilder('\xobotyi\beansclient\Connection')
                          ->disableOriginalConstructor()
                          ->getMock();

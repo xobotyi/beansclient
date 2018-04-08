@@ -12,7 +12,7 @@
     use xobotyi\beansclient\Serializer\Json;
     use xobotyi\beansclient\Exception\Client;
     use xobotyi\beansclient\Exception\Command;
-    use xobotyi\beansclient\Exception\Server;
+    use xobotyi\beansclient\Exception\Job;
 
     class ListTubesTest extends TestCase
     {
@@ -20,8 +20,7 @@
         const PORT    = 11300;
         const TIMEOUT = 2;
 
-        public
-        function testListTubes() :void {
+        public function testListTubes() :void {
             $conn = $this->getConnection();
 
             $conn->method('readln')
@@ -36,8 +35,7 @@
             self::assertEquals(['default', 'test1'], $client->listTubes());
         }
 
-        private
-        function getConnection(bool $active = true) {
+        private function getConnection(bool $active = true) {
             $conn = $this->getMockBuilder('\xobotyi\beansclient\Connection')
                          ->disableOriginalConstructor()
                          ->getMock();

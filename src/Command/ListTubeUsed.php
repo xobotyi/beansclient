@@ -21,16 +21,14 @@
         /**
          * ListTubeUsed constructor.
          */
-        public
-        function __construct() {
+        public function __construct() {
             $this->commandName = Interfaces\Command::LIST_TUBE_USED;
         }
 
         /**
          * @return string
          */
-        public
-        function getCommandStr() :string {
+        public function getCommandStr() :string {
             return $this->commandName;
         }
 
@@ -41,8 +39,7 @@
          * @return string
          * @throws \xobotyi\beansclient\Exception\Command
          */
-        public
-        function parseResponse(array $responseHeader, ?string $responseStr) :string {
+        public function parseResponse(array $responseHeader, ?string $responseStr) :string {
             if ($responseStr) {
                 throw new Command("Unexpected response data passed");
             }

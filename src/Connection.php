@@ -36,8 +36,7 @@
          *
          * @throws Exception\Connection
          */
-        public
-        function __construct(string $host = 'localhost', int $port = 11300, int $connectionTimeout = null, bool $persistent = false) {
+        public function __construct(string $host = 'localhost', int $port = 11300, int $connectionTimeout = null, bool $persistent = false) {
             $this->host       = $host;
             $this->port       = $port;
             $this->timeout    = $connectionTimeout === null ? self::SOCK_CONNECTION_TIMEOUT : $connectionTimeout;
@@ -57,8 +56,7 @@
         /**
          * @throws \xobotyi\beansclient\Exception\Connection
          */
-        public
-        function __destruct() {
+        public function __destruct() {
             if (!$this->persistent) {
                 if (!$this->fclose($this->socket)) {
                     throw new Exception\Connection(0, "Unable to close connection");
@@ -71,8 +69,7 @@
         /**
          *  Disconnect the socket
          */
-        public
-        function disconnect() :bool {
+        public function disconnect() :bool {
             if (!$this->socket) {
                 return false;
             }
@@ -88,40 +85,35 @@
         /**
          * @return string
          */
-        public
-        function getHost() :string {
+        public function getHost() :string {
             return $this->host;
         }
 
         /**
          * @return int
          */
-        public
-        function getPort() :int {
+        public function getPort() :int {
             return $this->port;
         }
 
         /**
          * @return int
          */
-        public
-        function getTimeout() :int {
+        public function getTimeout() :int {
             return $this->timeout;
         }
 
         /**
          * @return bool
          */
-        public
-        function isPersistent() :bool {
+        public function isPersistent() :bool {
             return $this->persistent;
         }
 
         /**
          * @return bool
          */
-        public
-        function isActive() :bool {
+        public function isActive() :bool {
             return !!$this->socket;
         }
 
@@ -133,8 +125,7 @@
          * @throws \xobotyi\beansclient\Exception\Connection
          * @throws \xobotyi\beansclient\Exception\Socket
          */
-        public
-        function write(string $str) :void {
+        public function write(string $str) :void {
             if (!$this->socket) {
                 throw new Exception\Connection(0, "Unable to write into closed connection");
             }
@@ -157,8 +148,7 @@
          * @throws \xobotyi\beansclient\Exception\Connection
          * @throws \xobotyi\beansclient\Exception\Socket
          */
-        public
-        function read(int $length) :string {
+        public function read(int $length) :string {
             if (!$this->socket) {
                 throw new Exception\Connection(0, "Unable to read from closed connection");
             }
@@ -189,8 +179,7 @@
          * @throws \xobotyi\beansclient\Exception\Connection
          * @throws \xobotyi\beansclient\Exception\Socket
          */
-        public
-        function readln(int $length = null) :string {
+        public function readln(int $length = null) :string {
             if (!$this->socket) {
                 throw new Exception\Connection(0, "Unable to read from closed connection");
             }

@@ -17,8 +17,7 @@
         const PORT    = 11300;
         const TIMEOUT = 2;
 
-        public
-        function testUseTube() :void {
+        public function testUseTube() :void {
             $conn = $this->getConnection();
 
             $conn->method('readln')
@@ -32,8 +31,7 @@
         }
 
         // test if response has another tube name
-        public
-        function testUseTubeException() :void {
+        public function testUseTubeException() :void {
             $conn = $this->getConnection();
 
             $conn->method('readln')
@@ -47,8 +45,7 @@
         }
 
         // test if response has wrong status name
-        public
-        function testUseTubeException1() :void {
+        public function testUseTubeException1() :void {
             $conn = $this->getConnection();
 
             $conn->method('readln')
@@ -61,8 +58,7 @@
         }
 
         // test if response has data in
-        public
-        function testUseTubeException2() :void {
+        public function testUseTubeException2() :void {
             $conn = $this->getConnection();
 
             $conn->method('readln')
@@ -79,8 +75,7 @@
         }
 
         // test if tube name is empty
-        public
-        function testUseTubeException3() :void {
+        public function testUseTubeException3() :void {
             $conn = $this->getConnection();
 
             $conn->method('readln')
@@ -92,8 +87,7 @@
             $client->useTube('   ');
         }
 
-        private
-        function getConnection(bool $active = true) {
+        private function getConnection(bool $active = true) {
             $conn = $this->getMockBuilder('\xobotyi\beansclient\Connection')
                          ->disableOriginalConstructor()
                          ->getMock();

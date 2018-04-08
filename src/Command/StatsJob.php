@@ -30,8 +30,7 @@
          *
          * @throws \xobotyi\beansclient\Exception\Command
          */
-        public
-        function __construct(int $jobId) {
+        public function __construct(int $jobId) {
             if ($jobId <= 0) {
                 throw new Exception\Command('Job id must be a positive integer');
             }
@@ -44,8 +43,7 @@
         /**
          * @return string
          */
-        public
-        function getCommandStr() :string {
+        public function getCommandStr() :string {
             return $this->commandName . ' ' . $this->jobId;
         }
 
@@ -57,8 +55,7 @@
          * @throws \Exception
          * @throws \xobotyi\beansclient\Exception\Command
          */
-        public
-        function parseResponse(array $responseHeader, ?string $responseStr) :?array {
+        public function parseResponse(array $responseHeader, ?string $responseStr) :?array {
             if ($responseHeader[0] === Response::NOT_FOUND) {
                 return null;
             }

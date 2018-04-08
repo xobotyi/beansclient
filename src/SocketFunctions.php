@@ -24,8 +24,7 @@
          *
          * @return bool|null|resource
          */
-        public
-        function fsockopen(string $hostName, int $port = -1, &$errNo = null, &$errStr = null, int $timeout = null) {
+        public function fsockopen(string $hostName, int $port = -1, &$errNo = null, &$errStr = null, int $timeout = null) {
             return @fsockopen($hostName, $port, $errNo, $errStr, $timeout);
         }
 
@@ -38,8 +37,7 @@
          *
          * @return bool|null|resource
          */
-        public
-        function pfsockopen(string $hostName, int $port = -1, &$errNo = null, &$errStr = null, int $timeout = null) {
+        public function pfsockopen(string $hostName, int $port = -1, &$errNo = null, &$errStr = null, int $timeout = null) {
             return @pfsockopen($hostName, $port, $errNo, $errStr, $timeout);
         }
 
@@ -48,8 +46,7 @@
          *
          * @return bool
          */
-        public
-        function fclose($stream) :bool {
+        public function fclose($stream) :bool {
             return fclose($stream);
         }
 
@@ -58,8 +55,7 @@
          *
          * @return bool
          */
-        public
-        function feof($stream) :bool {
+        public function feof($stream) :bool {
             return feof($stream);
         }
 
@@ -69,8 +65,7 @@
          *
          * @return bool|string
          */
-        public
-        function fgets($stream, int $length = null) {
+        public function fgets($stream, int $length = null) {
             if ($length) {
                 return fgets($stream, $length);
             }
@@ -84,8 +79,7 @@
          *
          * @return bool|string
          */
-        public
-        function fread($stream, int $length) {
+        public function fread($stream, int $length) {
             return fread($stream, $length);
         }
 
@@ -96,8 +90,7 @@
          *
          * @return bool|int|null
          */
-        public
-        function fwrite($stream, string $text, int $length = null) {
+        public function fwrite($stream, string $text, int $length = null) {
             if ($length) {
                 return fwrite($stream, $text, $length);
             }
@@ -112,8 +105,7 @@
          *
          * @return bool
          */
-        public
-        function setReadTimeout($stream, int $seconds, int $microseconds = 0) :bool {
+        public function setReadTimeout($stream, int $seconds, int $microseconds = 0) :bool {
             return stream_set_timeout($stream, $seconds, $microseconds);
         }
     }

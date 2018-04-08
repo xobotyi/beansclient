@@ -64,8 +64,7 @@
          * @return array|null
          * @throws \Exception
          */
-        public static
-        function YamlParse(string $str, bool $assoc = false) :?array {
+        public static function YamlParse(string $str, bool $assoc = false) :?array {
             if (!($str = trim($str))) {
                 return null;
             }

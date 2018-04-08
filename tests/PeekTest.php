@@ -18,8 +18,7 @@
         const PORT    = 11300;
         const TIMEOUT = 2;
 
-        public
-        function testPeek() :void {
+        public function testPeek() :void {
             $conn = $this->getConnection();
 
             $conn->method('readln')
@@ -39,8 +38,7 @@
         }
 
         // test if response has wrong status name
-        public
-        function testPeekException1() :void {
+        public function testPeekException1() :void {
             $conn = $this->getConnection();
 
             $conn->method('readln')
@@ -53,8 +51,7 @@
         }
 
         // test if response has no data in
-        public
-        function testPeekException2() :void {
+        public function testPeekException2() :void {
             $conn = $this->getConnection();
 
             $conn->method('readln')
@@ -71,8 +68,7 @@
         }
 
         // test if jobId <= 0
-        public
-        function testPeekException3() :void {
+        public function testPeekException3() :void {
             $conn = $this->getConnection();
 
             $conn->method('readln')
@@ -86,8 +82,7 @@
 
 
         // test if subject is unknown <= 0
-        public
-        function testPeekException4() :void {
+        public function testPeekException4() :void {
             $conn = $this->getConnection();
 
             $client = new BeansClient($conn);
@@ -96,8 +91,7 @@
             $client->peek('stuff');
         }
 
-        private
-        function getConnection(bool $active = true) {
+        private function getConnection(bool $active = true) {
             $conn = $this->getMockBuilder('\xobotyi\beansclient\Connection')
                          ->disableOriginalConstructor()
                          ->getMock();

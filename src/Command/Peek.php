@@ -42,8 +42,7 @@
          *
          * @throws \xobotyi\beansclient\Exception\Command
          */
-        public
-        function __construct($subject, ?Interfaces\Serializer $serializer = null) {
+        public function __construct($subject, ?Interfaces\Serializer $serializer = null) {
             if (is_numeric($subject)) {
                 if ($subject <= 0) {
                     throw new Exception\Command('Job id must be a positive integer');
@@ -66,8 +65,7 @@
         /**
          * @return string
          */
-        public
-        function getCommandStr() :string {
+        public function getCommandStr() :string {
             return $this->jobId
                 ? $this->commandName . ' ' . $this->jobId
                 : $this->commandName;
@@ -80,8 +78,7 @@
          * @return array|null
          * @throws \xobotyi\beansclient\Exception\Command
          */
-        public
-        function parseResponse(array $responseHeader, ?string $responseStr) :?array {
+        public function parseResponse(array $responseHeader, ?string $responseStr) :?array {
             if ($responseHeader[0] === Response::NOT_FOUND) {
                 return null;
             }

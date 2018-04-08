@@ -40,8 +40,7 @@
          *
          * @throws \xobotyi\beansclient\Exception\Command
          */
-        public
-        function __construct(int $jobId, $priority, int $delay) {
+        public function __construct(int $jobId, $priority, int $delay) {
             if ($jobId <= 0) {
                 throw new Exception\Command('Job id must be a positive integer');
             }
@@ -65,8 +64,7 @@
         /**
          * @return string
          */
-        public
-        function getCommandStr() :string {
+        public function getCommandStr() :string {
             return $this->commandName . ' ' . $this->jobId . ' ' . $this->priority . ' ' . $this->delay;
         }
 
@@ -77,8 +75,7 @@
          * @return null|string
          * @throws \xobotyi\beansclient\Exception\Command
          */
-        public
-        function parseResponse(array $responseHeader, ?string $responseStr) :?string {
+        public function parseResponse(array $responseHeader, ?string $responseStr) :?string {
             if ($responseStr) {
                 throw new Exception\Command("Unexpected response data passed");
             }

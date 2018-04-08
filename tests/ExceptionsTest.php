@@ -11,36 +11,31 @@
 
     class ExceptionsTest extends TestCase
     {
-        public
-        function testConnectionException1() {
+        public function testConnectionException1() {
             $this->expectException(Exception\Connection::class);
             $this->expectExceptionMessage("Connection error 123: test");
             throw new Exception\Connection(123, 'test');
         }
 
-        public
-        function testClientException1() {
+        public function testClientException1() {
             $this->expectException(Exception\Client::class);
             $this->expectExceptionMessage("test");
             throw new Exception\Client('test');
         }
 
-        public
-        function testServerException1() {
-            $this->expectException(Exception\Server::class);
+        public function testServerException1() {
+            $this->expectException(Exception\Job::class);
             $this->expectExceptionMessage("test");
-            throw new Exception\Server('test');
+            throw new Exception\Job('test');
         }
 
-        public
-        function testSocketException1() {
+        public function testSocketException1() {
             $this->expectException(Exception\Socket::class);
             $this->expectExceptionMessage("test");
             throw new Exception\Socket('test');
         }
 
-        public
-        function testCommandException1() {
+        public function testCommandException1() {
             $this->expectException(Exception\Command::class);
             $this->expectExceptionMessage("test");
             throw new Exception\Command('test');

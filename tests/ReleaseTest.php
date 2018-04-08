@@ -13,7 +13,7 @@
     use xobotyi\beansclient\Serializer\Json;
     use xobotyi\beansclient\Exception\Client;
     use xobotyi\beansclient\Exception\Command;
-    use xobotyi\beansclient\Exception\Server;
+    use xobotyi\beansclient\Exception\Job;
 
     class ReleaseTest extends TestCase
     {
@@ -21,8 +21,7 @@
         const PORT    = 11300;
         const TIMEOUT = 2;
 
-        public
-        function testRelease() :void {
+        public function testRelease() :void {
             $conn = $this->getConnection();
 
             $conn->method('readln')
@@ -37,8 +36,7 @@
         }
 
         // test if response has data
-        public
-        function testListTubeUsedException1() :void {
+        public function testListTubeUsedException1() :void {
             $conn = $this->getConnection();
             $conn->method('readln')
                  ->will($this->returnValue("OK 9"));
@@ -53,8 +51,7 @@
         }
 
         // test if response has wrong status name
-        public
-        function testListTubeUsedException2() :void {
+        public function testListTubeUsedException2() :void {
             $conn = $this->getConnection();
             $conn->method('readln')
                  ->will($this->returnValue("STUFF"));
@@ -66,8 +63,7 @@
         }
 
         // test if priority is not a number
-        public
-        function testreleaseException3() {
+        public function testreleaseException3() {
             $conn = $this->getConnection();
             $conn->method('readln')
                  ->will($this->returnValue("RELEASED"));
@@ -78,8 +74,7 @@
         }
 
         // test if priority is less than 0
-        public
-        function testreleaseException4() {
+        public function testreleaseException4() {
             $conn = $this->getConnection();
             $conn->method('readln')
                  ->will($this->returnValue("RELEASED"));
@@ -90,8 +85,7 @@
         }
 
         // test if delay id less than 0
-        public
-        function testreleaseException5() {
+        public function testreleaseException5() {
             $conn = $this->getConnection();
             $conn->method('readln')
                  ->will($this->returnValue("RELEASED"));
@@ -102,8 +96,7 @@
         }
 
         // test if priority is too big
-        public
-        function testreleaseException7() {
+        public function testreleaseException7() {
             $conn = $this->getConnection();
             $conn->method('readln')
                  ->will($this->returnValue("RELEASED"));
@@ -114,8 +107,7 @@
         }
 
         // test if priority is less than 0
-        public
-        function testreleaseException8() {
+        public function testreleaseException8() {
             $conn = $this->getConnection();
             $conn->method('readln')
                  ->will($this->returnValue("RELEASED"));
@@ -126,8 +118,7 @@
         }
 
 
-        private
-        function getConnection(bool $active = true) {
+        private function getConnection(bool $active = true) {
             $conn = $this->getMockBuilder('\xobotyi\beansclient\Connection')
                          ->disableOriginalConstructor()
                          ->getMock();

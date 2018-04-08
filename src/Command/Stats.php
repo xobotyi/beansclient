@@ -21,16 +21,14 @@
         /**
          * Stats constructor.
          */
-        public
-        function __construct() {
+        public function __construct() {
             $this->commandName = Interfaces\Command::STATS;
         }
 
         /**
          * @return string
          */
-        public
-        function getCommandStr() :string {
+        public function getCommandStr() :string {
             return $this->commandName;
         }
 
@@ -42,8 +40,7 @@
          * @throws \Exception
          * @throws \xobotyi\beansclient\Exception\Command
          */
-        public
-        function parseResponse(array $responseHeader, ?string $responseStr) :array {
+        public function parseResponse(array $responseHeader, ?string $responseStr) :array {
             if ($responseHeader[0] !== Response::OK) {
                 throw new Exception\Command("Got unexpected status code [${responseHeader[0]}]");
             }

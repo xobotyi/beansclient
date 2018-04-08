@@ -16,8 +16,7 @@
         const PORT    = 11300;
         const TIMEOUT = 2;
 
-        public
-        function testKick() :void {
+        public function testKick() :void {
             $conn = $this->getConnection();
 
             $conn->method('readln')
@@ -30,8 +29,7 @@
         }
 
         // test if response has wrong status name
-        public
-        function testKickException1() :void {
+        public function testKickException1() :void {
             $conn = $this->getConnection();
 
             $conn->method('readln')
@@ -44,8 +42,7 @@
         }
 
         // test if response has data in
-        public
-        function testKickException2() :void {
+        public function testKickException2() :void {
             $conn = $this->getConnection();
 
             $conn->method('readln')
@@ -62,8 +59,7 @@
         }
 
         // test if jobs count less or equal 0
-        public
-        function testKickException3() :void {
+        public function testKickException3() :void {
             $conn = $this->getConnection();
 
             $conn->method('readln')
