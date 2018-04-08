@@ -157,7 +157,7 @@ class Job
         if (!\array_key_exists($offset, $this->data)) {
             trigger_error("Undefined property: " . self::class . "::\${$offset}");
 
-            return null;
+            return;
         }
 
         if (!$this->data['state'] || ($this->data[$offset] === null && $this->data['state'] !== self::STATE_DELETED)) {
@@ -184,35 +184,35 @@ class Job
      * @return bool
      */
     public function isDeleted() :bool {
-        return $this['state'] === self::STATE_DELETED;
+        return $this->data['state'] === self::STATE_DELETED;
     }
 
     /**
      * @return bool
      */
     public function isDelayed() :bool {
-        return $this['state'] === self::STATE_DELAYED;
+        return $this->data['state'] === self::STATE_DELAYED;
     }
 
     /**
      * @return bool
      */
     public function isReady() :bool {
-        return $this['state'] === self::STATE_READY;
+        return $this->data['state'] === self::STATE_READY;
     }
 
     /**
      * @return bool
      */
     public function isReserved() :bool {
-        return $this['state'] === self::STATE_RESERVED;
+        return $this->data['state'] === self::STATE_RESERVED;
     }
 
     /**
      * @return bool
      */
     public function isBuried() :bool {
-        return $this['state'] === self::STATE_BURIED;
+        return $this->data['state'] === self::STATE_BURIED;
     }
 
     /**
@@ -227,19 +227,21 @@ class Job
                 if ($src === null) {
                     switch ($tgt) {
                         case 'releaseTime':
-                            $this->data['releaseTime'] = $this->data['timeLeft'] ? time() + $this->data['timeLeft'] : 0;
+                            $this->data['releaseTime'] = time() + $this->data['timeLeft'] ?? 0;
                             break;
                     }
                 }
-                else if (is_numeric($this->data[$tgt] = $stats[$src])) {
+                else if (!\array_key_exists($src, $stats)) {
+                    continue;
+                }
+                else if (\is_numeric($this->data[$tgt] = $stats[$src])) {
                     $this->data[$tgt] *= 1;
                 }
             }
         }
         else {
-            foreach (self::STATS_FIELDS as $tgt => $src) {
-                $this->data[$tgt] = null;
-            }
+            $this->clearStats();
+
             foreach (self::PEEK_FIELDS as $tgt => $src) {
                 $this->data[$tgt] = null;
             }
