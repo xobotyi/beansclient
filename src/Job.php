@@ -95,6 +95,10 @@ class Job
         $this->setClient($beansClient);
     }
 
+    public function getClient() :BeansClient {
+        return $this->client;
+    }
+
     public function setClient(BeansClient &$beansClient) {
         if (!$beansClient->getConnection()->isActive()) {
             throw new Exception\Job("Given client has inactive connection");
@@ -103,10 +107,6 @@ class Job
         $this->client = $beansClient;
 
         return $this;
-    }
-
-    public function getClient() :BeansClient {
-        return $this->client;
     }
 
     public function getData() :array {
@@ -147,14 +147,6 @@ class Job
         return $this->data[$offset];
     }
 
-    private function clearStats() :self {
-        foreach (self::STATS_FIELDS as $field) {
-            $this->data[$field] = null;
-        }
-
-        return $this;
-    }
-
     public function isDeleted() :bool {
         return $this['state'] === self::STATE_DELETED;
     }
@@ -175,7 +167,6 @@ class Job
         return $this['state'] === self::STATE_BURIED;
     }
 
-    // commands
     public function stats() :self {
         if ($stats = $this->client->statsJob($this->data['id'])) {
             foreach (self::STATS_FIELDS as $tgt => $src) {
@@ -207,6 +198,8 @@ class Job
 
         return $this;
     }
+
+    // commands
 
     public function peek() :self {
         $job = $this->client->peek($this->data['id']);
@@ -276,6 +269,14 @@ class Job
         }
         else {
             $this->clearStats();
+        }
+
+        return $this;
+    }
+
+    private function clearStats() :self {
+        foreach (self::STATS_FIELDS as $field) {
+            $this->data[$field] = null;
         }
 
         return $this;

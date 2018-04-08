@@ -42,11 +42,10 @@ if ($job) {
     echo "\n<br/>*sleeping for 2 seconds*\n<br/>\n<br/>";
     sleep(2);
     echo "{$job->timeLeft} seconds left till release\n<br/>*sleeping for {$job->timeLeft} seconds\n<br/>\n<br/>";
-    sleep($job->timeLeft+1);
+    sleep($job->timeLeft + 1);
     echo "Current job state is {$job->state}\n<br/>";
 
     $beansClient->delete($job->id);
-
     //echo "And i've done it!\n<br/>";
 }
 else {

@@ -1,18 +1,18 @@
 <?php
-    /**
-     * @Author : a.zinovyev
-     * @Package: beansclient
-     * @License: http://www.opensource.org/licenses/mit-license.php
-     */
+/**
+ * @Author : a.zinovyev
+ * @Package: beansclient
+ * @License: http://www.opensource.org/licenses/mit-license.php
+ */
 
-    namespace xobotyi\beansclient\Exception;
+namespace xobotyi\beansclient\Exception;
 
 
-    /**
-     * Class Client
-     *
-     * @package xobotyi\beansclient\Exception
-     */
-    class Client extends \Exception
-    {
-    }
+/**
+ * Class Client
+ *
+ * @package xobotyi\beansclient\Exception
+ */
+class Client extends \Exception
+{
+}

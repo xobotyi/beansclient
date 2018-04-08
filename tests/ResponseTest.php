@@ -1,38 +1,38 @@
 <?php
-    /**
-     * @Author : a.zinovyev
-     * @Package: beansclient
-     * @License: http://www.opensource.org/licenses/mit-license.php
-     */
+/**
+ * @Author : a.zinovyev
+ * @Package: beansclient
+ * @License: http://www.opensource.org/licenses/mit-license.php
+ */
 
-    namespace xobotyi\beansclient;
+namespace xobotyi\beansclient;
 
-    use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestCase;
 
-    class ResponseTest extends TestCase
-    {
-        public
-        function testYamlParse() :void {
-            self::assertEquals(null, Response::YamlParse(''));
-            self::assertEquals(null, Response::YamlParse('         '));
+class ResponseTest extends TestCase
+{
+    public
+    function testYamlParse() :void {
+        self::assertEquals(null, Response::YamlParse(''));
+        self::assertEquals(null, Response::YamlParse('         '));
 
-            $str = "---";
+        $str = "---";
 
-            self::assertEquals([], Response::YamlParse($str));
-            self::assertEquals([], Response::YamlParse($str, true));
+        self::assertEquals([], Response::YamlParse($str));
+        self::assertEquals([], Response::YamlParse($str, true));
 
-            $str = "---\r\n- a:b\r\na:b";
+        $str = "---\r\n- a:b\r\na:b";
 
-            self::assertEquals(['a:b', 'a:b'], Response::YamlParse($str));
-            self::assertEquals(['a:b', 'a' => 'b'], Response::YamlParse($str, true));
-        }
-
-        public
-        function testYamlParseException() :void {
-
-            $str = "---\r\n-  ";
-
-            $this->expectException(\Exception::class);
-            Response::YamlParse($str, true);
-        }
+        self::assertEquals(['a:b', 'a:b'], Response::YamlParse($str));
+        self::assertEquals(['a:b', 'a' => 'b'], Response::YamlParse($str, true));
     }
+
+    public
+    function testYamlParseException() :void {
+
+        $str = "---\r\n-  ";
+
+        $this->expectException(\Exception::class);
+        Response::YamlParse($str, true);
+    }
+}
