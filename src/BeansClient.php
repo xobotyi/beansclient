@@ -45,8 +45,7 @@
          *
          * @throws \xobotyi\beansclient\Exception\Client
          */
-        public
-        function __construct(Interfaces\Connection $connection, ?Interfaces\Serializer $serializer = null) {
+        public function __construct(Interfaces\Connection $connection, ?Interfaces\Serializer $serializer = null) {
             $this->setConnection($connection);
             $this->setSerializer($serializer);
         }
@@ -57,8 +56,7 @@
          * @return \xobotyi\beansclient\BeansClient
          * @throws \xobotyi\beansclient\Exception\Client
          */
-        public
-        function setConnection(Interfaces\Connection $connection) :self {
+        public function setConnection(Interfaces\Connection $connection) :self {
             if (!$connection->isActive()) {
                 throw new Exception\Client('Given connection is not active');
             }
@@ -70,8 +68,7 @@
         /**
          * @return \xobotyi\beansclient\Interfaces\Connection
          */
-        public
-        function getConnection() :Interfaces\Connection {
+        public function getConnection() :Interfaces\Connection {
             return $this->connection;
         }
 
@@ -80,8 +77,7 @@
          *
          * @return \xobotyi\beansclient\BeansClient
          */
-        public
-        function setSerializer(?Interfaces\Serializer $serializer) :self {
+        public function setSerializer(?Interfaces\Serializer $serializer) :self {
             $this->serializer = $serializer;
 
             return $this;
@@ -90,8 +86,7 @@
         /**
          * @return null|\xobotyi\beansclient\Interfaces\Serializer
          */
-        public
-        function getSerializer() :?Interfaces\Serializer {
+        public function getSerializer() :?Interfaces\Serializer {
             return $this->serializer;
         }
 
@@ -102,10 +97,9 @@
          * @throws \Exception
          * @throws \xobotyi\beansclient\Exception\Client
          * @throws \xobotyi\beansclient\Exception\Command
-         * @throws \xobotyi\beansclient\Exception\Server
+         * @throws \xobotyi\beansclient\Exception\Job
          */
-        public
-        function dispatchCommand(Command\CommandAbstract $cmd) {
+        public function dispatchCommand(Command\CommandAbstract $cmd) {
             $request = $cmd->getCommandStr() . self::CRLF;
 
             $this->connection->write($request);
@@ -114,7 +108,7 @@
 
             // throwing exception if there is an error response
             if (in_array($responseHeader[0], Response::ERROR_RESPONSES)) {
-                throw new Exception\Server("Got {$responseHeader[0]} in response to {$cmd->getCommandStr()}");
+                throw new Exception\Job("Got {$responseHeader[0]} in response to {$cmd->getCommandStr()}");
             }
 
             // if request contains data - read it
@@ -156,10 +150,9 @@
          * @throws \Exception
          * @throws \xobotyi\beansclient\Exception\Client
          * @throws \xobotyi\beansclient\Exception\Command
-         * @throws \xobotyi\beansclient\Exception\Server
+         * @throws \xobotyi\beansclient\Exception\Job
          */
-        public
-        function put($payload, $priority = self::DEFAULT_PRIORITY, int $delay = self::DEFAULT_DELAY, int $ttr = self::DEFAULT_TTR) {
+        public function put($payload, $priority = self::DEFAULT_PRIORITY, int $delay = self::DEFAULT_DELAY, int $ttr = self::DEFAULT_TTR) {
             return $this->dispatchCommand(new Command\Put($payload, $priority, $delay, $ttr, $this->serializer));
         }
 
@@ -170,10 +163,9 @@
          * @throws \Exception
          * @throws \xobotyi\beansclient\Exception\Client
          * @throws \xobotyi\beansclient\Exception\Command
-         * @throws \xobotyi\beansclient\Exception\Server
+         * @throws \xobotyi\beansclient\Exception\Job
          */
-        public
-        function reserve(?int $timeout = 0) {
+        public function reserve(?int $timeout = 0) {
             return $this->dispatchCommand(new Command\Reserve($timeout, $this->serializer));
         }
 
@@ -184,10 +176,9 @@
          * @throws \Exception
          * @throws \xobotyi\beansclient\Exception\Client
          * @throws \xobotyi\beansclient\Exception\Command
-         * @throws \xobotyi\beansclient\Exception\Server
+         * @throws \xobotyi\beansclient\Exception\Job
          */
-        public
-        function delete(int $jobId) {
+        public function delete(int $jobId) {
             return $this->dispatchCommand(new Command\Delete($jobId));
         }
 
@@ -200,10 +191,9 @@
          * @throws \Exception
          * @throws \xobotyi\beansclient\Exception\Client
          * @throws \xobotyi\beansclient\Exception\Command
-         * @throws \xobotyi\beansclient\Exception\Server
+         * @throws \xobotyi\beansclient\Exception\Job
          */
-        public
-        function release(int $jobId, $priority = self::DEFAULT_PRIORITY, int $delay = self::DEFAULT_DELAY) {
+        public function release(int $jobId, $priority = self::DEFAULT_PRIORITY, int $delay = self::DEFAULT_DELAY) {
             return $this->dispatchCommand(new Command\Release($jobId, $priority, $delay));
         }
 
@@ -215,10 +205,9 @@
          * @throws \Exception
          * @throws \xobotyi\beansclient\Exception\Client
          * @throws \xobotyi\beansclient\Exception\Command
-         * @throws \xobotyi\beansclient\Exception\Server
+         * @throws \xobotyi\beansclient\Exception\Job
          */
-        public
-        function bury(int $jobId, $priority = self::DEFAULT_PRIORITY) {
+        public function bury(int $jobId, $priority = self::DEFAULT_PRIORITY) {
             return $this->dispatchCommand(new Command\Bury($jobId, $priority));
         }
 
@@ -229,10 +218,9 @@
          * @throws \Exception
          * @throws \xobotyi\beansclient\Exception\Client
          * @throws \xobotyi\beansclient\Exception\Command
-         * @throws \xobotyi\beansclient\Exception\Server
+         * @throws \xobotyi\beansclient\Exception\Job
          */
-        public
-        function touch(int $jobId) {
+        public function touch(int $jobId) {
             return $this->dispatchCommand(new Command\Touch($jobId));
         }
 
@@ -243,10 +231,9 @@
          * @throws \Exception
          * @throws \xobotyi\beansclient\Exception\Client
          * @throws \xobotyi\beansclient\Exception\Command
-         * @throws \xobotyi\beansclient\Exception\Server
+         * @throws \xobotyi\beansclient\Exception\Job
          */
-        public
-        function kick(int $count) {
+        public function kick(int $count) {
             return $this->dispatchCommand(new Command\Kick($count));
         }
 
@@ -257,10 +244,9 @@
          * @throws \Exception
          * @throws \xobotyi\beansclient\Exception\Client
          * @throws \xobotyi\beansclient\Exception\Command
-         * @throws \xobotyi\beansclient\Exception\Server
+         * @throws \xobotyi\beansclient\Exception\Job
          */
-        public
-        function kickJob(int $jobId) {
+        public function kickJob(int $jobId) {
             return $this->dispatchCommand(new Command\KickJob($jobId));
         }
 
@@ -269,10 +255,9 @@
          * @throws \Exception
          * @throws \xobotyi\beansclient\Exception\Client
          * @throws \xobotyi\beansclient\Exception\Command
-         * @throws \xobotyi\beansclient\Exception\Server
+         * @throws \xobotyi\beansclient\Exception\Job
          */
-        public
-        function stats() {
+        public function stats() {
             return $this->dispatchCommand(new Command\Stats());
         }
 
@@ -283,10 +268,9 @@
          * @throws \Exception
          * @throws \xobotyi\beansclient\Exception\Client
          * @throws \xobotyi\beansclient\Exception\Command
-         * @throws \xobotyi\beansclient\Exception\Server
+         * @throws \xobotyi\beansclient\Exception\Job
          */
-        public
-        function statsJob(int $jobId) {
+        public function statsJob(int $jobId) {
             return $this->dispatchCommand(new Command\StatsJob($jobId));
         }
 
@@ -299,10 +283,9 @@
          * @throws \Exception
          * @throws \xobotyi\beansclient\Exception\Client
          * @throws \xobotyi\beansclient\Exception\Command
-         * @throws \xobotyi\beansclient\Exception\Server
+         * @throws \xobotyi\beansclient\Exception\Job
          */
-        public
-        function useTube(string $tube) :self {
+        public function useTube(string $tube) :self {
             if ($tube !== $this->dispatchCommand(new Command\UseTube($tube))) {
                 throw new Exception\Command("Tube used not matches requested tube");
             }
@@ -317,10 +300,9 @@
          * @throws \Exception
          * @throws \xobotyi\beansclient\Exception\Client
          * @throws \xobotyi\beansclient\Exception\Command
-         * @throws \xobotyi\beansclient\Exception\Server
+         * @throws \xobotyi\beansclient\Exception\Job
          */
-        public
-        function watchTube(string $tube) :self {
+        public function watchTube(string $tube) :self {
             $this->dispatchCommand(new Command\WatchTube($tube));
 
             return $this;
@@ -333,10 +315,9 @@
          * @throws \Exception
          * @throws \xobotyi\beansclient\Exception\Client
          * @throws \xobotyi\beansclient\Exception\Command
-         * @throws \xobotyi\beansclient\Exception\Server
+         * @throws \xobotyi\beansclient\Exception\Job
          */
-        public
-        function ignoreTube(string $tube) :self {
+        public function ignoreTube(string $tube) :self {
             $this->dispatchCommand(new Command\IgnoreTube($tube));
 
             return $this;
@@ -347,10 +328,9 @@
          * @throws \Exception
          * @throws \xobotyi\beansclient\Exception\Client
          * @throws \xobotyi\beansclient\Exception\Command
-         * @throws \xobotyi\beansclient\Exception\Server
+         * @throws \xobotyi\beansclient\Exception\Job
          */
-        public
-        function listTubeUsed() :string {
+        public function listTubeUsed() :string {
             return $this->dispatchCommand(new Command\ListTubeUsed());
         }
 
@@ -359,10 +339,9 @@
          * @throws \Exception
          * @throws \xobotyi\beansclient\Exception\Client
          * @throws \xobotyi\beansclient\Exception\Command
-         * @throws \xobotyi\beansclient\Exception\Server
+         * @throws \xobotyi\beansclient\Exception\Job
          */
-        public
-        function listTubes() :array {
+        public function listTubes() :array {
             return $this->dispatchCommand(new Command\ListTubes());
         }
 
@@ -371,10 +350,9 @@
          * @throws \Exception
          * @throws \xobotyi\beansclient\Exception\Client
          * @throws \xobotyi\beansclient\Exception\Command
-         * @throws \xobotyi\beansclient\Exception\Server
+         * @throws \xobotyi\beansclient\Exception\Job
          */
-        public
-        function listTubesWatched() :array {
+        public function listTubesWatched() :array {
             return $this->dispatchCommand(new Command\ListTubesWatched());
         }
 
@@ -385,10 +363,9 @@
          * @throws \Exception
          * @throws \xobotyi\beansclient\Exception\Client
          * @throws \xobotyi\beansclient\Exception\Command
-         * @throws \xobotyi\beansclient\Exception\Server
+         * @throws \xobotyi\beansclient\Exception\Job
          */
-        public
-        function statsTube(string $tubeName) :?array {
+        public function statsTube(string $tubeName) :?array {
             return $this->dispatchCommand(new Command\StatsTube($tubeName));
         }
 
@@ -399,10 +376,9 @@
          * @throws \Exception
          * @throws \xobotyi\beansclient\Exception\Client
          * @throws \xobotyi\beansclient\Exception\Command
-         * @throws \xobotyi\beansclient\Exception\Server
+         * @throws \xobotyi\beansclient\Exception\Job
          */
-        public
-        function peek($subject) {
+        public function peek($subject) {
             return $this->dispatchCommand(new Command\Peek($subject, $this->serializer));
         }
     }
