@@ -19,8 +19,8 @@ use xobotyi\beansclient\Interfaces;
  */
 class BeansClient
 {
-    public const CRLF     = "\r\n";
-    public const CRLF_LEN = 2;
+    public const CRLF             = "\r\n";
+    public const CRLF_LEN         = 2;
     public const DEFAULT_PRIORITY = 2048;
     public const DEFAULT_DELAY    = 0;
     public const DEFAULT_TTR      = 30;
