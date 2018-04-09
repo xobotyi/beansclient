@@ -26,8 +26,10 @@ class JobTest extends TestCase
 
         $job = new Job($client, 1, Job::STATE_READY, '12345');
 
-        $this->assertEquals(null, $job->dfgjhdkfjg);
+        Notice::$enabled = false;
+        $this->assertEquals(null, @$job->dfgjhdkfjg);
 
+        Notice::$enabled = true;
         $this->expectException(Notice::class);
         $this->assertEquals(null, $job->dfgjhdkfjg);
     }
@@ -36,9 +38,14 @@ class JobTest extends TestCase
         $client = $this->getClient();
 
         $client->method('statsJob')
-               ->will($this->returnValue([
-                                             'pri' => 2048,
-                                         ]));
+               ->withConsecutive()
+               ->willReturnOnConsecutiveCalls(
+                   $this->returnValue([
+                                          'pri' => 2048,
+                                      ]),
+                   false,
+                   ['state' => 'delayed', 'time-left' => 0], ['state' => 'ready',]
+               );
 
         $client->method('peek')
                ->will($this->returnValue(
@@ -53,19 +60,9 @@ class JobTest extends TestCase
         $this->assertEquals('321', $job->payload);
         $this->assertEquals(1, $job->id);
 
-        $client = $this->getClient();
-
-        $client->method('statsJob')
-               ->will($this->returnValue(false));
-
         $job = new Job($client, 1);
 
         $this->assertEquals(Job::STATE_DELETED, $job->state);
-
-        $client = $this->getClient();
-        $client->method('statsJob')
-               ->withConsecutive()
-               ->willReturnOnConsecutiveCalls(['state' => 'delayed', 'time-left' => 0], ['state' => 'ready',]);
 
         $job = new Job($client, 1);
 
@@ -126,7 +123,75 @@ class JobTest extends TestCase
         $this->assertEquals($client2, $job->setClient($client2)->getClient());
     }
 
-    //    public function testKick() {
+    public function testGetData() {
+        $client = $this->getClient();
+
+        $client->method('statsJob')
+               ->willReturn(['state' => 'ready', 'time-left' => 0]);
+
+        $client->method('peek')
+               ->will($this->returnValue(
+                   [
+                       'id'      => 123,
+                       'payload' => '321',
+                   ]));
+
+        $job = new Job($client, 1);
+
+        self::assertEquals([
+                               'id'          => 1,
+                               'payload'     => '321',
+                               'tube'        => null,
+                               'state'       => 'ready',
+                               'priority'    => null,
+                               'age'         => null,
+                               'delay'       => null,
+                               'ttr'         => null,
+                               'timeLeft'    => 0,
+                               'releaseTime' => 0,
+                               'file'        => null,
+                               'reserves'    => null,
+                               'timeouts'    => null,
+                               'releases'    => null,
+                               'buries'      => null,
+                               'kicks'       => null,
+                           ],
+                           $job->getData());
+    }
+
+    public function testKick() {
+        $client = $this->getClient();
+
+
+        $client->method('statsJob')
+               ->willReturn(['state' => 'ready', 'time-left' => 0]);
+
+        $client->method('kickJob')
+               ->willReturn(true);
+
+        $job = new Job($client, 1);
+
+        self::assertEquals('ready', $job->kick()->state);
+    }
+
+    public function testTouch() {
+        $client = $this->getClient();
+
+
+        $client->method('statsJob')
+               ->willReturn(['state' => 'ready', 'time-left' => 0]);
+
+        $client->method('touch')
+               ->withConsecutive()
+               ->willReturnOnConsecutiveCalls(true, false);
+
+        $job = new Job($client, 1);
+
+        self::assertEquals('ready', $job->touch()->state);
+        self::assertEquals('ready', $job->touch()->state);
+    }
+
+    //    public function testRelease() {
     //
     //    }
     //
@@ -134,27 +199,7 @@ class JobTest extends TestCase
     //
     //    }
     //
-    //    public function testGetData() {
-    //
-    //    }
-    //
-    //    public function testRelease() {
-    //
-    //    }
-    //
-    //    public function testPeek() {
-    //
-    //    }
-    //
-    //    public function testTouch() {
-    //
-    //    }
-    //
     //    public function testDelete() {
-    //
-    //    }
-    //
-    //    public function testStats() {
     //
     //    }
 
@@ -163,12 +208,18 @@ class JobTest extends TestCase
                      ->disableOriginalConstructor()
                      ->getMock();
 
-        $conn->method('isActive')
-             ->withConsecutive()
-             ->willReturnOnConsecutiveCalls(true, $activeConnection);
+        if (!$activeConnection) {
+            $conn->method('isActive')
+                 ->withConsecutive()
+                 ->willReturnOnConsecutiveCalls(true, $activeConnection);
+        }
+        else {
+            $conn->method('isActive')
+                 ->willReturn(true);
+        }
 
         $client = $this->getMockBuilder('\xobotyi\beansclient\BeansClient')
-                       ->setMethods(['statsJob', 'peek'])
+                       ->setMethods(['statsJob', 'peek', 'kickJob', 'touch'])
                        ->setConstructorArgs([&$conn])
                        ->getMock();
 

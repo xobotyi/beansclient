@@ -157,7 +157,7 @@ class Job
         if (!\array_key_exists($offset, $this->data)) {
             trigger_error("Undefined property: " . self::class . "::\${$offset}");
 
-            return;
+            return null;
         }
 
         if (!$this->data['state'] || ($this->data[$offset] === null && $this->data['state'] !== self::STATE_DELETED)) {
@@ -227,7 +227,9 @@ class Job
                 if ($src === null) {
                     switch ($tgt) {
                         case 'releaseTime':
-                            $this->data['releaseTime'] = time() + $this->data['timeLeft'] ?? 0;
+                            $this->data['releaseTime'] = ($this->data['state'] === self::STATE_DELAYED || $this->data['state'] === self::STATE_RESERVED)
+                                ? time() + $this->data['timeLeft'] ?? 0
+                                : 0;
                             break;
                     }
                 }
@@ -277,9 +279,16 @@ class Job
      * @throws \xobotyi\beansclient\Exception\Job
      */
     public function touch() :self {
-        $this->client->touch($this->data['id']);
+        if ($this->client->touch($this->data['id'])) {
+            $this->data['delay']       = 0;
+            $this->data['timeLeft']    = $this->data['ttr'];
+            $this->data['releaseTime'] = time() + $this->data['ttr'];
+        }
+        else {
+            $this->stats();
+        }
 
-        return $this->stats();
+        return $this;
     }
 
     /**
@@ -289,7 +298,7 @@ class Job
      * @throws \xobotyi\beansclient\Exception\Job
      */
     public function kick() :self {
-        $this->client->kick($this->data['id']);
+        $this->client->kickJob($this->data['id']);
 
         return $this->stats();
     }
@@ -304,8 +313,11 @@ class Job
      */
     public function bury(int $priority = BeansClient::DEFAULT_PRIORITY) :self {
         if ($this->client->bury($this->data['id'], $priority)) {
-            $this->data['state']    = self::STATE_BURIED;
-            $this->data['priority'] = $priority;
+            $this->data['state']       = self::STATE_BURIED;
+            $this->data['priority']    = $priority;
+            $this->data['delay']       = 0;
+            $this->data['timeLeft']    = 0;
+            $this->data['releaseTime'] = 0;
         }
         else {
             $this->clearStats();
