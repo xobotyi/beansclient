@@ -143,27 +143,37 @@ class BeansClient
      * @param int $delay
      * @param int $ttr
      *
-     * @return array|null
+     * @return \xobotyi\beansclient\Job
+     *
      * @throws \Exception
      * @throws \xobotyi\beansclient\Exception\Client
      * @throws \xobotyi\beansclient\Exception\Command
      * @throws \xobotyi\beansclient\Exception\Job
      */
-    public function put($payload, $priority = self::DEFAULT_PRIORITY, int $delay = self::DEFAULT_DELAY, int $ttr = self::DEFAULT_TTR) {
-        return $this->dispatchCommand(new Command\Put($payload, $priority, $delay, $ttr, $this->serializer));
+    public function put($payload, $priority = self::DEFAULT_PRIORITY, int $delay = self::DEFAULT_DELAY, int $ttr = self::DEFAULT_TTR) :Job {
+        $res = $this->dispatchCommand(new Command\Put($payload, $priority, $delay, $ttr, $this->serializer));
+
+        return $res
+            ? new Job($this, $res['id'], strtolower($res['status']))
+            : new Job($this, null);
     }
 
     /**
      * @param int|null $timeout
      *
-     * @return array|null
+     * @return \xobotyi\beansclient\Job
+     *
      * @throws \Exception
      * @throws \xobotyi\beansclient\Exception\Client
      * @throws \xobotyi\beansclient\Exception\Command
      * @throws \xobotyi\beansclient\Exception\Job
      */
-    public function reserve(?int $timeout = 0) {
-        return $this->dispatchCommand(new Command\Reserve($timeout, $this->serializer));
+    public function reserve(?int $timeout = 0) :Job {
+        $res = $this->dispatchCommand(new Command\Reserve($timeout, $this->serializer));
+
+        return $res
+            ? new Job($this, $res['id'], Job::STATE_RESERVED, $res['payload'])
+            : new Job($this, null);
     }
 
     /**

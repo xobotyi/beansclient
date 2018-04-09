@@ -69,6 +69,39 @@ class JobTest extends TestCase
         $this->assertEquals(Job::STATE_READY, $job->state);
     }
 
+    public function testEmptyJob() {
+        $client = $this->getClient();
+
+        $job = new Job($client, null);
+
+        $this->assertEquals(null, $job->id);
+        $this->assertEquals(null, $job->stats()->state);
+        $this->assertEquals(null, $job->peek()->payload);
+        $this->assertEquals(null, $job->touch()->state);
+        $this->assertEquals(null, $job->kick()->state);
+        $this->assertEquals(null, $job->bury()->state);
+        $this->assertEquals(null, $job->delete()->state);
+        $this->assertEquals(null, $job->release()->state);
+        $this->assertEquals([
+                                'id'          => null,
+                                'payload'     => null,
+                                'tube'        => null,
+                                'state'       => null,
+                                'priority'    => null,
+                                'age'         => null,
+                                'delay'       => null,
+                                'ttr'         => null,
+                                'timeLeft'    => null,
+                                'releaseTime' => null,
+                                'file'        => null,
+                                'reserves'    => null,
+                                'timeouts'    => null,
+                                'releases'    => null,
+                                'buries'      => null,
+                                'kicks'       => null,
+                            ], $job->getData());
+    }
+
     public function testIsDelayed() {
         $client = $this->getClient();
 

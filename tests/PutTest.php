@@ -27,8 +27,8 @@ class PutTest extends TestCase
 
         $client = new BeansClient($conn);
 
-        self::assertEquals(['id' => 1, 'status' => 'INSERTED'], $client->put('test'));
-        self::assertEquals(['id' => 2, 'status' => 'BURIED'], $client->put('test'));
+        self::assertEquals(1, $client->put('test')->id);
+        self::assertEquals('buried', $client->put('test')->state);
     }
 
     // test if server says that CRLF is missing

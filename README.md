@@ -161,17 +161,13 @@ If you will not provide serializer with second parameter of `BeansClient` constr
 Inserts a job into the client's currently used tube (see the "useTube")  
 
 _**Return value:**_  
-`ARRAY`  
-* 'id'`int` - id of created job;
-* 'status'`string`  
-    * 'INSERTED' if job was successfully created
-    * 'BURIED' if the server ran out of memory trying to grow the priority queue data structure.
+`\xobotyi\beansclient\Job` instance  
  
 _**Example:**_  
 ```php
-$client->put('myAwesomePayload', 2048, 0, 60); // ['id'=>1, 'status'=>'INSERTED']
+$client->put('myAwesomePayload', 2048, 0, 60)->payload; // myAwesomePayload
 # or, if we use payload encoder 
-$client->put(['it'=>'can be any', 'thing'], 2048, 0, 60); // ['id'=>2, 'status'=>'INSERTED']
+$client->put(['it'=>'can be any', 'thing'], 2048, 0, 60)->id; //2
 ```
     
 #### `reserve([?int $timeout])`
@@ -179,18 +175,14 @@ Returns a newly-reserved job. Once a job is reserved for the client, the client 
 If more than one job is ready, beanstalkd will choose the one with the smallest priority value. Within each priority, it will choose the one that was received first.  
 
 _**Return value:**_  
-`ARRAY`  
-* 'id'`int` - id of reserved job;
-* 'payload'`mixed` - payload of reserved job.  
-If BeansClient was initialised with serializer - payload will be decoded automatically, otherwise payload is always of type `string`.
-
+`\xobotyi\beansclient\Job` instance  
 `NULL` if there is no ready jobs in queue  
 
 _**Example:**_  
 ```php
-$client->reserve(); // ['id'=>1, 'payload'=>'myAwesomePayload']
-# or, if we use payload serializer 
-$client->reserve(); // [id=>2, 'payload'=>['it'=>'can be any', 'thing']]
+$client->reserve()->id; // 1
+$client->reserve()->id; // 2
+$client->reserve()->id; // null
 ```
 
 #### `delete(int $jobId)`

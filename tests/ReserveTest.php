@@ -28,12 +28,11 @@ class ReserveTest extends TestCase
              ->willReturnOnConsecutiveCalls("[1,2,3,4]", "\r\n", "[1,2,3,4]", "\r\n");
 
         $client = new BeansClient($conn);
-
-        self::assertEquals(null, $client->reserve());
-        self::assertEquals(['id' => 1, 'payload' => '[1,2,3,4]'], $client->reserve());
+        self::assertEquals(null, $client->reserve()->id);
+        self::assertEquals(1, $client->reserve()->id);
 
         $client = new BeansClient($conn, new Json());
-        self::assertEquals(['id' => 1, 'payload' => [1, 2, 3, 4]], $client->reserve());
+        self::assertEquals([1, 2, 3, 4], $client->reserve()->payload);
     }
 
     // test if response has wrong status name
