@@ -79,10 +79,10 @@ $beansClient->useTube('myAwesomeTube')
 $job = $beansClient->watchTube('myAwesomeTube')
                    ->reserve();
 
-if ($job) {
-    echo "Hey, i received first {$job['payload']} of job with id {$job['id']}\n";
+if ($job->id) {
+    echo "Hey, i received first {$job->payload} of job with id {$job->id}\n";
 
-    $beansClient->delete($job['id']);
+    $job->delete();
 
     echo "And i've done it!\n";
 }
