@@ -37,14 +37,15 @@ BeansClient supports whole bunch of commands and responses specified in [protoco
 3. [Usage](#usage)
 4. [Docs](#docs)
     * [Classes](#classes)
-    * [Job commands](#job-commands)
-    * [Tube commands](#tube-commands)
+    * [Jobs commands](#jobs-commands)
+    * [Tubes commands](#tubes-commands)
     * [Stats commands](#stats-commands)
 
   
 ## Requirements
 
 - [PHP](//php.net/) 7.1+
+- [beanstalkd](//github.com/kr/beanstalkd/) 1.10+
 
 
   
@@ -155,7 +156,7 @@ $beansClient->setSerializer(new Json())
 ```
 If you will not provide serializer with second parameter of `BeansClient` constructor, payload in `put` command mist be string or stringable value.
 
-### Job commands
+### Jobs commands
 -----
 #### `put($payload[, int $priority[, int $delay[, int $ttr]]])`
 Inserts a job into the client's currently used tube (see the "useTube")  
@@ -271,7 +272,7 @@ $client->kickJob(3); // false
 
 
   
-### Tube commands
+### Tubes commands
 -----
 #### `listTubeUsed()`
 Returns the tube currently being used by the client.  
