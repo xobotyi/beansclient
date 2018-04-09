@@ -333,6 +333,8 @@ class Job
      * @throws \xobotyi\beansclient\Exception\Job
      */
     public function delete() :self {
+        $this->clearStats();
+
         if ($this->client->delete($this->data['id'])) {
             foreach (self::PEEK_FIELDS as $tgt => $src) {
                 $this->data[$tgt] = null;
@@ -340,8 +342,6 @@ class Job
 
             $this->data['state'] = self::STATE_DELETED;
         }
-
-        $this->clearStats();
 
         return $this;
     }
