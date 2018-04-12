@@ -27,11 +27,10 @@
 BeansClient is a pure 7.1+ dependency-free client for [beanstalkd work queue](https://github.com/kr/beanstalkd) with thorough unit-testing. Library uses PSR-4 autoloader standard and always has 100% tests coverage.    
 Library gives you a simple way to provide your own Connection implementation, in cases when you need to log requests and responses or to proxy traffic to non-standard transport. 
 
-BeansClient supports whole bunch of commands and responses specified in [protocol](https://github.com/kr/beanstalkd/blob/master/doc/protocol.txt) for version 1.10
+BeansClient supports whole bunch of commands and responses specified in [protocol](https://github.com/kr/beanstalkd/blob/master/doc/protocol.txt) for version 1.10  
+<br>
 
-  
 ## Contents
-
 1. [Requirements](#requirements)
 2. [Installation](#installation)
 3. [Usage](#usage)
@@ -40,22 +39,20 @@ BeansClient supports whole bunch of commands and responses specified in [protoco
     * [Jobs commands](#jobs-commands)
     * [Tubes commands](#tubes-commands)
     * [Stats commands](#stats-commands)
+<br>
 
-  
 ## Requirements
-
 - [PHP](//php.net/) 7.1+
 - [beanstalkd](//github.com/kr/beanstalkd/) 1.10+
+<br>
 
-
-  
 ## Installation
 Install with composer
 ```bash
 composer require xobotyi/beansclient
 ```
+<br>
 
-  
 ## Usage
 ```php
 <?php
@@ -92,8 +89,8 @@ else {
 
 echo "Am I still connected? \n" . ($beansClient->getConnection()->isActive() ? 'Yes' : 'No') . "\n";
 ```
+<br>
 
-  
 ## Docs
 ### Classes
 ---
@@ -116,6 +113,7 @@ use xobotyi\beansclient\Connection;
 $socket = new Connection(); // defaults
 $socket = new Connection('/tmp/beanstalkd.sock', -1); // unix domain socket.
 ```
+<br>
 
 #### `beansclient\BeansClient`
 The main class of library. Puts everything together and makes the magic!
@@ -135,6 +133,7 @@ $client = new BeansClient(new Connection());
 $client->getConnection()->isActive();   // true
 $client->getConnection()->getHost();    // 127.0.0.1
 ```
+<br>
 
 #### `beansclient\Job`
 This class provides handy way to manage a single job. Even if it havent been reserved by worker.  
@@ -159,6 +158,7 @@ sleep(11);
 $job->timeLeft; // 0
 $job->sate;     // ready
 ```
+<br>
 
 #### `beansclient\Serializer`
 Beanstalkd job's payload can be only a string, so if we want to use non-string payload we have to serialize it.
@@ -178,7 +178,8 @@ $client = new BeansClient(new Connection());
 $beansClient->setSerializer(new Json())
             ->getSerializer(); //  instance of \xobotyi\beansclient\Serializer\Json
 ```
-If you will not provide serializer with second parameter of `BeansClient` constructor, payload in `put` command mist be string or stringable value.
+If you will not provide serializer with second parameter of `BeansClient` constructor, payload in `put` command mist be string or stringable value.  
+<br>
 
 ### Jobs commands
 -----
@@ -293,9 +294,8 @@ _**Example:**_
 $client->kickJob(2); // true
 $client->kickJob(3); // false
 ```
+<br>
 
-
-  
 ### Tubes commands
 -----
 #### `listTubeUsed()`
@@ -374,9 +374,8 @@ $client->ignoreTube('awesomeTube')
        ->ignoreTube('myAwesomeTube2')
        ->listTubesWatched(); // ['default']
 ```
+<br>
 
-
-  
 ### Stats commands
 -----
 #### `stats()`
