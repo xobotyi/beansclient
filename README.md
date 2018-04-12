@@ -97,7 +97,7 @@ echo "Am I still connected? \n" . ($beansClient->getConnection()->isActive() ? '
 ## Docs
 ### Classes
 ---
-#### `Connection`
+#### `beansclient\Connection`
 Connection class responsible for transport between client and beanstalkd server.
 
 _**Parameters:**_  
@@ -117,7 +117,7 @@ $socket = new Connection(); // defaults
 $socket = new Connection('/tmp/beanstalkd.sock', -1); // unix domain socket.
 ```
 
-#### `BeansClient`
+#### `beansclient\BeansClient`
 The main class of library. Puts everything together and makes the magic!
 _**Parameters:**_  
 * connection`xobotyi\beansclient\Exception\Connection` - Connection instance 
@@ -136,7 +136,31 @@ $client->getConnection()->isActive();   // true
 $client->getConnection()->getHost();    // 127.0.0.1
 ```
 
-#### `Serializer`
+#### `beansclient\Job`
+This class provides handy way to manage a single job. Even if it havent been reserved by worker.  
+Due to the fact that we cant get all the data in one request _(job's payload available through the `peek` command and all the other data through the `stats-job` command)_ and the desire to minimize the number of requests - needed data will bw requested only in case of it's usage, 4ex:
+```php
+$job = new Job($beansclientInstance, 13); // creating Job instance
+
+$job->payload;  // here will be performed a single 'peek' request to the beanstalkd server
+                // and vice-versa
+$job->tube;     // will perform 'stats-job' request
+```
+There is a cool and useful thing about Job: if it has _delayed_ or _reserved_ state it's instance will have a non-zero property `releaseTime` and always-actual property `timeLeft`. When the time has come - will be performed extra `stats-job` request to synchronize it's data.  
+_**But be careful!** Due to calculation of that value, it can have a deviation if range of 1 second_
+```php
+$job = new Job($beansclientInstance, 13, 'reserved');
+
+$job->timeLeft; // for example it has 13 seconds to release
+sleep(3);
+$job->timeLeft; // 10
+$job->sate;     // reserved
+sleep(11);
+$job->timeLeft; // 0
+$job->sate;     // ready
+```
+
+#### `beansclient\Serializer`
 Beanstalkd job's payload can be only a string, so if we want to use non-string payload we have to serialize it.
 `Serializer` is an interface that requires only 2 methods: `serialize(mixed $data):string` and `unserialize(string $str):mixed`  
 
