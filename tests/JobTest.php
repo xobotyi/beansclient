@@ -40,12 +40,11 @@ class JobTest extends TestCase
 
         $client->method('statsJob')
                ->withConsecutive()
-               ->willReturnOnConsecutiveCalls(
-                   $this->returnValue([
-                                          'pri' => 2048,
-                                      ]),
-                   false,
-                   ['state' => 'delayed', 'time-left' => 0], ['state' => 'ready',]
+               ->willReturnOnConsecutiveCalls([
+                                                  'pri' => 2048,
+                                              ],
+                                              null,
+                                              ['state' => 'delayed', 'time-left' => 0], ['state' => 'ready',]
                );
 
         $client->method('peek')
@@ -213,7 +212,7 @@ class JobTest extends TestCase
 
         self::assertEquals([
                                'id'          => 1,
-                               'payload'     => [1,2,3,4],
+                               'payload'     => [1, 2, 3, 4],
                                'tube'        => null,
                                'state'       => 'ready',
                                'priority'    => null,

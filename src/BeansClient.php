@@ -190,9 +190,9 @@ class BeansClient
     }
 
     /**
-     * @param int $jobId
-     * @param int $priority
-     * @param int $delay
+     * @param int       $jobId
+     * @param int|float $priority
+     * @param int       $delay
      *
      * @return string|null
      * @throws \Exception

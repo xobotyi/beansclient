@@ -92,7 +92,7 @@ class Job
      *
      * @param \xobotyi\beansclient\BeansClient $beansClient
      * @param int                              $id
-     * @param string|null                      $state
+     * @param mixed                            $state
      * @param null                             $payload
      *
      * @throws \xobotyi\beansclient\Exception\Job
@@ -385,8 +385,8 @@ class Job
     }
 
     /**
-     * @param null     $priority
-     * @param int|null $delay
+     * @param int|float|null $priority
+     * @param int|null       $delay
      *
      * @return $this
      * @throws \xobotyi\beansclient\Exception\Client
