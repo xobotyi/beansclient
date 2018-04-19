@@ -98,11 +98,13 @@ class Job
      * @throws \xobotyi\beansclient\Exception\Job
      */
     public function __construct(BeansClient &$beansClient, ?int $id, ?string $state = null, $payload = null) {
+        $this->setClient($beansClient);
+
         $this->data['id']      = $id;
         $this->data['state']   = $state;
-        $this->data['payload'] = $payload;
-
-        $this->setClient($beansClient);
+        $this->data['payload'] = $beansClient->getSerializer() && is_string($payload)
+            ? $beansClient->getSerializer()->unserialize($payload)
+            : $payload;
     }
 
     /**
@@ -282,6 +284,12 @@ class Job
         $job = $this->client->peek($this->data['id']);
 
         foreach (self::PEEK_FIELDS as $tgt => $src) {
+            if ($src === "payload") {
+                $job[$src] = $this->client->getSerializer() && is_string($job[$src])
+                    ? $this->client->getSerializer()->unserialize($job[$src])
+                    : $job[$src];
+            }
+
             $this->data[$tgt] = $job[$src];
         }
 

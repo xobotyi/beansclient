@@ -154,7 +154,7 @@ class BeansClient
         $res = $this->dispatchCommand(new Command\Put($payload, $priority, $delay, $ttr, $this->serializer));
 
         return $res
-            ? new Job($this, $res['id'], strtolower($res['status']))
+            ? new Job($this, $res['id'], strtolower($res['status']), $payload)
             : new Job($this, null);
     }
 
