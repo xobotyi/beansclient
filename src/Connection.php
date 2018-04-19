@@ -20,11 +20,10 @@ class Connection extends SocketFunctions implements Interfaces\Connection
     const SOCK_WRITE_RETRIES      = 8;
 
     private $host;
-    private $port;
-    private $timeout;
     private $persistent;
-
+    private $port;
     private $socket;
+    private $timeout;
 
     /**
      * Connection constructor.
@@ -106,37 +105,15 @@ class Connection extends SocketFunctions implements Interfaces\Connection
     /**
      * @return bool
      */
-    public function isPersistent() :bool {
-        return $this->persistent;
-    }
-
-    /**
-     * @return bool
-     */
     public function isActive() :bool {
         return !!$this->socket;
     }
 
     /**
-     * @param string $str
-     *
-     * Writes data to the socket
-     *
-     * @throws \xobotyi\beansclient\Exception\Connection
-     * @throws \xobotyi\beansclient\Exception\Socket
+     * @return bool
      */
-    public function write(string $str) :void {
-        if (!$this->socket) {
-            throw new Exception\Connection(0, "Unable to write into closed connection");
-        }
-
-        for ($attempt = $written = $iterWritten = 0; $written < strlen($str); $written += $iterWritten) {
-            $iterWritten = $this->fwrite($this->socket, substr($str, $written));
-
-            if (++$attempt === self::SOCK_WRITE_RETRIES) {
-                throw new Exception\Socket(sprintf("Failed to write data to socket after %u retries (%u:%u)", self::SOCK_WRITE_RETRIES, $this->host, $this->port));
-            }
-        }
+    public function isPersistent() :bool {
+        return $this->persistent;
     }
 
     /**
@@ -197,5 +174,27 @@ class Connection extends SocketFunctions implements Interfaces\Connection
         }
 
         return rtrim($str);
+    }
+
+    /**
+     * @param string $str
+     *
+     * Writes data to the socket
+     *
+     * @throws \xobotyi\beansclient\Exception\Connection
+     * @throws \xobotyi\beansclient\Exception\Socket
+     */
+    public function write(string $str) :void {
+        if (!$this->socket) {
+            throw new Exception\Connection(0, "Unable to write into closed connection");
+        }
+
+        for ($attempt = $written = $iterWritten = 0; $written < strlen($str); $written += $iterWritten) {
+            $iterWritten = $this->fwrite($this->socket, substr($str, $written));
+
+            if (++$attempt === self::SOCK_WRITE_RETRIES) {
+                throw new Exception\Socket(sprintf("Failed to write data to socket after %u retries (%u:%u)", self::SOCK_WRITE_RETRIES, $this->host, $this->port));
+            }
+        }
     }
 }

@@ -11,8 +11,7 @@ use PHPUnit\Framework\TestCase;
 
 class ResponseTest extends TestCase
 {
-    public
-    function testYamlParse() :void {
+    public function testYamlParse() :void {
         self::assertEquals(null, Response::YamlParse(''));
         self::assertEquals(null, Response::YamlParse('         '));
 
@@ -27,8 +26,7 @@ class ResponseTest extends TestCase
         self::assertEquals(['a:b', 'a' => 'b'], Response::YamlParse($str, true));
     }
 
-    public
-    function testYamlParseException() :void {
+    public function testYamlParseException() :void {
 
         $str = "---\r\n-  ";
 

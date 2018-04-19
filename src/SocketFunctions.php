@@ -16,32 +16,6 @@ namespace xobotyi\beansclient;
 class SocketFunctions
 {
     /**
-     * @param string   $hostName
-     * @param int      $port
-     * @param null     $errNo
-     * @param null     $errStr
-     * @param int|null $timeout
-     *
-     * @return bool|null|resource
-     */
-    public function fsockopen(string $hostName, int $port = -1, &$errNo = null, &$errStr = null, int $timeout = null) {
-        return @fsockopen($hostName, $port, $errNo, $errStr, $timeout);
-    }
-
-    /**
-     * @param string   $hostName
-     * @param int      $port
-     * @param null     $errNo
-     * @param null     $errStr
-     * @param int|null $timeout
-     *
-     * @return bool|null|resource
-     */
-    public function pfsockopen(string $hostName, int $port = -1, &$errNo = null, &$errStr = null, int $timeout = null) {
-        return @pfsockopen($hostName, $port, $errNo, $errStr, $timeout);
-    }
-
-    /**
      * @param $stream
      *
      * @return bool
@@ -84,6 +58,19 @@ class SocketFunctions
     }
 
     /**
+     * @param string   $hostName
+     * @param int      $port
+     * @param null     $errNo
+     * @param null     $errStr
+     * @param int|null $timeout
+     *
+     * @return bool|null|resource
+     */
+    public function fsockopen(string $hostName, int $port = -1, &$errNo = null, &$errStr = null, int $timeout = null) {
+        return @fsockopen($hostName, $port, $errNo, $errStr, $timeout);
+    }
+
+    /**
      * @param          $stream
      * @param string   $text
      * @param int|null $length
@@ -96,6 +83,19 @@ class SocketFunctions
         }
 
         return fwrite($stream, $text);
+    }
+
+    /**
+     * @param string   $hostName
+     * @param int      $port
+     * @param null     $errNo
+     * @param null     $errStr
+     * @param int|null $timeout
+     *
+     * @return bool|null|resource
+     */
+    public function pfsockopen(string $hostName, int $port = -1, &$errNo = null, &$errStr = null, int $timeout = null) {
+        return @pfsockopen($hostName, $port, $errNo, $errStr, $timeout);
     }
 
     /**

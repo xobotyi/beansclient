@@ -17,6 +17,20 @@ class UseTubeTest extends TestCase
     const PORT    = 11300;
     const TIMEOUT = 2;
 
+    private function getConnection(bool $active = true) {
+        $conn = $this->getMockBuilder('\xobotyi\beansclient\Connection')
+                     ->disableOriginalConstructor()
+                     ->getMock();
+
+        $conn->expects($this->any())
+             ->method('isActive')
+             ->will($this->returnValue($active));
+
+        return $conn;
+    }
+
+    // test if response has another tube name
+
     public function testUseTube() :void {
         $conn = $this->getConnection();
 
@@ -30,7 +44,8 @@ class UseTubeTest extends TestCase
         self::assertEquals('test1', $client->dispatchCommand(new UseTube('test1')));
     }
 
-    // test if response has another tube name
+    // test if response has wrong status name
+
     public function testUseTubeException() :void {
         $conn = $this->getConnection();
 
@@ -44,7 +59,8 @@ class UseTubeTest extends TestCase
         $client->useTube('test1');
     }
 
-    // test if response has wrong status name
+    // test if response has data in
+
     public function testUseTubeException1() :void {
         $conn = $this->getConnection();
 
@@ -57,7 +73,8 @@ class UseTubeTest extends TestCase
         $client->useTube('test1');
     }
 
-    // test if response has data in
+    // test if tube name is empty
+
     public function testUseTubeException2() :void {
         $conn = $this->getConnection();
 
@@ -74,7 +91,6 @@ class UseTubeTest extends TestCase
         $client->useTube('test1');
     }
 
-    // test if tube name is empty
     public function testUseTubeException3() :void {
         $conn = $this->getConnection();
 
@@ -85,17 +101,5 @@ class UseTubeTest extends TestCase
 
         $this->expectException(Command::class);
         $client->useTube('   ');
-    }
-
-    private function getConnection(bool $active = true) {
-        $conn = $this->getMockBuilder('\xobotyi\beansclient\Connection')
-                     ->disableOriginalConstructor()
-                     ->getMock();
-
-        $conn->expects($this->any())
-             ->method('isActive')
-             ->will($this->returnValue($active));
-
-        return $conn;
     }
 }

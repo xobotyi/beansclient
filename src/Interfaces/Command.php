@@ -67,10 +67,10 @@ interface Command
     ];
 
     /**
-     * @return bool
+     * @return string
      */
     public
-    function hasPayload() :bool;
+    function getCommandStr() :string;
 
     /**
      * @return mixed
@@ -79,18 +79,10 @@ interface Command
     function getPayload();
 
     /**
-     * @param \xobotyi\beansclient\Interfaces\Serializer $serialize
-     *
-     * @return mixed
+     * @return bool
      */
     public
-    function setSerializer(Serializer $serialize);
-
-    /**
-     * @return string
-     */
-    public
-    function getCommandStr() :string;
+    function hasPayload() :bool;
 
     /**
      * @param array       $responseHeader
@@ -100,4 +92,12 @@ interface Command
      */
     public
     function parseResponse(array $responseHeader, ?string $responseStr);
+
+    /**
+     * @param \xobotyi\beansclient\Interfaces\Serializer $serialize
+     *
+     * @return mixed
+     */
+    public
+    function setSerializer(Serializer $serialize);
 }

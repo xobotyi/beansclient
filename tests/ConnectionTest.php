@@ -96,8 +96,7 @@ use PHPUnit\Framework\TestCase;
 
 class ConnectionTest extends TestCase
 {
-    public
-    function testConnection() {
+    public function testConnection() {
         $conn = new Connection();
 
         self::assertTrue($conn->isActive());
@@ -125,8 +124,7 @@ class ConnectionTest extends TestCase
         self::assertEquals(15, strlen($conn->readln(15)));
     }
 
-    public
-    function testConnectionException() {
+    public function testConnectionException() {
         $conn = new Connection('localhost', 11300, 2);
         self::assertTrue($conn->disconnect());
 
@@ -134,8 +132,7 @@ class ConnectionTest extends TestCase
         $conn->write(123);
     }
 
-    public
-    function testConnectionException1() {
+    public function testConnectionException1() {
         $conn = new Connection('localhost', 11300, 2);
         self::assertTrue($conn->disconnect());
 
@@ -143,8 +140,7 @@ class ConnectionTest extends TestCase
         $conn->readln();
     }
 
-    public
-    function testConnectionException2() {
+    public function testConnectionException2() {
         $conn = new Connection('localhost', 11300, 2);
         self::assertTrue($conn->disconnect());
 
@@ -152,8 +148,7 @@ class ConnectionTest extends TestCase
         $conn->read(15);
     }
 
-    public
-    function testConnectionException3() {
+    public function testConnectionException3() {
         $conn = new Connection('localhost', 11300, 2);
 
         $this->expectException(Exception\Connection::class);
@@ -162,8 +157,7 @@ class ConnectionTest extends TestCase
         self::assertTrue($conn->disconnect());
     }
 
-    public
-    function testConnectionException4() {
+    public function testConnectionException4() {
         $conn = new Connection('localhost', 11300, 2);
 
         fclose(null, false);
@@ -172,8 +166,7 @@ class ConnectionTest extends TestCase
         unset($conn);
     }
 
-    public
-    function testConnectionException5() {
+    public function testConnectionException5() {
         fclose(null, true);
         fsockopen(null, null, $errno, $errstr, null, false);
 
@@ -181,8 +174,7 @@ class ConnectionTest extends TestCase
         $conn = new Connection('localhost', 11300, 2);
     }
 
-    public
-    function testConnectionException6() {
+    public function testConnectionException6() {
         fsockopen(null, null, $errno, $errstr, null, true);
 
         $conn = new Connection('localhost', 11300, 2);
@@ -193,8 +185,7 @@ class ConnectionTest extends TestCase
         $conn->readln();
     }
 
-    public
-    function testConnectionException7() {
+    public function testConnectionException7() {
         feof(null, true);
         fwrite(null, null, null, 0);
 
@@ -204,8 +195,7 @@ class ConnectionTest extends TestCase
         $conn->write(123);
     }
 
-    public
-    function testConnectionException8() {
+    public function testConnectionException8() {
         fwrite(null, null, null, 2);
         fread(null, null, false);
 

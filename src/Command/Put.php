@@ -21,15 +21,14 @@ class Put extends CommandAbstract
 {
     public const MAX_PRIORITY                = 4294967295;
     public const MAX_SERIALIZED_PAYLOAD_SIZE = 65536;
-
-    /**
-     * @var int|float
-     */
-    private $priority;
     /**
      * @var int
      */
     private $delay;
+    /**
+     * @var int|float
+     */
+    private $priority;
     /**
      * @var int
      */

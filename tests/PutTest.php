@@ -19,6 +19,20 @@ class PutTest extends TestCase
     const PORT    = 11300;
     const TIMEOUT = 2;
 
+    private function getConnection(bool $active = true) {
+        $conn = $this->getMockBuilder('\xobotyi\beansclient\Connection')
+                     ->disableOriginalConstructor()
+                     ->getMock();
+
+        $conn->expects($this->any())
+             ->method('isActive')
+             ->will($this->returnValue($active));
+
+        return $conn;
+    }
+
+    // test if server says that CRLF is missing
+
     public function testPut() {
         $conn = $this->getConnection();
         $conn->method('readln')
@@ -31,7 +45,8 @@ class PutTest extends TestCase
         self::assertEquals('buried', $client->put('test')->state);
     }
 
-    // test if server says that CRLF is missing
+    // test if server says that job's payload is too big
+
     public function testPutException1() {
         $conn = $this->getConnection();
         $conn->method('readln')
@@ -42,95 +57,8 @@ class PutTest extends TestCase
         self::assertEquals([], $client->put('test'));
     }
 
-    // test if server says that job's payload is too big
-    public function testPutException2() {
-        $conn = $this->getConnection();
-        $conn->method('readln')
-             ->will($this->returnValue("JOB_TOO_BIG"));
-        $client = new BeansClient($conn);
-
-        $this->expectException(Command::class);
-        self::assertEquals([], $client->put('test'));
-    }
-
     // test if server is in draining mode
-    public function testPutException3() {
-        $conn = $this->getConnection();
-        $conn->method('readln')
-             ->will($this->returnValue("DRAINING"));
-        $client = new BeansClient($conn);
 
-        $this->expectException(Job::class);
-        self::assertEquals([], $client->put('test'));
-    }
-
-    // test if priority is less than 0
-    public function testPutException4() {
-        $conn = $this->getConnection();
-        $conn->method('readln')
-             ->will($this->returnValue("INSERTED"));
-        $client = new BeansClient($conn);
-
-        $this->expectException(Command::class);
-        self::assertEquals([], $client->put('test', -1));
-    }
-
-    // test if delay id less than 0
-    public function testPutException5() {
-        $conn = $this->getConnection();
-        $conn->method('readln')
-             ->will($this->returnValue("INSERTED"));
-        $client = new BeansClient($conn);
-
-        $this->expectException(Command::class);
-        self::assertEquals([], $client->put('test', 0, -1));
-    }
-
-    // test if ttr is set to 0
-    public function testPutException6() {
-        $conn = $this->getConnection();
-        $conn->method('readln')
-             ->will($this->returnValue("INSERTED"));
-        $client = new BeansClient($conn);
-
-        $this->expectException(Command::class);
-        self::assertEquals([], $client->put('test', 0, 0, 0));
-    }
-
-    // test if priority is too big
-    public function testPutException7() {
-        $conn = $this->getConnection();
-        $conn->method('readln')
-             ->will($this->returnValue("INSERTED"));
-        $client = new BeansClient($conn);
-
-        $this->expectException(Command::class);
-        self::assertEquals([], $client->put('test', Put::MAX_PRIORITY + 1));
-    }
-
-    // test if payload is non-string value and serializer is not set
-    public function testPutException8() {
-        $conn = $this->getConnection();
-        $conn->method('readln')
-             ->will($this->returnValue("INSERTED"));
-        $client = new BeansClient($conn);
-
-        $this->expectException(Command::class);
-        self::assertEquals([], $client->put([1, 2, 3]));
-    }
-
-    // test if priority is not a number
-    public function testPutException9() {
-        $conn = $this->getConnection();
-        $conn->method('readln')
-             ->will($this->returnValue("INSERTED"));
-        $client = new BeansClient($conn);
-
-        $this->expectException(Command::class);
-        self::assertEquals([], $client->put('', ''));
-    }
-
-    // test if payload is too big;
     public function testPutException10() {
         $conn = $this->getConnection();
         $conn->method('readln')
@@ -147,7 +75,8 @@ class PutTest extends TestCase
         self::assertEquals([], $client->put($str));
     }
 
-    // test if job id somewhy is missing;
+    // test if priority is less than 0
+
     public function testPutException11() {
         $conn = $this->getConnection();
         $conn->method('readln')
@@ -158,15 +87,97 @@ class PutTest extends TestCase
         self::assertEquals([], $client->put(''));
     }
 
-    private function getConnection(bool $active = true) {
-        $conn = $this->getMockBuilder('\xobotyi\beansclient\Connection')
-                     ->disableOriginalConstructor()
-                     ->getMock();
+    // test if delay id less than 0
 
-        $conn->expects($this->any())
-             ->method('isActive')
-             ->will($this->returnValue($active));
+    public function testPutException2() {
+        $conn = $this->getConnection();
+        $conn->method('readln')
+             ->will($this->returnValue("JOB_TOO_BIG"));
+        $client = new BeansClient($conn);
 
-        return $conn;
+        $this->expectException(Command::class);
+        self::assertEquals([], $client->put('test'));
+    }
+
+    // test if ttr is set to 0
+
+    public function testPutException3() {
+        $conn = $this->getConnection();
+        $conn->method('readln')
+             ->will($this->returnValue("DRAINING"));
+        $client = new BeansClient($conn);
+
+        $this->expectException(Job::class);
+        self::assertEquals([], $client->put('test'));
+    }
+
+    // test if priority is too big
+
+    public function testPutException4() {
+        $conn = $this->getConnection();
+        $conn->method('readln')
+             ->will($this->returnValue("INSERTED"));
+        $client = new BeansClient($conn);
+
+        $this->expectException(Command::class);
+        self::assertEquals([], $client->put('test', -1));
+    }
+
+    // test if payload is non-string value and serializer is not set
+
+    public function testPutException5() {
+        $conn = $this->getConnection();
+        $conn->method('readln')
+             ->will($this->returnValue("INSERTED"));
+        $client = new BeansClient($conn);
+
+        $this->expectException(Command::class);
+        self::assertEquals([], $client->put('test', 0, -1));
+    }
+
+    // test if priority is not a number
+
+    public function testPutException6() {
+        $conn = $this->getConnection();
+        $conn->method('readln')
+             ->will($this->returnValue("INSERTED"));
+        $client = new BeansClient($conn);
+
+        $this->expectException(Command::class);
+        self::assertEquals([], $client->put('test', 0, 0, 0));
+    }
+
+    // test if payload is too big;
+
+    public function testPutException7() {
+        $conn = $this->getConnection();
+        $conn->method('readln')
+             ->will($this->returnValue("INSERTED"));
+        $client = new BeansClient($conn);
+
+        $this->expectException(Command::class);
+        self::assertEquals([], $client->put('test', Put::MAX_PRIORITY + 1));
+    }
+
+    // test if job id somewhy is missing;
+
+    public function testPutException8() {
+        $conn = $this->getConnection();
+        $conn->method('readln')
+             ->will($this->returnValue("INSERTED"));
+        $client = new BeansClient($conn);
+
+        $this->expectException(Command::class);
+        self::assertEquals([], $client->put([1, 2, 3]));
+    }
+
+    public function testPutException9() {
+        $conn = $this->getConnection();
+        $conn->method('readln')
+             ->will($this->returnValue("INSERTED"));
+        $client = new BeansClient($conn);
+
+        $this->expectException(Command::class);
+        self::assertEquals([], $client->put('', ''));
     }
 }

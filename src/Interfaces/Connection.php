@@ -48,19 +48,13 @@ interface Connection
      * @return bool
      */
     public
-    function isPersistent() :bool;
+    function isActive() :bool;
 
     /**
      * @return bool
      */
     public
-    function isActive() :bool;
-
-    /**
-     * @param string $str
-     */
-    public
-    function write(string $str) :void;
+    function isPersistent() :bool;
 
     /**
      * @param int $length
@@ -77,4 +71,10 @@ interface Connection
      */
     public
     function readln(int $length = null) :string;
+
+    /**
+     * @param string $str
+     */
+    public
+    function write(string $str) :void;
 }

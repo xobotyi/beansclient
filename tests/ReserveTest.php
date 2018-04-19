@@ -17,6 +17,20 @@ class ReserveTest extends TestCase
     const PORT    = 11300;
     const TIMEOUT = 2;
 
+    private function getConnection(bool $active = true) {
+        $conn = $this->getMockBuilder('\xobotyi\beansclient\Connection')
+                     ->disableOriginalConstructor()
+                     ->getMock();
+
+        $conn->expects($this->any())
+             ->method('isActive')
+             ->will($this->returnValue($active));
+
+        return $conn;
+    }
+
+    // test if response has wrong status name
+
     public function testReserve() :void {
         $conn = $this->getConnection();
 
@@ -35,7 +49,8 @@ class ReserveTest extends TestCase
         self::assertEquals([1, 2, 3, 4], $client->reserve()->payload);
     }
 
-    // test if response has wrong status name
+    // test if response has no data in
+
     public function testReserveException1() :void {
         $conn = $this->getConnection();
 
@@ -48,7 +63,8 @@ class ReserveTest extends TestCase
         $client->reserve();
     }
 
-    // test if response has no data in
+    // test if timeout < 0
+
     public function testReserveException2() :void {
         $conn = $this->getConnection();
 
@@ -65,7 +81,6 @@ class ReserveTest extends TestCase
         $client->reserve();
     }
 
-    // test if timeout < 0
     public function testReserveException3() :void {
         $conn = $this->getConnection();
 
@@ -76,17 +91,5 @@ class ReserveTest extends TestCase
 
         $this->expectException(Command::class);
         $client->reserve(-1);
-    }
-
-    private function getConnection(bool $active = true) {
-        $conn = $this->getMockBuilder('\xobotyi\beansclient\Connection')
-                     ->disableOriginalConstructor()
-                     ->getMock();
-
-        $conn->expects($this->any())
-             ->method('isActive')
-             ->will($this->returnValue($active));
-
-        return $conn;
     }
 }

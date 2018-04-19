@@ -15,6 +15,18 @@ class ListTubesTest extends TestCase
     const PORT    = 11300;
     const TIMEOUT = 2;
 
+    private function getConnection(bool $active = true) {
+        $conn = $this->getMockBuilder('\xobotyi\beansclient\Connection')
+                     ->disableOriginalConstructor()
+                     ->getMock();
+
+        $conn->expects($this->any())
+             ->method('isActive')
+             ->will($this->returnValue($active));
+
+        return $conn;
+    }
+
     public function testListTubes() :void {
         $conn = $this->getConnection();
 
@@ -28,17 +40,5 @@ class ListTubesTest extends TestCase
         $client = new BeansClient($conn);
 
         self::assertEquals(['default', 'test1'], $client->listTubes());
-    }
-
-    private function getConnection(bool $active = true) {
-        $conn = $this->getMockBuilder('\xobotyi\beansclient\Connection')
-                     ->disableOriginalConstructor()
-                     ->getMock();
-
-        $conn->expects($this->any())
-             ->method('isActive')
-             ->will($this->returnValue($active));
-
-        return $conn;
     }
 }

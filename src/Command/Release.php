@@ -21,15 +21,15 @@ class Release extends CommandAbstract
     /**
      * @var int
      */
+    private $delay;
+    /**
+     * @var int
+     */
     private $jobId;
     /**
      * @var int|float
      */
     private $priority;
-    /**
-     * @var int
-     */
-    private $delay;
 
     /**
      * Release constructor.

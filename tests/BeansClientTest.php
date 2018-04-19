@@ -17,21 +17,16 @@ class BeansClientTest extends TestCase
     const PORT    = 11300;
     const TIMEOUT = 2;
 
-    public function testInactiveConnectionException1() :void {
-        $connInactive = $this->getConnection(false);
+    private function getConnection(bool $active = true) {
+        $conn = $this->getMockBuilder('\xobotyi\beansclient\Connection')
+                     ->disableOriginalConstructor()
+                     ->getMock();
 
-        $this->expectException(Client::class);
-        $client = new BeansClient($connInactive);
-    }
+        $conn->expects($this->any())
+             ->method('isActive')
+             ->will($this->returnValue($active));
 
-    public function testInactiveConnectionException2() :void {
-        $connInactive = $this->getConnection(false);
-
-        $connActive = $this->getConnection(true);
-        $client     = new BeansClient($connActive);
-
-        $this->expectException(Client::class);
-        $client->setConnection($connInactive);
+        return $conn;
     }
 
     public function testActiveConnectionException() :void {
@@ -41,17 +36,6 @@ class BeansClientTest extends TestCase
         self::assertEquals($connActive, $client->getConnection());
     }
 
-    public function testGetters() :void {
-        $conn       = $this->getConnection();
-        $serializer = new Json();
-
-        $client = new BeansClient($conn, $serializer);
-
-        self::assertEquals($conn, $client->getConnection());
-        self::assertEquals($serializer, $client->getSerializer());
-    }
-
-    // test if response suppose to have data, but has to content length header
     public function testException() :void {
         $conn = $this->getConnection();
         $conn->method('readln')
@@ -63,7 +47,6 @@ class BeansClientTest extends TestCase
         $client->release(13);
     }
 
-    // test if response has no or incorrect CRLF after data
     public function testException2() :void {
         $conn = $this->getConnection();
 
@@ -80,15 +63,34 @@ class BeansClientTest extends TestCase
         $client->release(13);
     }
 
-    private function getConnection(bool $active = true) {
-        $conn = $this->getMockBuilder('\xobotyi\beansclient\Connection')
-                     ->disableOriginalConstructor()
-                     ->getMock();
+    // test if response suppose to have data, but has to content length header
 
-        $conn->expects($this->any())
-             ->method('isActive')
-             ->will($this->returnValue($active));
+    public function testGetters() :void {
+        $conn       = $this->getConnection();
+        $serializer = new Json();
 
-        return $conn;
+        $client = new BeansClient($conn, $serializer);
+
+        self::assertEquals($conn, $client->getConnection());
+        self::assertEquals($serializer, $client->getSerializer());
+    }
+
+    // test if response has no or incorrect CRLF after data
+
+    public function testInactiveConnectionException1() :void {
+        $connInactive = $this->getConnection(false);
+
+        $this->expectException(Client::class);
+        $client = new BeansClient($connInactive);
+    }
+
+    public function testInactiveConnectionException2() :void {
+        $connInactive = $this->getConnection(false);
+
+        $connActive = $this->getConnection(true);
+        $client     = new BeansClient($connActive);
+
+        $this->expectException(Client::class);
+        $client->setConnection($connInactive);
     }
 }

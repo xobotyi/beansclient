@@ -16,22 +16,20 @@ class StatsTest extends TestCase
     const PORT    = 11300;
     const TIMEOUT = 2;
 
-    public function testStats() :void {
-        $conn = $this->getConnection();
+    private function getConnection(bool $active = true) {
+        $conn = $this->getMockBuilder('\xobotyi\beansclient\Connection')
+                     ->disableOriginalConstructor()
+                     ->getMock();
 
-        $conn->method('readln')
-             ->will($this->returnValue("OK 25"));
+        $conn->expects($this->any())
+             ->method('isActive')
+             ->will($this->returnValue($active));
 
-        $conn->method('read')
-             ->withConsecutive([25], [2])
-             ->willReturnOnConsecutiveCalls("---\r\n- default\r\n- test1\r\njobs: 25\r\nrequests: 100", "\r\n");
-
-        $client = new BeansClient($conn);
-
-        self::assertEquals(['default', 'test1', 'jobs' => 25, 'requests' => 100], $client->stats());
+        return $conn;
     }
 
     // test if response has wrong status name
+
     public function testReserveException1() :void {
         $conn = $this->getConnection();
 
@@ -61,15 +59,18 @@ class StatsTest extends TestCase
         $client->stats();
     }
 
-    private function getConnection(bool $active = true) {
-        $conn = $this->getMockBuilder('\xobotyi\beansclient\Connection')
-                     ->disableOriginalConstructor()
-                     ->getMock();
+    public function testStats() :void {
+        $conn = $this->getConnection();
 
-        $conn->expects($this->any())
-             ->method('isActive')
-             ->will($this->returnValue($active));
+        $conn->method('readln')
+             ->will($this->returnValue("OK 25"));
 
-        return $conn;
+        $conn->method('read')
+             ->withConsecutive([25], [2])
+             ->willReturnOnConsecutiveCalls("---\r\n- default\r\n- test1\r\njobs: 25\r\nrequests: 100", "\r\n");
+
+        $client = new BeansClient($conn);
+
+        self::assertEquals(['default', 'test1', 'jobs' => 25, 'requests' => 100], $client->stats());
     }
 }

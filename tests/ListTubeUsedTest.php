@@ -16,6 +16,20 @@ class ListTubeUsedTest extends TestCase
     const PORT    = 11300;
     const TIMEOUT = 2;
 
+    private function getConnection(bool $active = true) {
+        $conn = $this->getMockBuilder('\xobotyi\beansclient\Connection')
+                     ->disableOriginalConstructor()
+                     ->getMock();
+
+        $conn->expects($this->any())
+             ->method('isActive')
+             ->will($this->returnValue($active));
+
+        return $conn;
+    }
+
+    // test if tube name in response is missing
+
     public function testListTubeUsed() :void {
         $conn = $this->getConnection();
 
@@ -27,7 +41,8 @@ class ListTubeUsedTest extends TestCase
         self::assertEquals('test1', $client->listTubeUsed());
     }
 
-    // test if tube name in response is missing
+    // test if response has wrong status name
+
     public function testListTubeUsedException1() :void {
         $conn = $this->getConnection();
 
@@ -40,7 +55,8 @@ class ListTubeUsedTest extends TestCase
         $client->listTubeUsed();
     }
 
-    // test if response has wrong status name
+    // test if response has data in
+
     public function testListTubeUsedException2() :void {
         $conn = $this->getConnection();
 
@@ -53,7 +69,6 @@ class ListTubeUsedTest extends TestCase
         $client->listTubeUsed();
     }
 
-    // test if response has data in
     public function testListTubeUsedException3() :void {
         $conn = $this->getConnection();
 
@@ -68,17 +83,5 @@ class ListTubeUsedTest extends TestCase
 
         $this->expectException(Command::class);
         $client->listTubeUsed();
-    }
-
-    private function getConnection(bool $active = true) {
-        $conn = $this->getMockBuilder('\xobotyi\beansclient\Connection')
-                     ->disableOriginalConstructor()
-                     ->getMock();
-
-        $conn->expects($this->any())
-             ->method('isActive')
-             ->will($this->returnValue($active));
-
-        return $conn;
     }
 }

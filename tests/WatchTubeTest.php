@@ -17,6 +17,20 @@ class WatchTubeTest extends TestCase
     const PORT    = 11300;
     const TIMEOUT = 2;
 
+    private function getConnection(bool $active = true) {
+        $conn = $this->getMockBuilder('\xobotyi\beansclient\Connection')
+                     ->disableOriginalConstructor()
+                     ->getMock();
+
+        $conn->expects($this->any())
+             ->method('isActive')
+             ->will($this->returnValue($active));
+
+        return $conn;
+    }
+
+    // test if response has wrong status name
+
     public function testWatchTube() :void {
         $conn = $this->getConnection();
 
@@ -30,7 +44,8 @@ class WatchTubeTest extends TestCase
         self::assertEquals(123, $client->dispatchCommand(new WatchTube('test1')));
     }
 
-    // test if response has wrong status name
+    // test if response has data in
+
     public function testWatchTubeException1() :void {
         $conn = $this->getConnection();
 
@@ -43,7 +58,8 @@ class WatchTubeTest extends TestCase
         $client->watchTube('test1');
     }
 
-    // test if response has data in
+    // test if tube name is empty
+
     public function testWatchTubeException2() :void {
         $conn = $this->getConnection();
 
@@ -60,7 +76,6 @@ class WatchTubeTest extends TestCase
         $client->watchTube('test1');
     }
 
-    // test if tube name is empty
     public function testWatchTubeException3() :void {
         $conn = $this->getConnection();
 
@@ -71,17 +86,5 @@ class WatchTubeTest extends TestCase
 
         $this->expectException(Command::class);
         $client->watchTube('   ');
-    }
-
-    private function getConnection(bool $active = true) {
-        $conn = $this->getMockBuilder('\xobotyi\beansclient\Connection')
-                     ->disableOriginalConstructor()
-                     ->getMock();
-
-        $conn->expects($this->any())
-             ->method('isActive')
-             ->will($this->returnValue($active));
-
-        return $conn;
     }
 }

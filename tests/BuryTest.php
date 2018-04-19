@@ -17,8 +17,21 @@ class BuryTest extends TestCase
     const PORT    = 11300;
     const TIMEOUT = 2;
 
-    public
-    function testBury() :void {
+    private function getConnection(bool $active = true) {
+        $conn = $this->getMockBuilder('\xobotyi\beansclient\Connection')
+                     ->disableOriginalConstructor()
+                     ->getMock();
+
+        $conn->expects($this->any())
+             ->method('isActive')
+             ->will($this->returnValue($active));
+
+        return $conn;
+    }
+
+    // test if response has wrong status name
+
+    public function testBury() :void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
@@ -31,9 +44,9 @@ class BuryTest extends TestCase
         self::assertEquals(false, $client->bury(2));
     }
 
-    // test if response has wrong status name
-    public
-    function testBuryException1() :void {
+    // test if response has data in
+
+    public function testBuryException1() :void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
@@ -45,9 +58,9 @@ class BuryTest extends TestCase
         $client->bury(1);
     }
 
-    // test if response has data in
-    public
-    function testBuryException2() :void {
+    // test if job id <=0
+
+    public function testBuryException2() :void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
@@ -63,9 +76,9 @@ class BuryTest extends TestCase
         $client->bury(1);
     }
 
-    // test if job id <=0
-    public
-    function testBuryException3() :void {
+    // test if priority not number
+
+    public function testBuryException3() :void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
@@ -77,9 +90,9 @@ class BuryTest extends TestCase
         $client->bury(0);
     }
 
-    // test if priority not number
-    public
-    function testBuryException4() :void {
+    // test if priority less than 0
+
+    public function testBuryException4() :void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
@@ -91,9 +104,9 @@ class BuryTest extends TestCase
         $client->bury(1, '');
     }
 
-    // test if priority less than 0
-    public
-    function testBuryException5() :void {
+    // test if priority greater than maximal allowed
+
+    public function testBuryException5() :void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
@@ -105,9 +118,7 @@ class BuryTest extends TestCase
         $client->bury(1, -1);
     }
 
-    // test if priority greater than maximal allowed
-    public
-    function testBuryException6() :void {
+    public function testBuryException6() :void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
@@ -117,18 +128,5 @@ class BuryTest extends TestCase
 
         $this->expectException(Command::class);
         $client->bury(1, Put::MAX_PRIORITY + 1);
-    }
-
-    private
-    function getConnection(bool $active = true) {
-        $conn = $this->getMockBuilder('\xobotyi\beansclient\Connection')
-                     ->disableOriginalConstructor()
-                     ->getMock();
-
-        $conn->expects($this->any())
-             ->method('isActive')
-             ->will($this->returnValue($active));
-
-        return $conn;
     }
 }

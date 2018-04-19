@@ -21,19 +21,17 @@ abstract
 class CommandAbstract implements Interfaces\Command
 {
     /**
+     * @var string
+     */
+    protected $commandName;
+    /**
      * @var array|string|int|float
      */
     protected $payload;
-
     /**
      * @var \xobotyi\beansclient\Interfaces\Serializer
      */
     protected $serializer;
-
-    /**
-     * @var string
-     */
-    protected $commandName;
 
     /**
      * @return string
@@ -41,14 +39,6 @@ class CommandAbstract implements Interfaces\Command
     public
     function __toString() :string {
         return $this->getCommandStr();
-    }
-
-    /**
-     * @return bool
-     */
-    public
-    function hasPayload() :bool {
-        return (bool)$this->payload;
     }
 
     /**
@@ -60,15 +50,11 @@ class CommandAbstract implements Interfaces\Command
     }
 
     /**
-     * @param null|\xobotyi\beansclient\Interfaces\Serializer $serialize
-     *
-     * @return \xobotyi\beansclient\Command\CommandAbstract
+     * @return bool
      */
     public
-    function setSerializer(?Interfaces\Serializer $serialize) :self {
-        $this->serializer = $serialize;
-
-        return $this;
+    function hasPayload() :bool {
+        return (bool)$this->payload;
     }
 
     /**
@@ -89,5 +75,17 @@ class CommandAbstract implements Interfaces\Command
         }
 
         return Response::YamlParse($responseStr);
+    }
+
+    /**
+     * @param null|\xobotyi\beansclient\Interfaces\Serializer $serialize
+     *
+     * @return \xobotyi\beansclient\Command\CommandAbstract
+     */
+    public
+    function setSerializer(?Interfaces\Serializer $serialize) :self {
+        $this->serializer = $serialize;
+
+        return $this;
     }
 }
