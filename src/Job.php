@@ -102,9 +102,7 @@ class Job
 
         $this->data['id']      = $id;
         $this->data['state']   = $state;
-        $this->data['payload'] = $beansClient->getSerializer() && is_string($payload)
-            ? $beansClient->getSerializer()->unserialize($payload)
-            : $payload;
+        $this->data['payload'] = $payload;
     }
 
     /**

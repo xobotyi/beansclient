@@ -10,6 +10,7 @@ namespace xobotyi\beansclient;
 
 use PHPUnit\Framework\Error\Notice;
 use PHPUnit\Framework\TestCase;
+use xobotyi\beansclient\Serializer\Json;
 
 class JobTest extends TestCase
 {
@@ -192,6 +193,45 @@ class JobTest extends TestCase
                            $job->getData());
     }
 
+    public function testGetDataWithDeserialization() {
+        $client     = $this->getClient();
+        $serializer = new Json();
+
+        $client->method('getSerializer')
+               ->willReturn($serializer);
+        $client->method('statsJob')
+               ->willReturn(['state' => 'ready', 'time-left' => 0]);
+
+        $client->method('peek')
+               ->will($this->returnValue(
+                   [
+                       'id'      => 123,
+                       'payload' => '[1,2,3,4]',
+                   ]));
+
+        $job = new Job($client, 1);
+
+        self::assertEquals([
+                               'id'          => 1,
+                               'payload'     => [1,2,3,4],
+                               'tube'        => null,
+                               'state'       => 'ready',
+                               'priority'    => null,
+                               'age'         => null,
+                               'delay'       => null,
+                               'ttr'         => null,
+                               'timeLeft'    => 0,
+                               'releaseTime' => 0,
+                               'file'        => null,
+                               'reserves'    => null,
+                               'timeouts'    => null,
+                               'releases'    => null,
+                               'buries'      => null,
+                               'kicks'       => null,
+                           ],
+                           $job->getData());
+    }
+
     public function testKick() {
         $client = $this->getClient();
 
@@ -296,7 +336,16 @@ class JobTest extends TestCase
         }
 
         $client = $this->getMockBuilder('\xobotyi\beansclient\BeansClient')
-                       ->setMethods(['statsJob', 'peek', 'kickJob', 'touch', 'bury', 'delete', 'release'])
+                       ->setMethods([
+                                        'statsJob',
+                                        'peek',
+                                        'kickJob',
+                                        'touch',
+                                        'bury',
+                                        'delete',
+                                        'release',
+                                        'getSerializer',
+                                    ])
                        ->setConstructorArgs([&$conn])
                        ->getMock();
 
