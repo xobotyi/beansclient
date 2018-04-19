@@ -90,7 +90,7 @@ class BeansClient
     /**
      * @param \xobotyi\beansclient\Command\CommandAbstract $cmd
      *
-     * @return array|string|int|null
+     * @return mixed
      * @throws \Exception
      * @throws \xobotyi\beansclient\Exception\Client
      * @throws \xobotyi\beansclient\Exception\Command

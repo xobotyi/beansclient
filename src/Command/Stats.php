@@ -40,7 +40,7 @@ class Stats extends CommandAbstract
      * @throws \Exception
      * @throws \xobotyi\beansclient\Exception\Command
      */
-    public function parseResponse(array $responseHeader, ?string $responseStr) :array {
+    public function parseResponse(array $responseHeader, ?string $responseStr) :?array {
         if ($responseHeader[0] !== Response::OK) {
             throw new Exception\Command("Got unexpected status code [${responseHeader[0]}]");
         }
