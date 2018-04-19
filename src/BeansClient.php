@@ -179,13 +179,13 @@ class BeansClient
     /**
      * @param int $jobId
      *
-     * @return array|null
+     * @return bool
      * @throws \Exception
      * @throws \xobotyi\beansclient\Exception\Client
      * @throws \xobotyi\beansclient\Exception\Command
      * @throws \xobotyi\beansclient\Exception\Job
      */
-    public function delete(int $jobId) {
+    public function delete(int $jobId) :bool {
         return $this->dispatchCommand(new Command\Delete($jobId));
     }
 
@@ -194,13 +194,13 @@ class BeansClient
      * @param int $priority
      * @param int $delay
      *
-     * @return array|null
+     * @return string|null
      * @throws \Exception
      * @throws \xobotyi\beansclient\Exception\Client
      * @throws \xobotyi\beansclient\Exception\Command
      * @throws \xobotyi\beansclient\Exception\Job
      */
-    public function release(int $jobId, $priority = self::DEFAULT_PRIORITY, int $delay = self::DEFAULT_DELAY) {
+    public function release(int $jobId, $priority = self::DEFAULT_PRIORITY, int $delay = self::DEFAULT_DELAY) :?string {
         return $this->dispatchCommand(new Command\Release($jobId, $priority, $delay));
     }
 
@@ -208,52 +208,52 @@ class BeansClient
      * @param int $jobId
      * @param int $priority
      *
-     * @return array|null
+     * @return bool
      * @throws \Exception
      * @throws \xobotyi\beansclient\Exception\Client
      * @throws \xobotyi\beansclient\Exception\Command
      * @throws \xobotyi\beansclient\Exception\Job
      */
-    public function bury(int $jobId, $priority = self::DEFAULT_PRIORITY) {
+    public function bury(int $jobId, $priority = self::DEFAULT_PRIORITY) :bool {
         return $this->dispatchCommand(new Command\Bury($jobId, $priority));
     }
 
     /**
      * @param int $jobId
      *
-     * @return array|null
+     * @return bool
      * @throws \Exception
      * @throws \xobotyi\beansclient\Exception\Client
      * @throws \xobotyi\beansclient\Exception\Command
      * @throws \xobotyi\beansclient\Exception\Job
      */
-    public function touch(int $jobId) {
+    public function touch(int $jobId) :bool {
         return $this->dispatchCommand(new Command\Touch($jobId));
     }
 
     /**
      * @param int $count
      *
-     * @return array|null
+     * @return int
      * @throws \Exception
      * @throws \xobotyi\beansclient\Exception\Client
      * @throws \xobotyi\beansclient\Exception\Command
      * @throws \xobotyi\beansclient\Exception\Job
      */
-    public function kick(int $count) {
+    public function kick(int $count) :int {
         return $this->dispatchCommand(new Command\Kick($count));
     }
 
     /**
      * @param int $jobId
      *
-     * @return array|null
+     * @return bool
      * @throws \Exception
      * @throws \xobotyi\beansclient\Exception\Client
      * @throws \xobotyi\beansclient\Exception\Command
      * @throws \xobotyi\beansclient\Exception\Job
      */
-    public function kickJob(int $jobId) {
+    public function kickJob(int $jobId) :bool {
         return $this->dispatchCommand(new Command\KickJob($jobId));
     }
 
@@ -264,7 +264,7 @@ class BeansClient
      * @throws \xobotyi\beansclient\Exception\Command
      * @throws \xobotyi\beansclient\Exception\Job
      */
-    public function stats() {
+    public function stats() :?array {
         return $this->dispatchCommand(new Command\Stats());
     }
 
@@ -277,7 +277,7 @@ class BeansClient
      * @throws \xobotyi\beansclient\Exception\Command
      * @throws \xobotyi\beansclient\Exception\Job
      */
-    public function statsJob(int $jobId) {
+    public function statsJob(int $jobId) :?array {
         return $this->dispatchCommand(new Command\StatsJob($jobId));
     }
 
@@ -385,7 +385,7 @@ class BeansClient
      * @throws \xobotyi\beansclient\Exception\Command
      * @throws \xobotyi\beansclient\Exception\Job
      */
-    public function peek($subject) {
+    public function peek($subject) :?array {
         return $this->dispatchCommand(new Command\Peek($subject, $this->serializer));
     }
 }
