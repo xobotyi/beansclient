@@ -1,6 +1,6 @@
 {
   "name": "xobotyi/beansclient",
-  "description": "Client for beanstalkd queue",
+  "description": "PHP7.1+ client for beanstalkd work queue with no dependencies",
   "type": "library",
   "keywords": [
     "php",
