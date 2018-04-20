@@ -33,6 +33,19 @@ Library gives you a simple way to provide your own Connection implementation, in
 BeansClient supports whole bunch of commands and responses specified in [protocol](https://github.com/kr/beanstalkd/blob/master/doc/protocol.txt) for version 1.10  
 <br>
 
+## Why BeansClient?
+1) It is well documented
+2) I'm eating my own sweet pie=)
+3) The only library i can compare beansclient is pheanstalk. And the only and the hugest beansclient's advantage - it is much more handy to use.  
+_4ex:_ pheanstalk will throw an exception in almost every time when you are **not** expecting it =)  
+Want to ignore the last tube watched? Exception.  
+Want to kick job, but other worker already done that? One more!  
+Want to pause the tube but other worker deleted the last job (tube vanishes when nobody is watching it and there are no jobs)? Here you go, my friend, you are loving them so much!
+And the weirdest one: there is possibility that server will run out of memory trying to grow the priority queue data structure. In that case job will be assigned the id, and it will be placed to the buried queue. But with pheanstalk the only way you can figure out that id is by parsing the exception message ;)
+<br>  
+There is no huge problem in it, but pheanstalk always forces you to wrap its every call with `try/catch` blocks in order to handle exception that will be thrown in common situation actually.  
+It became the main reason why i wrote beansclient.
+
 ## Contents
 1. [Requirements](#requirements)
 2. [Installation](#installation)
