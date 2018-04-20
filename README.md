@@ -41,8 +41,7 @@ _4ex:_ pheanstalk will throw an exception in almost every time when you are **no
 Want to ignore the last tube watched? Exception.  
 Want to kick job, but other worker already done that? One more!  
 Want to pause the tube but other worker deleted the last job (tube vanishes when nobody is watching it and there are no jobs)? Here you go, my friend, you are loving them so much!
-And the weirdest one: there is possibility that server will run out of memory trying to grow the priority queue data structure. In that case job will be assigned the id, and it will be placed to the buried queue. But with pheanstalk the only way you can figure out that id is by parsing the exception message ;)
-<br>  
+And the weirdest one: there is possibility that server will run out of memory trying to grow the priority queue data structure. In that case job will be assigned the id, and it will be placed to the buried queue. But with pheanstalk the only way you can figure out that id is by parsing the exception message ;)  <br>  
 There is no huge problem in it, but pheanstalk always forces you to wrap its every call with `try/catch` blocks in order to handle exception that will be thrown in common situation actually.  
 It became the main reason why i wrote beansclient.
 
