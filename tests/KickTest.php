@@ -17,7 +17,7 @@ class KickTest extends TestCase
     const TIMEOUT = 2;
 
     private function getConnection(bool $active = true) {
-        $conn = $this->getMockBuilder('\xobotyi\beansclient\Connection')
+        $conn = $this->getMockBuilder(Connection::class)
                      ->disableOriginalConstructor()
                      ->getMock();
 

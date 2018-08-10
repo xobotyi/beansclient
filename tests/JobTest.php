@@ -16,7 +16,7 @@ class JobTest extends TestCase
 {
 
     private function getClient(bool $activeConnection = true) {
-        $conn = $this->getMockBuilder('\xobotyi\beansclient\Connection')
+        $conn = $this->getMockBuilder(Connection::class)
                      ->disableOriginalConstructor()
                      ->getMock();
 
@@ -30,7 +30,7 @@ class JobTest extends TestCase
                  ->willReturn(true);
         }
 
-        $client = $this->getMockBuilder('\xobotyi\beansclient\BeansClient')
+        $client = $this->getMockBuilder(BeansClient::class)
                        ->setMethods([
                                         'statsJob',
                                         'peek',
