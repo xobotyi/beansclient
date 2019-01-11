@@ -40,7 +40,7 @@ class SocketFunctions
      * @return bool|string
      */
     public function fgets($stream, int $length = null) {
-        if ($length) {
+        if ($length !== null) {
             return fgets($stream, $length);
         }
 
@@ -58,15 +58,15 @@ class SocketFunctions
     }
 
     /**
-     * @param string   $hostName
-     * @param int      $port
-     * @param null     $errNo
-     * @param null     $errStr
-     * @param int|null $timeout
+     * @param string $hostName
+     * @param int    $port
+     * @param int    $errNo
+     * @param string $errStr
+     * @param float  $timeout
      *
      * @return bool|null|resource
      */
-    public function fsockopen(string $hostName, int $port = -1, &$errNo = null, &$errStr = null, int $timeout = null) {
+    public function fsockopen(string $hostName, int $port = -1, &$errNo = null, &$errStr = null, float $timeout = null) {
         return @fsockopen($hostName, $port, $errNo, $errStr, $timeout);
     }
 
@@ -78,7 +78,7 @@ class SocketFunctions
      * @return bool|int|null
      */
     public function fwrite($stream, string $text, int $length = null) {
-        if ($length) {
+        if ($length !== null) {
             return fwrite($stream, $text, $length);
         }
 
@@ -86,15 +86,15 @@ class SocketFunctions
     }
 
     /**
-     * @param string   $hostName
-     * @param int      $port
-     * @param null     $errNo
-     * @param null     $errStr
-     * @param int|null $timeout
+     * @param string $hostName
+     * @param int    $port
+     * @param int    $errNo
+     * @param string $errStr
+     * @param float  $timeout
      *
      * @return bool|null|resource
      */
-    public function pfsockopen(string $hostName, int $port = -1, &$errNo = null, &$errStr = null, int $timeout = null) {
+    public function pfsockopen(string $hostName, int $port = -1, &$errNo = null, &$errStr = null, float $timeout = null) {
         return @pfsockopen($hostName, $port, $errNo, $errStr, $timeout);
     }
 
