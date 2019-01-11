@@ -30,14 +30,14 @@ class Peek extends CommandAbstract
     ];
 
     /**
-     * @var null
+     * @var null | int
      */
     private $jobId;
 
     /**
      * Peek constructor.
      *
-     * @param                                                 $subject
+     * @param string|number                                   $subject
      * @param null|\xobotyi\beansclient\Interfaces\Serializer $serializer
      *
      * @throws \xobotyi\beansclient\Exception\Command

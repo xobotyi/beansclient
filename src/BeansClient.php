@@ -101,7 +101,7 @@ class BeansClient
                 throw new Exception\Client("Got no data length in response to {$cmd->getCommandStr()} [" . implode(' ', $responseHeader) . "]");
             }
 
-            $data = $this->connection->read($responseHeader[count($responseHeader) - 1]);
+            $data = $this->connection->read((int)$responseHeader[count($responseHeader) - 1]);
             $crlf = $this->connection->read(self::CRLF_LEN);
 
             if ($crlf !== self::CRLF) {
