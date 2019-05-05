@@ -1,17 +1,12 @@
 <?php
-/**
- * @Author : a.zinovyev
- * @Package: beansclient
- * @License: http://www.opensource.org/licenses/mit-license.php
- */
+
 
 namespace xobotyi\beansclient;
 
 use PHPUnit\Framework\TestCase;
-use xobotyi\beansclient\Command\IgnoreTube;
 use xobotyi\beansclient\Exception\CommandException;
 
-class IgnoreTubeTest extends TestCase
+class DeleteTest extends TestCase
 {
     const HOST    = 'localhost';
     const PORT    = 11300;
@@ -31,22 +26,22 @@ class IgnoreTubeTest extends TestCase
 
     // test if response has wrong status name
 
-    public function testIgnoreTube() :void {
+    public function testDelete() :void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
              ->withConsecutive()
-             ->willReturnOnConsecutiveCalls("WATCHING 123", "WATCHING 123");
+             ->willReturnOnConsecutiveCalls("DELETED", "NOT_FOUND");
 
         $client = new BeansClient($conn);
 
-        $client->ignoreTube('test1');
-        self::assertEquals(123, $client->dispatchCommand(new IgnoreTube('test1')));
+        self::assertEquals(true, $client->delete(1));
+        self::assertEquals(false, $client->delete(2));
     }
 
     // test if response has data in
 
-    public function testIgnoreTubeException1() :void {
+    public function testDeleteException1() :void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
@@ -55,12 +50,12 @@ class IgnoreTubeTest extends TestCase
         $client = new BeansClient($conn);
 
         $this->expectException(CommandException::class);
-        $client->ignoreTube('test1');
+        $client->delete(1);
     }
 
-    // test if tube name is empty
+    // test if job id <=0
 
-    public function testIgnoreTubeException2() :void {
+    public function testDeleteException2() :void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
@@ -73,18 +68,18 @@ class IgnoreTubeTest extends TestCase
         $client = new BeansClient($conn);
 
         $this->expectException(CommandException::class);
-        $client->ignoreTube('test1');
+        $client->delete(1);
     }
 
-    public function testIgnoreTubeException3() :void {
+    public function testDeleteException3() :void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
-             ->will($this->returnValue("WATCHING 123"));
+             ->will($this->returnValue("BURIED"));
 
         $client = new BeansClient($conn);
 
         $this->expectException(CommandException::class);
-        $client->ignoreTube('   ');
+        $client->delete(0);
     }
 }

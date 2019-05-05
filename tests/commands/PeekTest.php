@@ -1,16 +1,14 @@
 <?php
-/**
- * @Author : a.zinovyev
- * @Package: beansclient
- * @License: http://www.opensource.org/licenses/mit-license.php
- */
+
 
 namespace xobotyi\beansclient;
 
 use PHPUnit\Framework\TestCase;
+use xobotyi\beansclient\Command\Peek;
 use xobotyi\beansclient\Exception\CommandException;
+use xobotyi\beansclient\Serializer\JsonSerializer;
 
-class StatsJobTest extends TestCase
+class PeekTest extends TestCase
 {
     const HOST    = 'localhost';
     const PORT    = 11300;
@@ -30,26 +28,28 @@ class StatsJobTest extends TestCase
 
     // test if response has wrong status name
 
-    public function testStatsJob() :void {
+    public function testPeek() :void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
              ->withConsecutive()
-             ->willReturnOnConsecutiveCalls("OK 25", 'NOT_FOUND');
-
+             ->willReturnOnConsecutiveCalls("NOT_FOUND", "FOUND 1 9", "FOUND 1 9");
         $conn->method('read')
-             ->withConsecutive([25], [2])
-             ->willReturnOnConsecutiveCalls("---\r\n- default\r\n- test1\r\njobs: 25\r\nrequests: 100", "\r\n");
+             ->withConsecutive([9], [2], [9], [2])
+             ->willReturnOnConsecutiveCalls("[1,2,3,4]", "\r\n", "[1,2,3,4]", "\r\n");
 
         $client = new BeansClient($conn);
 
-        self::assertEquals(['default', 'test1', 'jobs' => 25, 'requests' => 100], $client->statsJob(1));
-        self::assertEquals(null, $client->statsJob(1));
+        self::assertEquals(null, $client->peek(Peek::TYPE_BURIED));
+        self::assertEquals(['id' => 1, 'payload' => '[1,2,3,4]'], $client->peek(1));
+
+        $client = new BeansClient($conn, new JsonSerializer());
+        self::assertEquals(['id' => 1, 'payload' => [1, 2, 3, 4]], $client->peek(1));
     }
 
     // test if response has no data in
 
-    public function testStatsJobException1() :void {
+    public function testPeekException1() :void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
@@ -58,16 +58,16 @@ class StatsJobTest extends TestCase
         $client = new BeansClient($conn);
 
         $this->expectException(CommandException::class);
-        $client->statsJob(2);
+        $client->peek(123);
     }
 
-    // test if job id <=0
+    // test if jobId <= 0
 
-    public function testStatsJobException2() :void {
+    public function testPeekException2() :void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
-             ->will($this->returnValue("OK 0"));
+             ->will($this->returnValue("FOUND 0"));
 
         $conn->method('read')
              ->withConsecutive([0], [2])
@@ -76,18 +76,29 @@ class StatsJobTest extends TestCase
         $client = new BeansClient($conn);
 
         $this->expectException(CommandException::class);
-        $client->statsJob(3);
+        $client->peek(123);
     }
 
-    public function testStatsJobException3() :void {
+    // test if subject is unknown <= 0
+
+    public function testPeekException3() :void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
-             ->will($this->returnValue("BURIED"));
+             ->will($this->returnValue("TOUCHED"));
 
         $client = new BeansClient($conn);
 
         $this->expectException(CommandException::class);
-        $client->statsJob(0);
+        $client->peek(0);
+    }
+
+    public function testPeekException4() :void {
+        $conn = $this->getConnection();
+
+        $client = new BeansClient($conn);
+
+        $this->expectException(CommandException::class);
+        $client->peek('stuff');
     }
 }

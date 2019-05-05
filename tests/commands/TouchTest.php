@@ -1,17 +1,12 @@
 <?php
-/**
- * @Author : a.zinovyev
- * @Package: beansclient
- * @License: http://www.opensource.org/licenses/mit-license.php
- */
+
 
 namespace xobotyi\beansclient;
 
 use PHPUnit\Framework\TestCase;
 use xobotyi\beansclient\Exception\CommandException;
-use xobotyi\beansclient\Serializer\JsonSerializer;
 
-class ReserveTest extends TestCase
+class TouchTest extends TestCase
 {
     const HOST    = 'localhost';
     const PORT    = 11300;
@@ -31,27 +26,22 @@ class ReserveTest extends TestCase
 
     // test if response has wrong status name
 
-    public function testReserve() :void {
+    public function testTouch() :void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
              ->withConsecutive()
-             ->willReturnOnConsecutiveCalls("TIMED_OUT", "RESERVED 1 9", "RESERVED 1 9");
-        $conn->method('read')
-             ->withConsecutive([9], [2], [9], [2])
-             ->willReturnOnConsecutiveCalls("[1,2,3,4]", "\r\n", "[1,2,3,4]", "\r\n");
+             ->willReturnOnConsecutiveCalls("TOUCHED", "NOT_FOUND");
 
         $client = new BeansClient($conn);
-        self::assertEquals(null, $client->reserve()->id);
-        self::assertEquals(1, $client->reserve()->id);
 
-        $client = new BeansClient($conn, new JsonSerializer());
-        self::assertEquals([1, 2, 3, 4], $client->reserve()->payload);
+        self::assertEquals(true, $client->touch(1));
+        self::assertEquals(false, $client->touch(2));
     }
 
-    // test if response has no data in
+    // test if response has data in
 
-    public function testReserveException1() :void {
+    public function testTouchException1() :void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
@@ -60,28 +50,28 @@ class ReserveTest extends TestCase
         $client = new BeansClient($conn);
 
         $this->expectException(CommandException::class);
-        $client->reserve();
+        $client->touch(1);
     }
 
-    // test if timeout < 0
+    // test if job id <=0
 
-    public function testReserveException2() :void {
+    public function testTouchException2() :void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
-             ->will($this->returnValue("OK 0"));
+             ->will($this->returnValue("OK 25"));
 
         $conn->method('read')
-             ->withConsecutive([0], [2])
-             ->willReturnOnConsecutiveCalls("", "\r\n");
+             ->withConsecutive([25], [2])
+             ->willReturnOnConsecutiveCalls("---\r\n- default\r\n- test1", "\r\n");
 
         $client = new BeansClient($conn);
 
         $this->expectException(CommandException::class);
-        $client->reserve();
+        $client->touch(1);
     }
 
-    public function testReserveException3() :void {
+    public function testTouchException3() :void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
@@ -90,6 +80,6 @@ class ReserveTest extends TestCase
         $client = new BeansClient($conn);
 
         $this->expectException(CommandException::class);
-        $client->reserve(-1);
+        $client->touch(0);
     }
 }

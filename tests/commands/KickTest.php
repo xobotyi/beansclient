@@ -1,17 +1,12 @@
 <?php
-/**
- * @Author : a.zinovyev
- * @Package: beansclient
- * @License: http://www.opensource.org/licenses/mit-license.php
- */
+
 
 namespace xobotyi\beansclient;
 
 use PHPUnit\Framework\TestCase;
-use xobotyi\beansclient\Command\WatchTube;
 use xobotyi\beansclient\Exception\CommandException;
 
-class WatchTubeTest extends TestCase
+class KickTest extends TestCase
 {
     const HOST    = 'localhost';
     const PORT    = 11300;
@@ -31,22 +26,21 @@ class WatchTubeTest extends TestCase
 
     // test if response has wrong status name
 
-    public function testWatchTube() :void {
+    public function testKick() :void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
              ->withConsecutive()
-             ->willReturnOnConsecutiveCalls("WATCHING 123", "WATCHING 123");
+             ->willReturnOnConsecutiveCalls("KICKED 3");
 
         $client = new BeansClient($conn);
 
-        $client->watchTube('test1');
-        self::assertEquals(123, $client->dispatchCommand(new WatchTube('test1')));
+        self::assertEquals(3, $client->kick(3));
     }
 
     // test if response has data in
 
-    public function testWatchTubeException1() :void {
+    public function testKickException1() :void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
@@ -55,12 +49,12 @@ class WatchTubeTest extends TestCase
         $client = new BeansClient($conn);
 
         $this->expectException(CommandException::class);
-        $client->watchTube('test1');
+        $client->kick(1);
     }
 
-    // test if tube name is empty
+    // test if jobs count less or equal 0
 
-    public function testWatchTubeException2() :void {
+    public function testKickException2() :void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
@@ -73,18 +67,18 @@ class WatchTubeTest extends TestCase
         $client = new BeansClient($conn);
 
         $this->expectException(CommandException::class);
-        $client->watchTube('test1');
+        $client->kick(21);
     }
 
-    public function testWatchTubeException3() :void {
+    public function testKickException3() :void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
-             ->will($this->returnValue("WATCHING 123"));
+             ->will($this->returnValue("KICKED 3"));
 
         $client = new BeansClient($conn);
 
         $this->expectException(CommandException::class);
-        $client->watchTube('   ');
+        $client->kick(0);
     }
 }

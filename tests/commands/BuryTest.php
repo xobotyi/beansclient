@@ -1,16 +1,13 @@
 <?php
-/**
- * @Author : a.zinovyev
- * @Package: beansclient
- * @License: http://www.opensource.org/licenses/mit-license.php
- */
+
 
 namespace xobotyi\beansclient;
 
 use PHPUnit\Framework\TestCase;
+use xobotyi\beansclient\Command\Put;
 use xobotyi\beansclient\Exception\CommandException;
 
-class DeleteTest extends TestCase
+class BuryTest extends TestCase
 {
     const HOST    = 'localhost';
     const PORT    = 11300;
@@ -30,22 +27,22 @@ class DeleteTest extends TestCase
 
     // test if response has wrong status name
 
-    public function testDelete() :void {
+    public function testBury() :void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
              ->withConsecutive()
-             ->willReturnOnConsecutiveCalls("DELETED", "NOT_FOUND");
+             ->willReturnOnConsecutiveCalls("BURIED", "NOT_FOUND");
 
         $client = new BeansClient($conn);
 
-        self::assertEquals(true, $client->delete(1));
-        self::assertEquals(false, $client->delete(2));
+        self::assertEquals(true, $client->bury(1));
+        self::assertEquals(false, $client->bury(2));
     }
 
     // test if response has data in
 
-    public function testDeleteException1() :void {
+    public function testBuryException1() :void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
@@ -54,12 +51,12 @@ class DeleteTest extends TestCase
         $client = new BeansClient($conn);
 
         $this->expectException(CommandException::class);
-        $client->delete(1);
+        $client->bury(1);
     }
 
     // test if job id <=0
 
-    public function testDeleteException2() :void {
+    public function testBuryException2() :void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
@@ -72,10 +69,12 @@ class DeleteTest extends TestCase
         $client = new BeansClient($conn);
 
         $this->expectException(CommandException::class);
-        $client->delete(1);
+        $client->bury(1);
     }
 
-    public function testDeleteException3() :void {
+    // test if priority not number
+
+    public function testBuryException3() :void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
@@ -84,6 +83,46 @@ class DeleteTest extends TestCase
         $client = new BeansClient($conn);
 
         $this->expectException(CommandException::class);
-        $client->delete(0);
+        $client->bury(0);
+    }
+
+    // test if priority less than 0
+
+    public function testBuryException4() :void {
+        $conn = $this->getConnection();
+
+        $conn->method('readln')
+             ->will($this->returnValue("BURIED"));
+
+        $client = new BeansClient($conn);
+
+        $this->expectException(CommandException::class);
+        $client->bury(1, '');
+    }
+
+    // test if priority greater than maximal allowed
+
+    public function testBuryException5() :void {
+        $conn = $this->getConnection();
+
+        $conn->method('readln')
+             ->will($this->returnValue("BURIED"));
+
+        $client = new BeansClient($conn);
+
+        $this->expectException(CommandException::class);
+        $client->bury(1, -1);
+    }
+
+    public function testBuryException6() :void {
+        $conn = $this->getConnection();
+
+        $conn->method('readln')
+             ->will($this->returnValue("BURIED"));
+
+        $client = new BeansClient($conn);
+
+        $this->expectException(CommandException::class);
+        $client->bury(1, Put::MAX_PRIORITY + 1);
     }
 }

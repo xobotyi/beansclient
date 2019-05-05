@@ -1,16 +1,13 @@
 <?php
-/**
- * @Author : a.zinovyev
- * @Package: beansclient
- * @License: http://www.opensource.org/licenses/mit-license.php
- */
+
 
 namespace xobotyi\beansclient;
 
 use PHPUnit\Framework\TestCase;
+use xobotyi\beansclient\Command\IgnoreTube;
 use xobotyi\beansclient\Exception\CommandException;
 
-class KickJobTest extends TestCase
+class IgnoreTubeTest extends TestCase
 {
     const HOST    = 'localhost';
     const PORT    = 11300;
@@ -30,22 +27,22 @@ class KickJobTest extends TestCase
 
     // test if response has wrong status name
 
-    public function testKickJob() :void {
+    public function testIgnoreTube() :void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
              ->withConsecutive()
-             ->willReturnOnConsecutiveCalls("KICKED", "NOT_FOUND");
+             ->willReturnOnConsecutiveCalls("WATCHING 123", "WATCHING 123");
 
         $client = new BeansClient($conn);
 
-        self::assertEquals(true, $client->kickJob(1));
-        self::assertEquals(false, $client->kickJob(2));
+        $client->ignoreTube('test1');
+        self::assertEquals(123, $client->dispatchCommand(new IgnoreTube('test1')));
     }
 
     // test if response has data in
 
-    public function testKickJobException1() :void {
+    public function testIgnoreTubeException1() :void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
@@ -54,12 +51,12 @@ class KickJobTest extends TestCase
         $client = new BeansClient($conn);
 
         $this->expectException(CommandException::class);
-        $client->kickJob(1);
+        $client->ignoreTube('test1');
     }
 
-    // test if job id <=0
+    // test if tube name is empty
 
-    public function testKickJobException2() :void {
+    public function testIgnoreTubeException2() :void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
@@ -72,18 +69,18 @@ class KickJobTest extends TestCase
         $client = new BeansClient($conn);
 
         $this->expectException(CommandException::class);
-        $client->kickJob(1);
+        $client->ignoreTube('test1');
     }
 
-    public function testKickJobException3() :void {
+    public function testIgnoreTubeException3() :void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
-             ->will($this->returnValue("BURIED"));
+             ->will($this->returnValue("WATCHING 123"));
 
         $client = new BeansClient($conn);
 
         $this->expectException(CommandException::class);
-        $client->kickJob(0);
+        $client->ignoreTube('   ');
     }
 }

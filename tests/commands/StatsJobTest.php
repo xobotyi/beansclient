@@ -1,16 +1,12 @@
 <?php
-/**
- * @Author : a.zinovyev
- * @Package: beansclient
- * @License: http://www.opensource.org/licenses/mit-license.php
- */
+
 
 namespace xobotyi\beansclient;
 
 use PHPUnit\Framework\TestCase;
 use xobotyi\beansclient\Exception\CommandException;
 
-class KickTest extends TestCase
+class StatsJobTest extends TestCase
 {
     const HOST    = 'localhost';
     const PORT    = 11300;
@@ -30,21 +26,26 @@ class KickTest extends TestCase
 
     // test if response has wrong status name
 
-    public function testKick() :void {
+    public function testStatsJob() :void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
              ->withConsecutive()
-             ->willReturnOnConsecutiveCalls("KICKED 3");
+             ->willReturnOnConsecutiveCalls("OK 25", 'NOT_FOUND');
+
+        $conn->method('read')
+             ->withConsecutive([25], [2])
+             ->willReturnOnConsecutiveCalls("---\r\n- default\r\n- test1\r\njobs: 25\r\nrequests: 100", "\r\n");
 
         $client = new BeansClient($conn);
 
-        self::assertEquals(3, $client->kick(3));
+        self::assertEquals(['default', 'test1', 'jobs' => 25, 'requests' => 100], $client->statsJob(1));
+        self::assertEquals(null, $client->statsJob(1));
     }
 
-    // test if response has data in
+    // test if response has no data in
 
-    public function testKickException1() :void {
+    public function testStatsJobException1() :void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
@@ -53,36 +54,36 @@ class KickTest extends TestCase
         $client = new BeansClient($conn);
 
         $this->expectException(CommandException::class);
-        $client->kick(1);
+        $client->statsJob(2);
     }
 
-    // test if jobs count less or equal 0
+    // test if job id <=0
 
-    public function testKickException2() :void {
+    public function testStatsJobException2() :void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
-             ->will($this->returnValue("OK 25"));
+             ->will($this->returnValue("OK 0"));
 
         $conn->method('read')
-             ->withConsecutive([25], [2])
-             ->willReturnOnConsecutiveCalls("---\r\n- default\r\n- test1", "\r\n");
+             ->withConsecutive([0], [2])
+             ->willReturnOnConsecutiveCalls("", "\r\n");
 
         $client = new BeansClient($conn);
 
         $this->expectException(CommandException::class);
-        $client->kick(21);
+        $client->statsJob(3);
     }
 
-    public function testKickException3() :void {
+    public function testStatsJobException3() :void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
-             ->will($this->returnValue("KICKED 3"));
+             ->will($this->returnValue("BURIED"));
 
         $client = new BeansClient($conn);
 
         $this->expectException(CommandException::class);
-        $client->kick(0);
+        $client->statsJob(0);
     }
 }

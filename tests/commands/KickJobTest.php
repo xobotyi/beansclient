@@ -1,16 +1,12 @@
 <?php
-/**
- * @Author : a.zinovyev
- * @Package: beansclient
- * @License: http://www.opensource.org/licenses/mit-license.php
- */
+
 
 namespace xobotyi\beansclient;
 
 use PHPUnit\Framework\TestCase;
 use xobotyi\beansclient\Exception\CommandException;
 
-class TouchTest extends TestCase
+class KickJobTest extends TestCase
 {
     const HOST    = 'localhost';
     const PORT    = 11300;
@@ -30,22 +26,22 @@ class TouchTest extends TestCase
 
     // test if response has wrong status name
 
-    public function testTouch() :void {
+    public function testKickJob() :void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
              ->withConsecutive()
-             ->willReturnOnConsecutiveCalls("TOUCHED", "NOT_FOUND");
+             ->willReturnOnConsecutiveCalls("KICKED", "NOT_FOUND");
 
         $client = new BeansClient($conn);
 
-        self::assertEquals(true, $client->touch(1));
-        self::assertEquals(false, $client->touch(2));
+        self::assertEquals(true, $client->kickJob(1));
+        self::assertEquals(false, $client->kickJob(2));
     }
 
     // test if response has data in
 
-    public function testTouchException1() :void {
+    public function testKickJobException1() :void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
@@ -54,12 +50,12 @@ class TouchTest extends TestCase
         $client = new BeansClient($conn);
 
         $this->expectException(CommandException::class);
-        $client->touch(1);
+        $client->kickJob(1);
     }
 
     // test if job id <=0
 
-    public function testTouchException2() :void {
+    public function testKickJobException2() :void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
@@ -72,18 +68,18 @@ class TouchTest extends TestCase
         $client = new BeansClient($conn);
 
         $this->expectException(CommandException::class);
-        $client->touch(1);
+        $client->kickJob(1);
     }
 
-    public function testTouchException3() :void {
+    public function testKickJobException3() :void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
-             ->will($this->returnValue("TOUCHED"));
+             ->will($this->returnValue("BURIED"));
 
         $client = new BeansClient($conn);
 
         $this->expectException(CommandException::class);
-        $client->touch(0);
+        $client->kickJob(0);
     }
 }

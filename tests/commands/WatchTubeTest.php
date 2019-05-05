@@ -1,17 +1,13 @@
 <?php
-/**
- * @Author : a.zinovyev
- * @Package: beansclient
- * @License: http://www.opensource.org/licenses/mit-license.php
- */
+
 
 namespace xobotyi\beansclient;
 
 use PHPUnit\Framework\TestCase;
-use xobotyi\beansclient\Command\UseTube;
+use xobotyi\beansclient\Command\WatchTube;
 use xobotyi\beansclient\Exception\CommandException;
 
-class UseTubeTest extends TestCase
+class WatchTubeTest extends TestCase
 {
     const HOST    = 'localhost';
     const PORT    = 11300;
@@ -29,39 +25,24 @@ class UseTubeTest extends TestCase
         return $conn;
     }
 
-    // test if response has another tube name
-
-    public function testUseTube() :void {
-        $conn = $this->getConnection();
-
-        $conn->method('readln')
-             ->withConsecutive()
-             ->willReturnOnConsecutiveCalls("USING test1", "USING test1");
-
-        $client = new BeansClient($conn);
-
-        $client->useTube('test1');
-        self::assertEquals('test1', $client->dispatchCommand(new UseTube('test1')));
-    }
-
     // test if response has wrong status name
 
-    public function testUseTubeException() :void {
+    public function testWatchTube() :void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
              ->withConsecutive()
-             ->willReturnOnConsecutiveCalls("USING test2");
+             ->willReturnOnConsecutiveCalls("WATCHING 123", "WATCHING 123");
 
         $client = new BeansClient($conn);
 
-        $this->expectException(CommandException::class);
-        $client->useTube('test1');
+        $client->watchTube('test1');
+        self::assertEquals(123, $client->dispatchCommand(new WatchTube('test1')));
     }
 
     // test if response has data in
 
-    public function testUseTubeException1() :void {
+    public function testWatchTubeException1() :void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
@@ -70,12 +51,12 @@ class UseTubeTest extends TestCase
         $client = new BeansClient($conn);
 
         $this->expectException(CommandException::class);
-        $client->useTube('test1');
+        $client->watchTube('test1');
     }
 
     // test if tube name is empty
 
-    public function testUseTubeException2() :void {
+    public function testWatchTubeException2() :void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
@@ -88,10 +69,10 @@ class UseTubeTest extends TestCase
         $client = new BeansClient($conn);
 
         $this->expectException(CommandException::class);
-        $client->useTube('test1');
+        $client->watchTube('test1');
     }
 
-    public function testUseTubeException3() :void {
+    public function testWatchTubeException3() :void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
@@ -100,6 +81,6 @@ class UseTubeTest extends TestCase
         $client = new BeansClient($conn);
 
         $this->expectException(CommandException::class);
-        $client->useTube('   ');
+        $client->watchTube('   ');
     }
 }

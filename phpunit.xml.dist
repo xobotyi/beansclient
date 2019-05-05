@@ -20,7 +20,7 @@
         <whitelist>
             <directory suffix=".php">./src</directory>
             <exclude>
-                <directory suffix=".php">./src/Interfaces</directory>
+                <directory>./src/Interfaces</directory>
             </exclude>
         </whitelist>
     </filter>
