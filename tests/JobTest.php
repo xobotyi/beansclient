@@ -10,7 +10,7 @@ namespace xobotyi\beansclient;
 
 use PHPUnit\Framework\Error\Notice;
 use PHPUnit\Framework\TestCase;
-use xobotyi\beansclient\Serializer\Json;
+use xobotyi\beansclient\Serializer\JsonSerializer;
 
 class JobTest extends TestCase
 {
@@ -119,7 +119,7 @@ class JobTest extends TestCase
     public function testException1() {
         $client = $this->getClient(false);
 
-        $this->expectException(Exception\Job::class);
+        $this->expectException(Exception\JobException::class);
         $job = new Job($client, 1, Job::STATE_READY, '12345');
     }
 
@@ -168,7 +168,7 @@ class JobTest extends TestCase
 
     public function testGetDataWithDeserialization() {
         $client     = $this->getClient();
-        $serializer = new Json();
+        $serializer = new JsonSerializer();
 
         $client->method('getSerializer')
                ->willReturn($serializer);

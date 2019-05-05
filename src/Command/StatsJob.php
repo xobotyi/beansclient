@@ -28,14 +28,14 @@ class StatsJob extends CommandAbstract
      *
      * @param int $jobId
      *
-     * @throws \xobotyi\beansclient\Exception\Command
+     * @throws \xobotyi\beansclient\Exception\CommandException
      */
     public function __construct(int $jobId) {
         if ($jobId <= 0) {
-            throw new Exception\Command('Job id must be a positive integer');
+            throw new Exception\CommandException('Job id must be a positive integer');
         }
 
-        $this->commandName = Interfaces\Command::STATS_JOB;
+        $this->commandName = Interfaces\CommandInterface::STATS_JOB;
 
         $this->jobId = $jobId;
     }
@@ -53,17 +53,17 @@ class StatsJob extends CommandAbstract
      *
      * @return array|null
      * @throws \Exception
-     * @throws \xobotyi\beansclient\Exception\Command
+     * @throws \xobotyi\beansclient\Exception\CommandException
      */
     public function parseResponse(array $responseHeader, ?string $responseStr) :?array {
         if ($responseHeader[0] === Response::NOT_FOUND) {
             return null;
         }
         else if ($responseHeader[0] !== Response::OK) {
-            throw new Exception\Command("Got unexpected status code [${responseHeader[0]}]");
+            throw new Exception\CommandException("Got unexpected status code [${responseHeader[0]}]");
         }
         else if (!$responseStr) {
-            throw new Exception\Command('Got unexpected empty response');
+            throw new Exception\CommandException('Got unexpected empty response');
         }
 
         return Response::YamlParse($responseStr, true);

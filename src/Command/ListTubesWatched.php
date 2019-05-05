@@ -20,7 +20,7 @@ class ListTubesWatched extends CommandAbstract
      * ListTubesWatched constructor.
      */
     public function __construct() {
-        $this->commandName = Interfaces\Command::LIST_TUBES_WATCHED;
+        $this->commandName = Interfaces\CommandInterface::LIST_TUBES_WATCHED;
     }
 
     /**

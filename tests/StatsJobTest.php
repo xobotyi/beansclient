@@ -8,7 +8,7 @@
 namespace xobotyi\beansclient;
 
 use PHPUnit\Framework\TestCase;
-use xobotyi\beansclient\Exception\Command;
+use xobotyi\beansclient\Exception\CommandException;
 
 class StatsJobTest extends TestCase
 {
@@ -57,7 +57,7 @@ class StatsJobTest extends TestCase
 
         $client = new BeansClient($conn);
 
-        $this->expectException(Command::class);
+        $this->expectException(CommandException::class);
         $client->statsJob(2);
     }
 
@@ -75,7 +75,7 @@ class StatsJobTest extends TestCase
 
         $client = new BeansClient($conn);
 
-        $this->expectException(Command::class);
+        $this->expectException(CommandException::class);
         $client->statsJob(3);
     }
 
@@ -87,7 +87,7 @@ class StatsJobTest extends TestCase
 
         $client = new BeansClient($conn);
 
-        $this->expectException(Command::class);
+        $this->expectException(CommandException::class);
         $client->statsJob(0);
     }
 }

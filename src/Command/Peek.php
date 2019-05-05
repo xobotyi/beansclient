@@ -37,18 +37,18 @@ class Peek extends CommandAbstract
     /**
      * Peek constructor.
      *
-     * @param string|number                                   $subject
-     * @param null|\xobotyi\beansclient\Interfaces\Serializer $serializer
+     * @param string|number                                            $subject
+     * @param null|\xobotyi\beansclient\Interfaces\SerializerInterface $serializer
      *
-     * @throws \xobotyi\beansclient\Exception\Command
+     * @throws \xobotyi\beansclient\Exception\CommandException
      */
-    public function __construct($subject, ?Interfaces\Serializer $serializer = null) {
+    public function __construct($subject, ?Interfaces\SerializerInterface $serializer = null) {
         if (is_numeric($subject)) {
             if ($subject <= 0) {
-                throw new Exception\Command('Job id must be a positive integer');
+                throw new Exception\CommandException('Job id must be a positive integer');
             }
 
-            $this->commandName = Interfaces\Command::PEEK;
+            $this->commandName = Interfaces\CommandInterface::PEEK;
             $this->jobId       = (int)$subject;
         }
         else if (is_string($subject) && isset(self::SUBCOMMANDS[$subject])) {
@@ -56,7 +56,7 @@ class Peek extends CommandAbstract
             $this->jobId       = null;
         }
         else {
-            throw new Exception\Command("Invalid peek subject [{$subject}]");
+            throw new Exception\CommandException("Invalid peek subject [{$subject}]");
         }
 
         $this->setSerializer($serializer);
@@ -76,17 +76,17 @@ class Peek extends CommandAbstract
      * @param null|string $responseStr
      *
      * @return array|null
-     * @throws \xobotyi\beansclient\Exception\Command
+     * @throws \xobotyi\beansclient\Exception\CommandException
      */
     public function parseResponse(array $responseHeader, ?string $responseStr) :?array {
         if ($responseHeader[0] === Response::NOT_FOUND) {
             return null;
         }
         else if ($responseHeader[0] !== Response::FOUND) {
-            throw new Exception\Command("Got unexpected status code [${responseHeader[0]}]");
+            throw new Exception\CommandException("Got unexpected status code [${responseHeader[0]}]");
         }
         else if (!$responseStr) {
-            throw new Exception\Command('Got unexpected empty response');
+            throw new Exception\CommandException('Got unexpected empty response');
         }
 
         return [

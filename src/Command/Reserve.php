@@ -26,17 +26,17 @@ class Reserve extends CommandAbstract
     /**
      * Reserve constructor.
      *
-     * @param int|null                                        $timeout
-     * @param null|\xobotyi\beansclient\Interfaces\Serializer $serializer
+     * @param int|null                                                 $timeout
+     * @param null|\xobotyi\beansclient\Interfaces\SerializerInterface $serializer
      *
-     * @throws \xobotyi\beansclient\Exception\Command
+     * @throws \xobotyi\beansclient\Exception\CommandException
      */
-    public function __construct(?int $timeout = 0, ?Interfaces\Serializer $serializer = null) {
+    public function __construct(?int $timeout = 0, ?Interfaces\SerializerInterface $serializer = null) {
         if ($timeout < 0) {
-            throw new Exception\Command('Timeout must be greater or equal than 0');
+            throw new Exception\CommandException('Timeout must be greater or equal than 0');
         }
 
-        $this->commandName = Interfaces\Command::RESERVE;
+        $this->commandName = Interfaces\CommandInterface::RESERVE;
 
         $this->timeout = $timeout;
 
@@ -47,7 +47,7 @@ class Reserve extends CommandAbstract
      * @return string
      */
     public function getCommandStr() :string {
-        return $this->timeout === null ? $this->commandName : Interfaces\Command::RESERVE_WITH_TIMEOUT . ' ' . $this->timeout;
+        return $this->timeout === null ? $this->commandName : Interfaces\CommandInterface::RESERVE_WITH_TIMEOUT . ' ' . $this->timeout;
     }
 
     /**
@@ -55,17 +55,17 @@ class Reserve extends CommandAbstract
      * @param null|string $responseStr
      *
      * @return array|null
-     * @throws \xobotyi\beansclient\Exception\Command
+     * @throws \xobotyi\beansclient\Exception\CommandException
      */
     public function parseResponse(array $responseHeader, ?string $responseStr) :?array {
         if ($responseHeader[0] === Response::TIMED_OUT) {
             return null;
         }
         else if ($responseHeader[0] !== Response::RESERVED) {
-            throw new Exception\Command("Got unexpected status code [${responseHeader[0]}]");
+            throw new Exception\CommandException("Got unexpected status code [${responseHeader[0]}]");
         }
         else if (!$responseStr) {
-            throw new Exception\Command('Got unexpected empty response');
+            throw new Exception\CommandException('Got unexpected empty response');
         }
 
         return [

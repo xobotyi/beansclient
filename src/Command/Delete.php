@@ -28,14 +28,14 @@ class Delete extends CommandAbstract
      *
      * @param int $jobId
      *
-     * @throws \xobotyi\beansclient\Exception\Command
+     * @throws \xobotyi\beansclient\Exception\CommandException
      */
     public function __construct(int $jobId) {
         if ($jobId <= 0) {
-            throw new Exception\Command('Job id must be a positive integer');
+            throw new Exception\CommandException('Job id must be a positive integer');
         }
 
-        $this->commandName = Interfaces\Command::DELETE;
+        $this->commandName = Interfaces\CommandInterface::DELETE;
 
         $this->jobId = $jobId;
     }
@@ -52,11 +52,11 @@ class Delete extends CommandAbstract
      * @param null|string $responseStr
      *
      * @return bool
-     * @throws \xobotyi\beansclient\Exception\Command
+     * @throws \xobotyi\beansclient\Exception\CommandException
      */
     public function parseResponse(array $responseHeader, ?string $responseStr) :bool {
         if ($responseStr) {
-            throw new Exception\Command("Unexpected response data passed");
+            throw new Exception\CommandException("Unexpected response data passed");
         }
         else if ($responseHeader[0] === Response::DELETED) {
             return true;
@@ -65,6 +65,6 @@ class Delete extends CommandAbstract
             return false;
         }
 
-        throw new Exception\Command("Got unexpected status code [${responseHeader[0]}]");
+        throw new Exception\CommandException("Got unexpected status code [${responseHeader[0]}]");
     }
 }

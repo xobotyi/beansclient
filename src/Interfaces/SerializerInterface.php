@@ -13,7 +13,7 @@ namespace xobotyi\beansclient\Interfaces;
  *
  * @package xobotyi\beansclient\Interfaces
  */
-interface Serializer
+interface SerializerInterface
 {
     /**
      * @param $data
@@ -21,7 +21,7 @@ interface Serializer
      * @return string
      */
     public
-    function serialize($data) :string;
+    function serialize($data): string;
 
     /**
      * @param string $str

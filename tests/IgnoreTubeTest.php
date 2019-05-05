@@ -9,7 +9,7 @@ namespace xobotyi\beansclient;
 
 use PHPUnit\Framework\TestCase;
 use xobotyi\beansclient\Command\IgnoreTube;
-use xobotyi\beansclient\Exception\Command;
+use xobotyi\beansclient\Exception\CommandException;
 
 class IgnoreTubeTest extends TestCase
 {
@@ -54,7 +54,7 @@ class IgnoreTubeTest extends TestCase
 
         $client = new BeansClient($conn);
 
-        $this->expectException(Command::class);
+        $this->expectException(CommandException::class);
         $client->ignoreTube('test1');
     }
 
@@ -72,7 +72,7 @@ class IgnoreTubeTest extends TestCase
 
         $client = new BeansClient($conn);
 
-        $this->expectException(Command::class);
+        $this->expectException(CommandException::class);
         $client->ignoreTube('test1');
     }
 
@@ -84,7 +84,7 @@ class IgnoreTubeTest extends TestCase
 
         $client = new BeansClient($conn);
 
-        $this->expectException(Command::class);
+        $this->expectException(CommandException::class);
         $client->ignoreTube('   ');
     }
 }

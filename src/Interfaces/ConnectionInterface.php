@@ -13,7 +13,7 @@ namespace xobotyi\beansclient\Interfaces;
  *
  * @package xobotyi\beansclient\Interfaces
  */
-interface Connection
+interface ConnectionInterface
 {
     /**
      * Connection constructor.
@@ -30,31 +30,31 @@ interface Connection
      * @return bool
      */
     public
-    function disconnect() :bool;
+    function disconnect(): bool;
 
     /**
      * @return string
      */
     public
-    function getHost() :string;
+    function getHost(): string;
 
     /**
      * @return int
      */
     public
-    function getPort() :int;
+    function getPort(): int;
 
     /**
      * @return bool
      */
     public
-    function isActive() :bool;
+    function isActive(): bool;
 
     /**
      * @return bool
      */
     public
-    function isPersistent() :bool;
+    function isPersistent(): bool;
 
     /**
      * @param int $length
@@ -62,19 +62,17 @@ interface Connection
      * @return string
      */
     public
-    function read(int $length) :string;
+    function read(int $length): string;
 
     /**
-     * @param int|null $length
-     *
      * @return string
      */
     public
-    function readln(int $length = null) :string;
+    function readLine(): string;
 
     /**
      * @param string $str
      */
     public
-    function write(string $str) :void;
+    function write(string $str): void;
 }

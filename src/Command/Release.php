@@ -38,23 +38,23 @@ class Release extends CommandAbstract
      * @param     $priority
      * @param int $delay
      *
-     * @throws \xobotyi\beansclient\Exception\Command
+     * @throws \xobotyi\beansclient\Exception\CommandException
      */
     public function __construct(int $jobId, $priority, int $delay) {
         if ($jobId <= 0) {
-            throw new Exception\Command('Job id must be a positive integer');
+            throw new Exception\CommandException('Job id must be a positive integer');
         }
         if (!is_numeric($priority)) {
-            throw new Exception\Command('Argument 2 passed to xobotyi\beansclient\BeansClient::put() must be a number, got ' . gettype($priority));
+            throw new Exception\CommandException('Argument 2 passed to xobotyi\beansclient\BeansClient::put() must be a number, got ' . gettype($priority));
         }
         if ($priority < 0 || $priority > Put::MAX_PRIORITY) {
-            throw new Exception\Command('Job priority must be between 0 and ' . Put::MAX_PRIORITY);
+            throw new Exception\CommandException('Job priority must be between 0 and ' . Put::MAX_PRIORITY);
         }
         if ($delay < 0) {
-            throw new Exception\Command('Job delay must be a positive integer');
+            throw new Exception\CommandException('Job delay must be a positive integer');
         }
 
-        $this->commandName = Interfaces\Command::RELEASE;
+        $this->commandName = Interfaces\CommandInterface::RELEASE;
 
         $this->jobId    = $jobId;
         $this->priority = $priority;
@@ -73,11 +73,11 @@ class Release extends CommandAbstract
      * @param null|string $responseStr
      *
      * @return null|string
-     * @throws \xobotyi\beansclient\Exception\Command
+     * @throws \xobotyi\beansclient\Exception\CommandException
      */
     public function parseResponse(array $responseHeader, ?string $responseStr) :?string {
         if ($responseStr) {
-            throw new Exception\Command("Unexpected response data passed");
+            throw new Exception\CommandException("Unexpected response data passed");
         }
         else if ($responseHeader[0] === Response::RELEASED || $responseHeader[0] === Response::BURIED) {
             return $responseHeader[0];
@@ -86,6 +86,6 @@ class Release extends CommandAbstract
             return null;
         }
 
-        throw new Exception\Command("Got unexpected status code [${responseHeader[0]}]");
+        throw new Exception\CommandException("Got unexpected status code [${responseHeader[0]}]");
     }
 }

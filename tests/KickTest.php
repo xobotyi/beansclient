@@ -8,7 +8,7 @@
 namespace xobotyi\beansclient;
 
 use PHPUnit\Framework\TestCase;
-use xobotyi\beansclient\Exception\Command;
+use xobotyi\beansclient\Exception\CommandException;
 
 class KickTest extends TestCase
 {
@@ -52,7 +52,7 @@ class KickTest extends TestCase
 
         $client = new BeansClient($conn);
 
-        $this->expectException(Command::class);
+        $this->expectException(CommandException::class);
         $client->kick(1);
     }
 
@@ -70,7 +70,7 @@ class KickTest extends TestCase
 
         $client = new BeansClient($conn);
 
-        $this->expectException(Command::class);
+        $this->expectException(CommandException::class);
         $client->kick(21);
     }
 
@@ -82,7 +82,7 @@ class KickTest extends TestCase
 
         $client = new BeansClient($conn);
 
-        $this->expectException(Command::class);
+        $this->expectException(CommandException::class);
         $client->kick(0);
     }
 }

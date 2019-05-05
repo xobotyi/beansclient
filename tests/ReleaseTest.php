@@ -9,7 +9,7 @@ namespace xobotyi\beansclient;
 
 use PHPUnit\Framework\TestCase;
 use xobotyi\beansclient\Command\Put;
-use xobotyi\beansclient\Exception\Command;
+use xobotyi\beansclient\Exception\CommandException;
 
 class ReleaseTest extends TestCase
 {
@@ -41,7 +41,7 @@ class ReleaseTest extends TestCase
 
         $client = new BeansClient($conn);
 
-        $this->expectException(Command::class);
+        $this->expectException(CommandException::class);
         $client->release(13);
     }
 
@@ -53,7 +53,7 @@ class ReleaseTest extends TestCase
 
         $client = new BeansClient($conn);
 
-        $this->expectException(Command::class);
+        $this->expectException(CommandException::class);
         $client->release(13);
     }
 
@@ -81,7 +81,7 @@ class ReleaseTest extends TestCase
              ->will($this->returnValue("RELEASED"));
         $client = new BeansClient($conn);
 
-        $this->expectException(Command::class);
+        $this->expectException(CommandException::class);
         self::assertEquals([], $client->release(13, ''));
     }
 
@@ -93,7 +93,7 @@ class ReleaseTest extends TestCase
              ->will($this->returnValue("RELEASED"));
         $client = new BeansClient($conn);
 
-        $this->expectException(Command::class);
+        $this->expectException(CommandException::class);
         self::assertEquals([], $client->release(13, -1));
     }
 
@@ -105,7 +105,7 @@ class ReleaseTest extends TestCase
              ->will($this->returnValue("RELEASED"));
         $client = new BeansClient($conn);
 
-        $this->expectException(Command::class);
+        $this->expectException(CommandException::class);
         self::assertEquals([], $client->release(13, 0, -1));
     }
 
@@ -117,7 +117,7 @@ class ReleaseTest extends TestCase
              ->will($this->returnValue("RELEASED"));
         $client = new BeansClient($conn);
 
-        $this->expectException(Command::class);
+        $this->expectException(CommandException::class);
         self::assertEquals([], $client->release(13, Put::MAX_PRIORITY + 1));
     }
 
@@ -127,7 +127,7 @@ class ReleaseTest extends TestCase
              ->will($this->returnValue("RELEASED"));
         $client = new BeansClient($conn);
 
-        $this->expectException(Command::class);
+        $this->expectException(CommandException::class);
         self::assertEquals([], $client->release(-1));
     }
 }

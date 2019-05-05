@@ -8,14 +8,14 @@
 namespace xobotyi\beansclient\Serializer;
 
 
-use xobotyi\beansclient\Interfaces\Serializer;
+use xobotyi\beansclient\Interfaces\SerializerInterface;
 
 /**
  * Class Json
  *
  * @package xobotyi\beansclient\Serializer
  */
-class Json implements Serializer
+class JsonSerializer implements SerializerInterface
 {
     /**
      * @param $data

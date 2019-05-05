@@ -28,14 +28,14 @@ class Kick extends CommandAbstract
      *
      * @param int $count
      *
-     * @throws \xobotyi\beansclient\Exception\Command
+     * @throws \xobotyi\beansclient\Exception\CommandException
      */
     public function __construct(int $count) {
         if ($count <= 0) {
-            throw new Exception\Command('Kick count must be a positive integer');
+            throw new Exception\CommandException('Kick count must be a positive integer');
         }
 
-        $this->commandName = Interfaces\Command::KICK;
+        $this->commandName = Interfaces\CommandInterface::KICK;
 
         $this->count = $count;
     }
@@ -52,16 +52,16 @@ class Kick extends CommandAbstract
      * @param null|string $responseStr
      *
      * @return int
-     * @throws \xobotyi\beansclient\Exception\Command
+     * @throws \xobotyi\beansclient\Exception\CommandException
      */
     public function parseResponse(array $responseHeader, ?string $responseStr) :int {
         if ($responseStr) {
-            throw new Exception\Command("Unexpected response data passed");
+            throw new Exception\CommandException("Unexpected response data passed");
         }
         else if ($responseHeader[0] === Response::KICKED) {
             return (int)$responseHeader[1];
         }
 
-        throw new Exception\Command("Got unexpected status code [${responseHeader[0]}]");
+        throw new Exception\CommandException("Got unexpected status code [${responseHeader[0]}]");
     }
 }

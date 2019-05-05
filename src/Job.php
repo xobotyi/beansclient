@@ -93,7 +93,7 @@ class Job
      * @param mixed                            $state
      * @param mixed                            $payload
      *
-     * @throws \xobotyi\beansclient\Exception\Job
+     * @throws \xobotyi\beansclient\Exception\JobException
      */
     public function __construct(BeansClient &$beansClient, ?int $id, ?string $state = null, $payload = null) {
         $this->setClient($beansClient);
@@ -107,9 +107,9 @@ class Job
      * @param $offset
      *
      * @return mixed|null
-     * @throws \xobotyi\beansclient\Exception\Client
-     * @throws \xobotyi\beansclient\Exception\Command
-     * @throws \xobotyi\beansclient\Exception\Job
+     * @throws \xobotyi\beansclient\Exception\ClientException
+     * @throws \xobotyi\beansclient\Exception\CommandException
+     * @throws \xobotyi\beansclient\Exception\JobException
      */
     public function __get($offset) {
         if (!\array_key_exists($offset, $this->data)) {
@@ -146,9 +146,9 @@ class Job
      * @param int $priority
      *
      * @return \xobotyi\beansclient\Job
-     * @throws \xobotyi\beansclient\Exception\Client
-     * @throws \xobotyi\beansclient\Exception\Command
-     * @throws \xobotyi\beansclient\Exception\Job
+     * @throws \xobotyi\beansclient\Exception\ClientException
+     * @throws \xobotyi\beansclient\Exception\CommandException
+     * @throws \xobotyi\beansclient\Exception\JobException
      */
     public function bury(int $priority = BeansClient::DEFAULT_PRIORITY) :self {
         if (!$this->data['id']) {
@@ -182,9 +182,9 @@ class Job
 
     /**
      * @return \xobotyi\beansclient\Job
-     * @throws \xobotyi\beansclient\Exception\Client
-     * @throws \xobotyi\beansclient\Exception\Command
-     * @throws \xobotyi\beansclient\Exception\Job
+     * @throws \xobotyi\beansclient\Exception\ClientException
+     * @throws \xobotyi\beansclient\Exception\CommandException
+     * @throws \xobotyi\beansclient\Exception\JobException
      */
     public function delete() :self {
         if (!$this->data['id']) {
@@ -215,11 +215,11 @@ class Job
      * @param \xobotyi\beansclient\BeansClient $beansClient
      *
      * @return $this
-     * @throws \xobotyi\beansclient\Exception\Job
+     * @throws \xobotyi\beansclient\Exception\JobException
      */
     public function setClient(BeansClient &$beansClient) {
         if (!$beansClient->getConnection()->isActive()) {
-            throw new Exception\Job("Given client has inactive connection");
+            throw new Exception\JobException("Given client has inactive connection");
         }
 
         $this->client = $beansClient;
@@ -229,9 +229,9 @@ class Job
 
     /**
      * @return array
-     * @throws \xobotyi\beansclient\Exception\Client
-     * @throws \xobotyi\beansclient\Exception\Command
-     * @throws \xobotyi\beansclient\Exception\Job
+     * @throws \xobotyi\beansclient\Exception\ClientException
+     * @throws \xobotyi\beansclient\Exception\CommandException
+     * @throws \xobotyi\beansclient\Exception\JobException
      */
     public function getData() :array {
         if (!$this->data['id']) {
@@ -287,9 +287,9 @@ class Job
 
     /**
      * @return \xobotyi\beansclient\Job
-     * @throws \xobotyi\beansclient\Exception\Client
-     * @throws \xobotyi\beansclient\Exception\Command
-     * @throws \xobotyi\beansclient\Exception\Job
+     * @throws \xobotyi\beansclient\Exception\ClientException
+     * @throws \xobotyi\beansclient\Exception\CommandException
+     * @throws \xobotyi\beansclient\Exception\JobException
      */
     public function kick() :self {
         if (!$this->data['id']) {
@@ -303,9 +303,9 @@ class Job
 
     /**
      * @return \xobotyi\beansclient\Job
-     * @throws \xobotyi\beansclient\Exception\Client
-     * @throws \xobotyi\beansclient\Exception\Command
-     * @throws \xobotyi\beansclient\Exception\Job
+     * @throws \xobotyi\beansclient\Exception\ClientException
+     * @throws \xobotyi\beansclient\Exception\CommandException
+     * @throws \xobotyi\beansclient\Exception\JobException
      */
     public function peek() :self {
         if (!$this->data['id']) {
@@ -332,9 +332,9 @@ class Job
      * @param int|null       $delay
      *
      * @return $this
-     * @throws \xobotyi\beansclient\Exception\Client
-     * @throws \xobotyi\beansclient\Exception\Command
-     * @throws \xobotyi\beansclient\Exception\Job
+     * @throws \xobotyi\beansclient\Exception\ClientException
+     * @throws \xobotyi\beansclient\Exception\CommandException
+     * @throws \xobotyi\beansclient\Exception\JobException
      */
     public function release($priority = null, int $delay = null) {
         if (!$this->data['id']) {
@@ -367,9 +367,9 @@ class Job
 
     /**
      * @return \xobotyi\beansclient\Job
-     * @throws \xobotyi\beansclient\Exception\Client
-     * @throws \xobotyi\beansclient\Exception\Command
-     * @throws \xobotyi\beansclient\Exception\Job
+     * @throws \xobotyi\beansclient\Exception\ClientException
+     * @throws \xobotyi\beansclient\Exception\CommandException
+     * @throws \xobotyi\beansclient\Exception\JobException
      */
     public function stats() :self {
         if (!$this->data['id']) {
@@ -410,9 +410,9 @@ class Job
 
     /**
      * @return \xobotyi\beansclient\Job
-     * @throws \xobotyi\beansclient\Exception\Client
-     * @throws \xobotyi\beansclient\Exception\Command
-     * @throws \xobotyi\beansclient\Exception\Job
+     * @throws \xobotyi\beansclient\Exception\ClientException
+     * @throws \xobotyi\beansclient\Exception\CommandException
+     * @throws \xobotyi\beansclient\Exception\JobException
      */
     public function touch() :self {
         if (!$this->data['id']) {

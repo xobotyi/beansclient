@@ -41,26 +41,26 @@ class Put extends CommandAbstract
      * @param                                                 $priority
      * @param int                                             $delay
      * @param int                                             $ttr
-     * @param null|\xobotyi\beansclient\Interfaces\Serializer $serializer
+     * @param null|\xobotyi\beansclient\Interfaces\SerializerInterface $serializer
      *
-     * @throws \xobotyi\beansclient\Exception\Command
+     * @throws \xobotyi\beansclient\Exception\CommandException
      */
     public
-    function __construct($payload, $priority, int $delay, int $ttr, ?Interfaces\Serializer $serializer = null) {
+    function __construct($payload, $priority, int $delay, int $ttr, ?Interfaces\SerializerInterface $serializer = null) {
         if (!is_numeric($priority)) {
-            throw new Exception\Command('Argument 2 passed to xobotyi\beansclient\BeansClient::put() must be a number, got ' . gettype($priority));
+            throw new Exception\CommandException('Argument 2 passed to xobotyi\beansclient\BeansClient::put() must be a number, got ' . gettype($priority));
         }
         if ($priority < 0 || $priority > self::MAX_PRIORITY) {
-            throw new Exception\Command('Job priority must be integer between 0 and ' . self::MAX_PRIORITY);
+            throw new Exception\CommandException('Job priority must be integer between 0 and ' . self::MAX_PRIORITY);
         }
         if ($delay < 0) {
-            throw new Exception\Command('Job delay must be a positive integer');
+            throw new Exception\CommandException('Job delay must be a positive integer');
         }
         if ($ttr <= 0) {
-            throw new Exception\Command('Job ttr must be greater than 0');
+            throw new Exception\CommandException('Job ttr must be greater than 0');
         }
 
-        $this->commandName = Interfaces\Command::PUT;
+        $this->commandName = Interfaces\CommandInterface::PUT;
 
         $this->priority = floor($priority);
         $this->delay    = $delay;
@@ -72,7 +72,7 @@ class Put extends CommandAbstract
 
     /**
      * @return string
-     * @throws \xobotyi\beansclient\Exception\Command
+     * @throws \xobotyi\beansclient\Exception\CommandException
      */
     public
     function getCommandStr() :string {
@@ -82,14 +82,14 @@ class Put extends CommandAbstract
             $serializedPayload = $this->serializer->serialize($this->payload);
         }
         else if (!is_string($this->payload) && !is_numeric($this->payload)) {
-            throw new Exception\Command('Due to turned off payload serializer, job payload must be a string or number');
+            throw new Exception\CommandException('Due to turned off payload serializer, job payload must be a string or number');
         }
         else {
             $serializedPayload = (string)$this->payload;
         }
 
         if (strlen($serializedPayload) > self::MAX_SERIALIZED_PAYLOAD_SIZE) {
-            throw new Exception\Command('Job serialized payload size exceeded maximum: ' . self::MAX_SERIALIZED_PAYLOAD_SIZE);
+            throw new Exception\CommandException('Job serialized payload size exceeded maximum: ' . self::MAX_SERIALIZED_PAYLOAD_SIZE);
         }
 
         return $mainCommand . strlen($serializedPayload) . BeansClient::CRLF . $serializedPayload;
@@ -100,18 +100,18 @@ class Put extends CommandAbstract
      * @param null|string $responseStr
      *
      * @return array|null
-     * @throws \xobotyi\beansclient\Exception\Command
+     * @throws \xobotyi\beansclient\Exception\CommandException
      */
     public
     function parseResponse(array $responseHeader, ?string $responseStr) :?array {
         if ($responseHeader[0] === Response::JOB_TOO_BIG) {
-            throw new Exception\Command('Job\'s payload size exceeds max-job-size config');
+            throw new Exception\CommandException('Job\'s payload size exceeds max-job-size config');
         }
         else if ($responseHeader[0] !== Response::INSERTED && $responseHeader[0] !== Response::BURIED) {
-            throw new Exception\Command("Got unexpected status code [${responseHeader[0]}]");
+            throw new Exception\CommandException("Got unexpected status code [${responseHeader[0]}]");
         }
         else if (!isset($responseHeader[1])) {
-            throw new Exception\Command("Response is missing job id [" . implode('', $responseHeader) . "]");
+            throw new Exception\CommandException("Response is missing job id [" . implode('', $responseHeader) . "]");
         }
 
         return [

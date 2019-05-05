@@ -119,16 +119,16 @@ class ConnectionTest extends TestCase
         self::assertEquals(2, $conn->fwrite(null, 'ab', 2));
 
         feof(null, true);
-        self::assertEquals('123456789', $conn->readln());
+        self::assertEquals('123456789', $conn->readLine());
         feof(null, true);
-        self::assertEquals(15, strlen($conn->readln(15)));
+        self::assertEquals(15, strlen($conn->readLine(15)));
     }
 
     public function testConnectionException() {
         $conn = new Connection('localhost', 11300, 2);
         self::assertTrue($conn->disconnect());
 
-        $this->expectException(Exception\Connection::class);
+        $this->expectException(Exception\ConnectionException::class);
         $conn->write(123);
     }
 
@@ -136,22 +136,22 @@ class ConnectionTest extends TestCase
         $conn = new Connection('localhost', 11300, 2);
         self::assertTrue($conn->disconnect());
 
-        $this->expectException(Exception\Connection::class);
-        $conn->readln();
+        $this->expectException(Exception\ConnectionException::class);
+        $conn->readLine();
     }
 
     public function testConnectionException2() {
         $conn = new Connection('localhost', 11300, 2);
         self::assertTrue($conn->disconnect());
 
-        $this->expectException(Exception\Connection::class);
+        $this->expectException(Exception\ConnectionException::class);
         $conn->read(15);
     }
 
     public function testConnectionException3() {
         $conn = new Connection('localhost', 11300, 2);
 
-        $this->expectException(Exception\Connection::class);
+        $this->expectException(Exception\ConnectionException::class);
 
         fclose(null, false);
         self::assertTrue($conn->disconnect());
@@ -162,7 +162,7 @@ class ConnectionTest extends TestCase
 
         fclose(null, false);
 
-        $this->expectException(Exception\Connection::class);
+        $this->expectException(Exception\ConnectionException::class);
         unset($conn);
     }
 
@@ -170,7 +170,7 @@ class ConnectionTest extends TestCase
         fclose(null, true);
         fsockopen(null, null, $errno, $errstr, null, false);
 
-        $this->expectException(Exception\Connection::class);
+        $this->expectException(Exception\ConnectionException::class);
         $conn = new Connection('localhost', 11300, 2);
     }
 
@@ -181,8 +181,8 @@ class ConnectionTest extends TestCase
 
         feof(null, false);
 
-        $this->expectException(Exception\Socket::class);
-        $conn->readln();
+        $this->expectException(Exception\SocketException::class);
+        $conn->readLine();
     }
 
     public function testConnectionException7() {
@@ -191,7 +191,7 @@ class ConnectionTest extends TestCase
 
         $conn = new Connection('localhost', 11300, 2);
 
-        $this->expectException(Exception\Socket::class);
+        $this->expectException(Exception\SocketException::class);
         $conn->write(123);
     }
 
@@ -201,7 +201,7 @@ class ConnectionTest extends TestCase
 
         $conn = new Connection('localhost', 11300, 2);
 
-        $this->expectException(Exception\Socket::class);
+        $this->expectException(Exception\SocketException::class);
         $conn->read(123);
     }
 }

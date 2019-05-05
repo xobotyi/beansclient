@@ -9,8 +9,8 @@ namespace xobotyi\beansclient;
 
 use PHPUnit\Framework\TestCase;
 use xobotyi\beansclient\Command\Peek;
-use xobotyi\beansclient\Exception\Command;
-use xobotyi\beansclient\Serializer\Json;
+use xobotyi\beansclient\Exception\CommandException;
+use xobotyi\beansclient\Serializer\JsonSerializer;
 
 class PeekTest extends TestCase
 {
@@ -47,7 +47,7 @@ class PeekTest extends TestCase
         self::assertEquals(null, $client->peek(Peek::TYPE_BURIED));
         self::assertEquals(['id' => 1, 'payload' => '[1,2,3,4]'], $client->peek(1));
 
-        $client = new BeansClient($conn, new Json());
+        $client = new BeansClient($conn, new JsonSerializer());
         self::assertEquals(['id' => 1, 'payload' => [1, 2, 3, 4]], $client->peek(1));
     }
 
@@ -61,7 +61,7 @@ class PeekTest extends TestCase
 
         $client = new BeansClient($conn);
 
-        $this->expectException(Command::class);
+        $this->expectException(CommandException::class);
         $client->peek(123);
     }
 
@@ -79,7 +79,7 @@ class PeekTest extends TestCase
 
         $client = new BeansClient($conn);
 
-        $this->expectException(Command::class);
+        $this->expectException(CommandException::class);
         $client->peek(123);
     }
 
@@ -93,7 +93,7 @@ class PeekTest extends TestCase
 
         $client = new BeansClient($conn);
 
-        $this->expectException(Command::class);
+        $this->expectException(CommandException::class);
         $client->peek(0);
     }
 
@@ -102,7 +102,7 @@ class PeekTest extends TestCase
 
         $client = new BeansClient($conn);
 
-        $this->expectException(Command::class);
+        $this->expectException(CommandException::class);
         $client->peek('stuff');
     }
 }

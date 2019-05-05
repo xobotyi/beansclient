@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 use xobotyi\beansclient\Command\ListTubes;
 use xobotyi\beansclient\Command\Put;
 use xobotyi\beansclient\Command\Stats;
-use xobotyi\beansclient\Exception\Command;
+use xobotyi\beansclient\Exception\CommandException;
 
 class CommandTest extends TestCase
 {
@@ -30,7 +30,7 @@ class CommandTest extends TestCase
     public function testCommandException() {
         $cmd = new ListTubes();
 
-        $this->expectException(Command::class);
+        $this->expectException(CommandException::class);
         $cmd->parseResponse(['STUFF'], null);
     }
 }

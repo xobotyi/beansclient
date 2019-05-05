@@ -13,7 +13,7 @@ namespace xobotyi\beansclient\Exception;
  *
  * @package xobotyi\beansclient\Exception
  */
-class Server extends \Exception
+class ServerException extends \Exception
 {
 
 }

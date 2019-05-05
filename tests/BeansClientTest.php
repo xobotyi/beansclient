@@ -8,8 +8,8 @@
 namespace xobotyi\beansclient;
 
 use PHPUnit\Framework\TestCase;
-use xobotyi\beansclient\Exception\Client;
-use xobotyi\beansclient\Serializer\Json;
+use xobotyi\beansclient\Exception\ClientException;
+use xobotyi\beansclient\Serializer\JsonSerializer;
 
 class BeansClientTest extends TestCase
 {
@@ -43,7 +43,7 @@ class BeansClientTest extends TestCase
 
         $client = new BeansClient($conn);
 
-        $this->expectException(Client::class);
+        $this->expectException(ClientException::class);
         $client->release(13);
     }
 
@@ -59,7 +59,7 @@ class BeansClientTest extends TestCase
 
         $client = new BeansClient($conn);
 
-        $this->expectException(Client::class);
+        $this->expectException(ClientException::class);
         $client->release(13);
     }
 
@@ -67,7 +67,7 @@ class BeansClientTest extends TestCase
 
     public function testGetters() :void {
         $conn       = $this->getConnection();
-        $serializer = new Json();
+        $serializer = new JsonSerializer();
 
         $client = new BeansClient($conn, $serializer);
 
@@ -80,7 +80,7 @@ class BeansClientTest extends TestCase
     public function testInactiveConnectionException1() :void {
         $connInactive = $this->getConnection(false);
 
-        $this->expectException(Client::class);
+        $this->expectException(ClientException::class);
         $client = new BeansClient($connInactive);
     }
 
@@ -90,7 +90,7 @@ class BeansClientTest extends TestCase
         $connActive = $this->getConnection(true);
         $client     = new BeansClient($connActive);
 
-        $this->expectException(Client::class);
+        $this->expectException(ClientException::class);
         $client->setConnection($connInactive);
     }
 }

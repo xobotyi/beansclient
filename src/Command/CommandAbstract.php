@@ -18,7 +18,7 @@ use xobotyi\beansclient\Response;
  * @package xobotyi\beansclient\Command
  */
 abstract
-class CommandAbstract implements Interfaces\Command
+class CommandAbstract implements Interfaces\CommandInterface
 {
     /**
      * @var string
@@ -29,7 +29,7 @@ class CommandAbstract implements Interfaces\Command
      */
     protected $payload;
     /**
-     * @var \xobotyi\beansclient\Interfaces\Serializer
+     * @var \xobotyi\beansclient\Interfaces\SerializerInterface
      */
     protected $serializer;
 
@@ -63,27 +63,27 @@ class CommandAbstract implements Interfaces\Command
      *
      * @return array|mixed|null
      * @throws \Exception
-     * @throws \xobotyi\beansclient\Exception\Command
+     * @throws \xobotyi\beansclient\Exception\CommandException
      */
     public
     function parseResponse(array $responseHeader, ?string $responseStr) {
         if ($responseHeader[0] !== Response::OK) {
-            throw new Exception\Command("Got unexpected status code [${responseHeader[0]}]");
+            throw new Exception\CommandException("Got unexpected status code [${responseHeader[0]}]");
         }
         else if (!$responseStr) {
-            throw new Exception\Command('Got unexpected empty response');
+            throw new Exception\CommandException('Got unexpected empty response');
         }
 
         return Response::YamlParse($responseStr);
     }
 
     /**
-     * @param null|\xobotyi\beansclient\Interfaces\Serializer $serialize
+     * @param null|\xobotyi\beansclient\Interfaces\SerializerInterface $serialize
      *
      * @return \xobotyi\beansclient\Command\CommandAbstract
      */
     public
-    function setSerializer(?Interfaces\Serializer $serialize) :self {
+    function setSerializer(?Interfaces\SerializerInterface $serialize) :self {
         $this->serializer = $serialize;
 
         return $this;

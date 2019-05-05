@@ -1,200 +1,156 @@
 <?php
-/**
- * @Author : a.zinovyev
- * @Package: beansclient
- * @License: http://www.opensource.org/licenses/mit-license.php
- */
+declare(strict_types=1);
+
 
 namespace xobotyi\beansclient;
 
 
-/**
- * Class Connection
- *
- * @package xobotyi\beansclient
- */
-class Connection extends SocketFunctions implements Interfaces\Connection
-{
-    const SOCK_CONNECTION_TIMEOUT = 1;
-    const SOCK_READ_TIMEOUT       = 1;
-    const SOCK_WRITE_RETRIES      = 8;
+use xobotyi\beansclient\Socket\StreamSocket;
 
+class Connection implements Interfaces\ConnectionInterface
+{
+    /**
+     * @var null| \xobotyi\beansclient\Interfaces\SocketInterface
+     */
+    private $socket = null;
+
+    /**
+     * @var string
+     */
     private $host;
+    /**
+     * @var bool
+     */
     private $persistent;
+    /**
+     * @var int
+     */
     private $port;
-    private $socket;
+    /**
+     * @var null|int
+     */
     private $timeout;
 
     /**
      * Connection constructor.
      *
-     * @param string $host
-     * @param int    $port
-     * @param int    $connectionTimeout
-     * @param bool   $persistent
+     * @param string   $host
+     * @param int      $port
+     * @param null|int $connectionTimeout
+     * @param bool     $persistent
      *
-     * @throws Exception\Connection
+     * @throws \xobotyi\beansclient\Exception\SocketException
      */
-    public function __construct(string $host = 'localhost', int $port = 11300, int $connectionTimeout = null, bool $persistent = false) {
-        $this->host       = $host;
-        $this->port       = $port;
-        $this->timeout    = $connectionTimeout === null ? self::SOCK_CONNECTION_TIMEOUT : $connectionTimeout;
+    public
+    function __construct(string $host = 'localhost', int $port = 11300, ?int $connectionTimeout = null, bool $persistent = false) {
+        $this->host = $host;
+        $this->port = $port;
+        $this->timeout = $connectionTimeout;
         $this->persistent = $persistent;
 
-        $this->socket = $persistent
-            ? $this->pfsockopen($this->host, $this->port, $errNo, $errStr, $this->timeout)
-            : $this->fsockopen($this->host, $this->port, $errNo, $errStr, $this->timeout);
-
-        if (!$this->socket) {
-            throw new Exception\Connection($errNo, $errStr . " (while connecting to {$this->host}:{$this->port})");
-        }
-
-        $this->setReadTimeout($this->socket, self::SOCK_READ_TIMEOUT);
+        $this->socket = new StreamSocket($host, $port, $connectionTimeout, $persistent);
     }
 
     /**
-     * @throws \xobotyi\beansclient\Exception\Connection
+     * Disconnect the socket
+     *
+     * @return bool
      */
-    public function __destruct() {
-        if (!$this->persistent) {
-            if (!$this->fclose($this->socket)) {
-                throw new Exception\Connection(0, "Unable to close connection");
-            }
-
-            $this->socket = null;
-        }
-    }
-
-    /**
-     *  Disconnect the socket
-     */
-    public function disconnect() :bool {
-        if (!$this->socket) {
+    public
+    function disconnect(): bool {
+        if (!$this->socket || $this->socket->isClosed()) {
             return false;
         }
 
-        if (!$this->fclose($this->socket)) {
-            throw new Exception\Connection(0, "Unable to close connection");
-        }
+        $this->socket->close();
         $this->socket = null;
 
-        return !$this->isActive();
+        return true;
     }
 
     /**
+     * Return the host connection been initialized with
+     *
      * @return string
      */
-    public function getHost() :string {
+    public
+    function getHost(): string {
         return $this->host;
     }
 
     /**
+     * Return the port connection been initialized with
+     *
      * @return int
      */
-    public function getPort() :int {
+    public
+    function getPort(): int {
         return $this->port;
     }
 
     /**
+     * Return the timeout connection been initialized with
+     *
      * @return int
      */
-    public function getTimeout() :int {
+    public
+    function getTimeout(): int {
         return $this->timeout;
     }
 
     /**
+     * Return true if socket is opened
+     *
      * @return bool
      */
-    public function isActive() :bool {
-        return !!$this->socket;
+    public
+    function isActive(): bool {
+        return $this->socket && !$this->socket->isClosed();
     }
 
     /**
+     * Return true if socket is persistent
+     *
      * @return bool
      */
-    public function isPersistent() :bool {
+    public
+    function isPersistent(): bool {
         return $this->persistent;
     }
 
     /**
-     * Reads up to $length bytes from socket
+     * Reads up to $bytes bytes from the socket
      *
-     * @param int|null $length
+     * @param int $bytes Amount of bytes to read
      *
      * @return string
-     * @throws \xobotyi\beansclient\Exception\Connection
-     * @throws \xobotyi\beansclient\Exception\Socket
+     * @throws \xobotyi\beansclient\Exception\SocketException
      */
-    public function read(int $length) :string {
-        if (!$this->socket) {
-            throw new Exception\Connection(0, "Unable to read from closed connection");
-        }
-
-        $str  = '';
-        $read = 0;
-
-        while ($read < $length && !$this->feof($this->socket)) {
-            $data = $this->fread($this->socket, $length);
-
-            if ($data === false) {
-                throw new Exception\Socket(sprintf("Failed to read data from socket ({$this->host}:{$this->port})"));
-            }
-
-            $read += strlen($data);
-            $str  .= $data;
-        }
-
-        return $str;
+    public
+    function read(int $bytes): string {
+        return $this->socket->read($bytes);
     }
 
     /**
-     * Reads up to newline or $length-1 bytes from socket
-     *
-     * @param int|null $length
+     * Reads up to newline from socket
      *
      * @return string
-     * @throws \xobotyi\beansclient\Exception\Connection
-     * @throws \xobotyi\beansclient\Exception\Socket
+     * @throws \xobotyi\beansclient\Exception\SocketException
      */
-    public function readln(int $length = null) :string {
-        if (!$this->socket) {
-            throw new Exception\Connection(0, "Unable to read from closed connection");
-        }
-
-        $str = false;
-
-        while ($str === false) {
-            $str = isset($length)
-                ? $this->fgets($this->socket, $length)
-                : $this->fgets($this->socket);
-
-            if ($this->feof($this->socket)) {
-                throw new Exception\Socket(sprintf("Socket closed by remote ({$this->host}:{$this->port})"));
-            }
-        }
-
-        return rtrim($str);
+    public
+    function readLine(): string {
+        return $this->socket->readLine();
     }
 
     /**
-     * @param string $str
-     *
      * Writes data to the socket
      *
-     * @throws \xobotyi\beansclient\Exception\Connection
-     * @throws \xobotyi\beansclient\Exception\Socket
+     * @param string $data String to write into the socket
+     *
+     * @throws \xobotyi\beansclient\Exception\SocketException
      */
-    public function write(string $str) :void {
-        if (!$this->socket) {
-            throw new Exception\Connection(0, "Unable to write into closed connection");
-        }
-
-        for ($attempt = $written = $iterWritten = 0; $written < strlen($str); $written += $iterWritten) {
-            $iterWritten = $this->fwrite($this->socket, substr($str, $written));
-
-            if (++$attempt === self::SOCK_WRITE_RETRIES) {
-                throw new Exception\Socket(sprintf("Failed to write data to socket after %u retries (%u:%u)", self::SOCK_WRITE_RETRIES, $this->host, $this->port));
-            }
-        }
+    public
+    function write(string $data): void {
+        $this->socket->write($data);
     }
 }

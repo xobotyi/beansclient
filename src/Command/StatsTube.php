@@ -28,14 +28,14 @@ class StatsTube extends CommandAbstract
      *
      * @param string $tube
      *
-     * @throws \xobotyi\beansclient\Exception\Command
+     * @throws \xobotyi\beansclient\Exception\CommandException
      */
     public function __construct(string $tube) {
         if (!($tube = trim($tube))) {
-            throw new Exception\Command('Tube name must be a valuable string');
+            throw new Exception\CommandException('Tube name must be a valuable string');
         }
 
-        $this->commandName = Interfaces\Command::STATS_TUBE;
+        $this->commandName = Interfaces\CommandInterface::STATS_TUBE;
 
         $this->tube = $tube;
     }
@@ -53,17 +53,17 @@ class StatsTube extends CommandAbstract
      *
      * @return array|null
      * @throws \Exception
-     * @throws \xobotyi\beansclient\Exception\Command
+     * @throws \xobotyi\beansclient\Exception\CommandException
      */
     public function parseResponse(array $responseHeader, ?string $responseStr) :?array {
         if ($responseHeader[0] === Response::NOT_FOUND) {
             return null;
         }
         else if ($responseHeader[0] !== Response::OK) {
-            throw new Exception\Command("Got unexpected status code [${responseHeader[0]}]");
+            throw new Exception\CommandException("Got unexpected status code [${responseHeader[0]}]");
         }
         else if (!$responseStr) {
-            throw new Exception\Command('Got unexpected empty response');
+            throw new Exception\CommandException('Got unexpected empty response');
         }
 
         return Response::YamlParse($responseStr, true);

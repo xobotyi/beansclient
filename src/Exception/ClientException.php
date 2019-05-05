@@ -9,10 +9,10 @@ namespace xobotyi\beansclient\Exception;
 
 
 /**
- * Class Socket
+ * Class Client
  *
  * @package xobotyi\beansclient\Exception
  */
-class Socket extends \Exception
+class ClientException extends \Exception
 {
 }

@@ -8,7 +8,7 @@
 namespace xobotyi\beansclient;
 
 use PHPUnit\Framework\TestCase;
-use xobotyi\beansclient\Exception\Command;
+use xobotyi\beansclient\Exception\CommandException;
 
 class DeleteTest extends TestCase
 {
@@ -53,7 +53,7 @@ class DeleteTest extends TestCase
 
         $client = new BeansClient($conn);
 
-        $this->expectException(Command::class);
+        $this->expectException(CommandException::class);
         $client->delete(1);
     }
 
@@ -71,7 +71,7 @@ class DeleteTest extends TestCase
 
         $client = new BeansClient($conn);
 
-        $this->expectException(Command::class);
+        $this->expectException(CommandException::class);
         $client->delete(1);
     }
 
@@ -83,7 +83,7 @@ class DeleteTest extends TestCase
 
         $client = new BeansClient($conn);
 
-        $this->expectException(Command::class);
+        $this->expectException(CommandException::class);
         $client->delete(0);
     }
 }

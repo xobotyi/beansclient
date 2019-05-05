@@ -8,8 +8,8 @@
 namespace xobotyi\beansclient;
 
 use PHPUnit\Framework\TestCase;
-use xobotyi\beansclient\Exception\Command;
-use xobotyi\beansclient\Serializer\Json;
+use xobotyi\beansclient\Exception\CommandException;
+use xobotyi\beansclient\Serializer\JsonSerializer;
 
 class ReserveTest extends TestCase
 {
@@ -45,7 +45,7 @@ class ReserveTest extends TestCase
         self::assertEquals(null, $client->reserve()->id);
         self::assertEquals(1, $client->reserve()->id);
 
-        $client = new BeansClient($conn, new Json());
+        $client = new BeansClient($conn, new JsonSerializer());
         self::assertEquals([1, 2, 3, 4], $client->reserve()->payload);
     }
 
@@ -59,7 +59,7 @@ class ReserveTest extends TestCase
 
         $client = new BeansClient($conn);
 
-        $this->expectException(Command::class);
+        $this->expectException(CommandException::class);
         $client->reserve();
     }
 
@@ -77,7 +77,7 @@ class ReserveTest extends TestCase
 
         $client = new BeansClient($conn);
 
-        $this->expectException(Command::class);
+        $this->expectException(CommandException::class);
         $client->reserve();
     }
 
@@ -89,7 +89,7 @@ class ReserveTest extends TestCase
 
         $client = new BeansClient($conn);
 
-        $this->expectException(Command::class);
+        $this->expectException(CommandException::class);
         $client->reserve(-1);
     }
 }

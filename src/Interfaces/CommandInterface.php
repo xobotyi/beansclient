@@ -13,7 +13,7 @@ namespace xobotyi\beansclient\Interfaces;
  *
  * @package xobotyi\beansclient\Interfaces
  */
-interface Command
+interface CommandInterface
 {
     public const PUT                  = 'put';
     public const USE                  = 'use';
@@ -94,10 +94,10 @@ interface Command
     function parseResponse(array $responseHeader, ?string $responseStr);
 
     /**
-     * @param \xobotyi\beansclient\Interfaces\Serializer $serialize
+     * @param \xobotyi\beansclient\Interfaces\SerializerInterface $serialize
      *
      * @return mixed
      */
     public
-    function setSerializer(Serializer $serialize);
+    function setSerializer(SerializerInterface $serialize);
 }

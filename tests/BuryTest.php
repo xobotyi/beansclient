@@ -9,7 +9,7 @@ namespace xobotyi\beansclient;
 
 use PHPUnit\Framework\TestCase;
 use xobotyi\beansclient\Command\Put;
-use xobotyi\beansclient\Exception\Command;
+use xobotyi\beansclient\Exception\CommandException;
 
 class BuryTest extends TestCase
 {
@@ -54,7 +54,7 @@ class BuryTest extends TestCase
 
         $client = new BeansClient($conn);
 
-        $this->expectException(Command::class);
+        $this->expectException(CommandException::class);
         $client->bury(1);
     }
 
@@ -72,7 +72,7 @@ class BuryTest extends TestCase
 
         $client = new BeansClient($conn);
 
-        $this->expectException(Command::class);
+        $this->expectException(CommandException::class);
         $client->bury(1);
     }
 
@@ -86,7 +86,7 @@ class BuryTest extends TestCase
 
         $client = new BeansClient($conn);
 
-        $this->expectException(Command::class);
+        $this->expectException(CommandException::class);
         $client->bury(0);
     }
 
@@ -100,7 +100,7 @@ class BuryTest extends TestCase
 
         $client = new BeansClient($conn);
 
-        $this->expectException(Command::class);
+        $this->expectException(CommandException::class);
         $client->bury(1, '');
     }
 
@@ -114,7 +114,7 @@ class BuryTest extends TestCase
 
         $client = new BeansClient($conn);
 
-        $this->expectException(Command::class);
+        $this->expectException(CommandException::class);
         $client->bury(1, -1);
     }
 
@@ -126,7 +126,7 @@ class BuryTest extends TestCase
 
         $client = new BeansClient($conn);
 
-        $this->expectException(Command::class);
+        $this->expectException(CommandException::class);
         $client->bury(1, Put::MAX_PRIORITY + 1);
     }
 }

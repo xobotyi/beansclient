@@ -22,7 +22,7 @@ class Stats extends CommandAbstract
      * Stats constructor.
      */
     public function __construct() {
-        $this->commandName = Interfaces\Command::STATS;
+        $this->commandName = Interfaces\CommandInterface::STATS;
     }
 
     /**
@@ -38,14 +38,14 @@ class Stats extends CommandAbstract
      *
      * @return array
      * @throws \Exception
-     * @throws \xobotyi\beansclient\Exception\Command
+     * @throws \xobotyi\beansclient\Exception\CommandException
      */
     public function parseResponse(array $responseHeader, ?string $responseStr) :?array {
         if ($responseHeader[0] !== Response::OK) {
-            throw new Exception\Command("Got unexpected status code [${responseHeader[0]}]");
+            throw new Exception\CommandException("Got unexpected status code [${responseHeader[0]}]");
         }
         else if (!$responseStr) {
-            throw new Exception\Command('Got unexpected empty response');
+            throw new Exception\CommandException('Got unexpected empty response');
         }
 
         return Response::YamlParse($responseStr, true);

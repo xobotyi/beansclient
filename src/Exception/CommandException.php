@@ -9,11 +9,10 @@ namespace xobotyi\beansclient\Exception;
 
 
 /**
- * Class Job
+ * Class Command
  *
  * @package xobotyi\beansclient\Exception
  */
-class Job extends \Exception
+class CommandException extends \Exception
 {
-
 }

@@ -20,7 +20,7 @@ class ListTubes extends CommandAbstract
      * ListTubes constructor.
      */
     public function __construct() {
-        $this->commandName = Interfaces\Command::LIST_TUBES;
+        $this->commandName = Interfaces\CommandInterface::LIST_TUBES;
     }
 
     /**

@@ -33,21 +33,21 @@ class Bury extends CommandAbstract
      * @param int $jobId
      * @param     $priority
      *
-     * @throws \xobotyi\beansclient\Exception\Command
+     * @throws \xobotyi\beansclient\Exception\CommandException
      */
     public
     function __construct(int $jobId, $priority) {
         if ($jobId <= 0) {
-            throw new Exception\Command('Job id must be a positive integer');
+            throw new Exception\CommandException('Job id must be a positive integer');
         }
         if (!is_numeric($priority)) {
-            throw new Exception\Command('Argument 2 passed to xobotyi\beansclient\BeansClient::put() must be a number, got ' . gettype($priority));
+            throw new Exception\CommandException('Argument 2 passed to xobotyi\beansclient\BeansClient::put() must be a number, got ' . gettype($priority));
         }
         if ($priority < 0 || $priority > Put::MAX_PRIORITY) {
-            throw new Exception\Command('Job priority must be between 0 and ' . Put::MAX_PRIORITY);
+            throw new Exception\CommandException('Job priority must be between 0 and ' . Put::MAX_PRIORITY);
         }
 
-        $this->commandName = Interfaces\Command::BURY;
+        $this->commandName = Interfaces\CommandInterface::BURY;
 
         $this->jobId    = $jobId;
         $this->priority = $priority;
@@ -66,12 +66,12 @@ class Bury extends CommandAbstract
      * @param null|string $responseStr
      *
      * @return bool
-     * @throws \xobotyi\beansclient\Exception\Command
+     * @throws \xobotyi\beansclient\Exception\CommandException
      */
     public
     function parseResponse(array $responseHeader, ?string $responseStr) :bool {
         if ($responseStr) {
-            throw new Exception\Command("Unexpected response data passed");
+            throw new Exception\CommandException("Unexpected response data passed");
         }
         else if ($responseHeader[0] === Response::BURIED) {
             return true;
@@ -80,6 +80,6 @@ class Bury extends CommandAbstract
             return false;
         }
 
-        throw new Exception\Command("Got unexpected status code [${responseHeader[0]}]");
+        throw new Exception\CommandException("Got unexpected status code [${responseHeader[0]}]");
     }
 }

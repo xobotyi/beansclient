@@ -7,7 +7,7 @@
 
 namespace xobotyi\beansclient\Command;
 
-use xobotyi\beansclient\Exception\Command;
+use xobotyi\beansclient\Exception\CommandException;
 use xobotyi\beansclient\Interfaces;
 use xobotyi\beansclient\Response;
 
@@ -22,7 +22,7 @@ class ListTubeUsed extends CommandAbstract
      * ListTubeUsed constructor.
      */
     public function __construct() {
-        $this->commandName = Interfaces\Command::LIST_TUBE_USED;
+        $this->commandName = Interfaces\CommandInterface::LIST_TUBE_USED;
     }
 
     /**
@@ -37,20 +37,20 @@ class ListTubeUsed extends CommandAbstract
      * @param null|string $responseStr
      *
      * @return string
-     * @throws \xobotyi\beansclient\Exception\Command
+     * @throws \xobotyi\beansclient\Exception\CommandException
      */
     public function parseResponse(array $responseHeader, ?string $responseStr) :string {
         if ($responseStr) {
-            throw new Command("Unexpected response data passed");
+            throw new CommandException("Unexpected response data passed");
         }
         else if ($responseHeader[0] === Response::USING) {
             if (!isset($responseHeader[1])) {
-                throw new Command("Response is missing tube name [" . implode('', $responseHeader) . "]");
+                throw new CommandException("Response is missing tube name [" . implode('', $responseHeader) . "]");
             }
 
             return $responseHeader[1];
         }
 
-        throw new Command("Got unexpected status code [${responseHeader[0]}]");
+        throw new CommandException("Got unexpected status code [${responseHeader[0]}]");
     }
 }

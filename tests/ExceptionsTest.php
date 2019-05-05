@@ -12,38 +12,38 @@ use PHPUnit\Framework\TestCase;
 class ExceptionsTest extends TestCase
 {
     public function testClientException1() {
-        $this->expectException(Exception\Client::class);
+        $this->expectException(Exception\ClientException::class);
         $this->expectExceptionMessage("test");
-        throw new Exception\Client('test');
+        throw new Exception\ClientException('test');
     }
 
     public function testCommandException1() {
-        $this->expectException(Exception\Command::class);
+        $this->expectException(Exception\CommandException::class);
         $this->expectExceptionMessage("test");
-        throw new Exception\Command('test');
+        throw new Exception\CommandException('test');
     }
 
     public function testConnectionException1() {
-        $this->expectException(Exception\Connection::class);
+        $this->expectException(Exception\ConnectionException::class);
         $this->expectExceptionMessage("Connection error 123: test");
-        throw new Exception\Connection(123, 'test');
+        throw new Exception\ConnectionException(123, 'test');
     }
 
     public function testJobException1() {
-        $this->expectException(Exception\Job::class);
+        $this->expectException(Exception\JobException::class);
         $this->expectExceptionMessage("test");
-        throw new Exception\Job('test');
+        throw new Exception\JobException('test');
     }
 
     public function testServerException1() {
-        $this->expectException(Exception\Server::class);
+        $this->expectException(Exception\ServerException::class);
         $this->expectExceptionMessage("test");
-        throw new Exception\Server('test');
+        throw new Exception\ServerException('test');
     }
 
     public function testSocketException1() {
-        $this->expectException(Exception\Socket::class);
+        $this->expectException(Exception\SocketException::class);
         $this->expectExceptionMessage("test");
-        throw new Exception\Socket('test');
+        throw new Exception\SocketException('test');
     }
 }
