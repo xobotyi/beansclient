@@ -7,6 +7,18 @@ namespace xobotyi\beansclient\Interfaces;
 interface SocketInterface
 {
     public
+    function getHost(): ?string;
+
+    public
+    function getPort(): ?int;
+
+    public
+    function getTimeout(): ?int;
+
+    public
+    function isPersistent(): ?bool;
+
+    public
     function read(int $bytes): string;
 
     public

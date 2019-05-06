@@ -2,7 +2,7 @@
 
 namespace xobotyi\beansclient\Socket;
 
-include __DIR__ . "/SocketFunctionsMock.php";
+include_once __DIR__ . "/SocketFunctionsMock.php";
 
 use PHPUnit\Framework\TestCase;
 use xobotyi\beansclient\Exception\SocketException;
