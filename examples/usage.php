@@ -24,7 +24,6 @@ $job = $beansClient->watchTube('myAwesomeTube')
                    ->watchTube('myAwesomeTube2')
                    ->reserve();
 
-$job = new \xobotyi\beansclient\Job($beansClient, $job['id']);
 if ($job) {
     echo "Hey, i received first {$job->payload} of job with id {$job->id}\n<br/>";
 

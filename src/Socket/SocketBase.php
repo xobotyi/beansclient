@@ -12,6 +12,7 @@ use xobotyi\beansclient\Interfaces\SocketInterface;
  * Class SocketBase
  * @package xobotyi\beansclient\Socket
  */
+abstract
 class SocketBase implements SocketInterface
 {
     public const CONNECTION_TIMEOUT = 1;

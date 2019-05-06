@@ -36,9 +36,8 @@ class StreamSocket extends SocketBase
 
         $uri = "tcp://{$ip[0]}:{$this->port}";
         $flags = $this->persistent ? STREAM_CLIENT_CONNECT | STREAM_CLIENT_PERSISTENT : STREAM_CLIENT_CONNECT;
-        $context = stream_context_create();
 
-        $this->socket = @stream_socket_client($uri, $errno, $msg, $this->timeout, $flags, $context);
+        $this->socket = @stream_socket_client($uri, $errno, $msg, $this->timeout, $flags, stream_context_create());
 
         if (!$this->socket || $errno || $msg) {
             throw new SocketException($msg, $errno);
