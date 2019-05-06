@@ -24,17 +24,21 @@ class StreamSocket extends SocketBase
      */
     public
     function __construct(string $host = 'localhost', int $port = 11300, ?int $timeout = null, bool $persistent = false) {
-        $ip = gethostbynamel($host);
+        $this->host = $host;
+        $this->port = $port;
+        $this->timeout = $timeout === null ? static::CONNECTION_TIMEOUT : $timeout;
+        $this->persistent = $persistent;
+
+        $ip = gethostbynamel($this->host);
         if (empty($ip)) {
-            throw new SocketException("Host '{$host}' not exists or unreachable");
+            throw new SocketException("Host '{$this->host}' not exists or unreachable");
         }
 
-        $uri = "tcp://{$ip[0]}:{$port}";
-        $timeout = $timeout === null ? static::CONNECTION_TIMEOUT : $timeout;
-        $flags = $persistent ? STREAM_CLIENT_CONNECT | STREAM_CLIENT_PERSISTENT : STREAM_CLIENT_CONNECT;
+        $uri = "tcp://{$ip[0]}:{$this->port}";
+        $flags = $this->persistent ? STREAM_CLIENT_CONNECT | STREAM_CLIENT_PERSISTENT : STREAM_CLIENT_CONNECT;
         $context = stream_context_create();
 
-        $this->socket = @stream_socket_client($uri, $errno, $msg, $timeout, $flags, $context);
+        $this->socket = @stream_socket_client($uri, $errno, $msg, $this->timeout, $flags, $context);
 
         if (!$this->socket || $errno || $msg) {
             throw new SocketException($msg, $errno);

@@ -32,13 +32,19 @@ interface ConnectionInterface
      * @return string
      */
     public
-    function getHost(): string;
+    function getHost(): ?string;
 
     /**
      * @return int
      */
     public
-    function getPort(): int;
+    function getPort(): ?int;
+
+    /**
+     * @return int
+     */
+    public
+    function getTimeout(): ?int;
 
     /**
      * @return bool

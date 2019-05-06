@@ -15,23 +15,6 @@ class Connection implements Interfaces\ConnectionInterface
     private $socket = null;
 
     /**
-     * @var string
-     */
-    private $host;
-    /**
-     * @var bool
-     */
-    private $persistent;
-    /**
-     * @var int
-     */
-    private $port;
-    /**
-     * @var null|int
-     */
-    private $timeout;
-
-    /**
      * Connection constructor.
      *
      * @param string   $host
@@ -43,11 +26,6 @@ class Connection implements Interfaces\ConnectionInterface
      */
     public
     function __construct(string $host = 'localhost', int $port = 11300, ?int $connectionTimeout = null, bool $persistent = false) {
-        $this->host = $host;
-        $this->port = $port;
-        $this->timeout = $connectionTimeout;
-        $this->persistent = $persistent;
-
         $this->socket = new StreamSocket($host, $port, $connectionTimeout, $persistent);
     }
 
@@ -74,8 +52,8 @@ class Connection implements Interfaces\ConnectionInterface
      * @return string
      */
     public
-    function getHost(): string {
-        return $this->host;
+    function getHost(): ?string {
+        return $this->socket ? $this->socket->getHost() : null;
     }
 
     /**
@@ -84,8 +62,8 @@ class Connection implements Interfaces\ConnectionInterface
      * @return int
      */
     public
-    function getPort(): int {
-        return $this->port;
+    function getPort(): ?int {
+        return $this->socket ? $this->socket->getPort() : null;
     }
 
     /**
@@ -94,8 +72,8 @@ class Connection implements Interfaces\ConnectionInterface
      * @return int
      */
     public
-    function getTimeout(): int {
-        return $this->timeout;
+    function getTimeout(): ?int {
+        return $this->socket ? $this->socket->getTimeout() : null;
     }
 
     /**
@@ -115,7 +93,7 @@ class Connection implements Interfaces\ConnectionInterface
      */
     public
     function isPersistent(): bool {
-        return $this->persistent;
+        return $this->socket && $this->socket->isPersistent();
     }
 
     /**

@@ -17,11 +17,61 @@ class SocketBase implements SocketInterface
     public const CONNECTION_TIMEOUT = 1;
     public const READ_TIMEOUT = 1;
     public const WRITE_RETRIES = 5;
+    public const READ_RETRIES = 5;
 
     /**
      * @var resource|null
      */
     protected $socket = null;
+
+    /**
+     * @var null | string
+     */
+    protected $host = null;
+    /**
+     * @var null | integer
+     */
+    protected $port = null;
+    /**
+     * @var null | integer
+     */
+    protected $timeout = null;
+    /**
+     * @var null | boolean
+     */
+    protected $persistent = null;
+
+    /**
+     * @return null|string
+     */
+    public
+    function getHost(): ?string {
+        return $this->host;
+    }
+
+    /**
+     * @return null|int
+     */
+    public
+    function getPort(): ?int {
+        return $this->port;
+    }
+
+    /**
+     * @return null|int
+     */
+    public
+    function getTimeout(): ?int {
+        return $this->timeout;
+    }
+
+    /**
+     * @return null|bool
+     */
+    public
+    function isPersistent(): ?bool {
+        return $this->persistent;
+    }
 
     public
     function __destruct() {
@@ -42,17 +92,28 @@ class SocketBase implements SocketInterface
         error_clear_last();
 
         $result = '';
-        $bytesRead = 0;
+        $bytesReadTotal = 0;
 
-        while ($bytesRead < $bytes) {
-            $read = fread($this->socket, $bytes - $bytesRead);
+        $emptyConsecutiveReads = 0;
+
+        while ($bytesReadTotal < $bytes) {
+            $read = fread($this->socket, $bytes - $bytesReadTotal);
 
             if ($read === false) {
                 $this->throwLastError();
             }
 
+            $bytesRead = mb_strlen($read, '8bit');
+
+            if ($bytesRead) {
+                $emptyConsecutiveReads = 0;
+            }
+            else if (++$emptyConsecutiveReads === static::READ_RETRIES) {
+                throw new SocketException(sprintf("Failed to read %u bytes from socket after %u retries, got only %u bytes (%s:%u)", $bytes, static::READ_RETRIES, $bytesReadTotal, $this->host, $this->port));
+            }
+
             $result .= $read;
-            $bytesRead += $read = mb_strlen($read, '8bit');
+            $bytesReadTotal += $bytesRead;
         }
 
         return $result;
@@ -105,7 +166,7 @@ class SocketBase implements SocketInterface
             $writtenTotal += $written;
 
             if (++$retries === static::WRITE_RETRIES) {
-                throw new SocketException(sprintf("Failed to write data to socket after %u retries (%u:%u)", static::WRITE_RETRIES, $this->host, $this->port));
+                throw new SocketException(sprintf("Failed to write data to socket after %u retries (%s:%u)", static::WRITE_RETRIES, $this->host, $this->port));
             }
         }
 
@@ -117,7 +178,7 @@ class SocketBase implements SocketInterface
      */
     public
     function close() {
-        if (isset($this->socket)) {
+        if ($this->socket) {
             fclose($this->socket);
             $this->socket = null;
         }
