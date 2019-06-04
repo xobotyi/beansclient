@@ -153,7 +153,9 @@ class Job
             return $this;
         }
 
-        if ($stats = $this->client->statsJob($this->data['id'])) {
+        $stats = $this->client->statsJob($this->data['id']);
+
+        if ($stats) {
             foreach (self::STATS_FIELDS as $tgt => $src) {
                 if ($src === null) {
                     switch ($tgt) {
