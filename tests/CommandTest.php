@@ -11,7 +11,8 @@ use xobotyi\beansclient\Exception\CommandException;
 
 class CommandTest extends TestCase
 {
-    public function testCommand() :void {
+    public
+    function testCommand(): void {
         $cmd = new Put('some payload', 0, 0, 1);
 
         self::assertEquals($cmd->getPayload(), 'some payload');
@@ -23,7 +24,8 @@ class CommandTest extends TestCase
         self::assertEquals($cmd, 'stats');
     }
 
-    public function testCommandException() {
+    public
+    function testCommandException() {
         $cmd = new ListTubes();
 
         $this->expectException(CommandException::class);

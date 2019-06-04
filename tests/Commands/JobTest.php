@@ -11,7 +11,27 @@ use xobotyi\beansclient\Serializer\JsonSerializer;
 class JobTest extends TestCase
 {
 
-    private function getClient(bool $activeConnection = true) {
+    public
+    function testBury() {
+        $client = $this->getClient();
+
+        $client->method('statsJob')
+               ->withConsecutive()
+               ->willReturnOnConsecutiveCalls(
+                   ['state' => 'ready', 'time-left' => 0]);
+
+        $client->method('bury')
+               ->withConsecutive()
+               ->willReturnOnConsecutiveCalls(true, false);
+
+        $job = new Job($client, 1);
+
+        self::assertEquals('buried', $job->bury()->state);
+        self::assertEquals('ready', $job->bury()->state);
+    }
+
+    private
+    function getClient(bool $activeConnection = true) {
         $conn = $this->getMockBuilder(Connection::class)
                      ->disableOriginalConstructor()
                      ->getMock();
@@ -43,25 +63,8 @@ class JobTest extends TestCase
         return $client;
     }
 
-    public function testBury() {
-        $client = $this->getClient();
-
-        $client->method('statsJob')
-               ->withConsecutive()
-               ->willReturnOnConsecutiveCalls(
-                   ['state' => 'ready', 'time-left' => 0]);
-
-        $client->method('bury')
-               ->withConsecutive()
-               ->willReturnOnConsecutiveCalls(true, false);
-
-        $job = new Job($client, 1);
-
-        self::assertEquals('buried', $job->bury()->state);
-        self::assertEquals('ready', $job->bury()->state);
-    }
-
-    public function testDelete() {
+    public
+    function testDelete() {
         $client = $this->getClient();
 
         $client->method('statsJob')
@@ -79,7 +82,8 @@ class JobTest extends TestCase
         self::assertEquals('ready', $job->delete()->state);
     }
 
-    public function testEmptyJob() {
+    public
+    function testEmptyJob() {
         $client = $this->getClient();
 
         $job = new Job($client, null);
@@ -112,21 +116,24 @@ class JobTest extends TestCase
                             ], $job->getData());
     }
 
-    public function testException1() {
+    public
+    function testException1() {
         $client = $this->getClient(false);
 
         $this->expectException(Exception\JobException::class);
         $job = new Job($client, 1, Job::STATE_READY, '12345');
     }
 
-    public function testGetClient() {
+    public
+    function testGetClient() {
         $client = $this->getClient();
 
         $job = new Job($client, 1, Job::STATE_READY, '12345');
         $this->assertEquals($client, $job->getClient());
     }
 
-    public function testGetData() {
+    public
+    function testGetData() {
         $client = $this->getClient();
 
         $client->method('statsJob')
@@ -162,7 +169,8 @@ class JobTest extends TestCase
                            $job->getData());
     }
 
-    public function testGetDataWithDeserialization() {
+    public
+    function testGetDataWithDeserialization() {
         $client     = $this->getClient();
         $serializer = new JsonSerializer();
 
@@ -201,7 +209,8 @@ class JobTest extends TestCase
                            $job->getData());
     }
 
-    public function testIsBuried() {
+    public
+    function testIsBuried() {
         $client = $this->getClient();
 
         $job = new Job($client, 1, Job::STATE_BURIED, '12345');
@@ -209,7 +218,8 @@ class JobTest extends TestCase
         $this->assertTrue($job->isBuried());
     }
 
-    public function testIsDelayed() {
+    public
+    function testIsDelayed() {
         $client = $this->getClient();
 
         $job = new Job($client, 1, Job::STATE_DELAYED, '12345');
@@ -217,7 +227,8 @@ class JobTest extends TestCase
         $this->assertTrue($job->isDelayed());
     }
 
-    public function testIsDeleted() {
+    public
+    function testIsDeleted() {
         $client = $this->getClient();
 
         $job = new Job($client, 1, Job::STATE_DELETED, '12345');
@@ -225,7 +236,8 @@ class JobTest extends TestCase
         $this->assertTrue($job->isDeleted());
     }
 
-    public function testIsReady() {
+    public
+    function testIsReady() {
         $client = $this->getClient();
 
         $job = new Job($client, 1, Job::STATE_READY, '12345');
@@ -233,14 +245,16 @@ class JobTest extends TestCase
         $this->assertTrue($job->isReady());
     }
 
-    public function testIsReserved() {
+    public
+    function testIsReserved() {
         $client = $this->getClient();
         $job    = new Job($client, 1, Job::STATE_RESERVED, '12345');
 
         $this->assertTrue($job->isReserved());
     }
 
-    public function testKick() {
+    public
+    function testKick() {
         $client = $this->getClient();
 
         $client->method('statsJob')
@@ -254,7 +268,8 @@ class JobTest extends TestCase
         self::assertEquals('ready', $job->kick()->state);
     }
 
-    public function testNotice() {
+    public
+    function testNotice() {
         $client = $this->getClient();
 
         $job = new Job($client, 1, Job::STATE_READY, '12345');
@@ -267,7 +282,8 @@ class JobTest extends TestCase
         $this->assertEquals(null, $job->dfgjhdkfjg);
     }
 
-    public function testRelease() {
+    public
+    function testRelease() {
         $client = $this->getClient();
 
         $client->method('statsJob')
@@ -286,7 +302,8 @@ class JobTest extends TestCase
         self::assertEquals('buried', $job->release()->state);
     }
 
-    public function testSetClient() {
+    public
+    function testSetClient() {
         $client1 = $this->getClient();
         $client2 = $this->getClient();
 
@@ -294,7 +311,8 @@ class JobTest extends TestCase
         $this->assertEquals($client2, $job->setClient($client2)->getClient());
     }
 
-    public function testTouch() {
+    public
+    function testTouch() {
         $client = $this->getClient();
 
         $client->method('statsJob')
@@ -313,7 +331,8 @@ class JobTest extends TestCase
         self::assertEquals('buried', $job->touch()->state);
     }
 
-    public function test__get() {
+    public
+    function test__get() {
         $client = $this->getClient();
 
         $client->method('statsJob')

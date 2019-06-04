@@ -15,14 +15,16 @@ class ListTubes extends CommandAbstract
     /**
      * ListTubes constructor.
      */
-    public function __construct() {
+    public
+    function __construct() {
         $this->commandName = Interfaces\CommandInterface::LIST_TUBES;
     }
 
     /**
      * @return string
      */
-    public function getCommandStr() :string {
+    public
+    function getCommandStr(): string {
         return $this->commandName;
     }
 }

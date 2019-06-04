@@ -18,7 +18,7 @@ class JsonSerializer implements SerializerInterface
      * @return string
      */
     public
-    function serialize($data) :string {
+    function serialize($data): string {
         return json_encode($data);
     }
 

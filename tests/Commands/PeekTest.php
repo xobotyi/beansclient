@@ -14,21 +14,8 @@ class PeekTest extends TestCase
     const PORT    = 11300;
     const TIMEOUT = 2;
 
-    private function getConnection(bool $active = true) {
-        $conn = $this->getMockBuilder(Connection::class)
-                     ->disableOriginalConstructor()
-                     ->getMock();
-
-        $conn->expects($this->any())
-             ->method('isActive')
-             ->will($this->returnValue($active));
-
-        return $conn;
-    }
-
-    // test if response has wrong status name
-
-    public function testPeek() :void {
+    public
+    function testPeek(): void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
@@ -47,9 +34,25 @@ class PeekTest extends TestCase
         self::assertEquals(['id' => 1, 'payload' => [1, 2, 3, 4]], $client->peek(1));
     }
 
+    // test if response has wrong status name
+
+    private
+    function getConnection(bool $active = true) {
+        $conn = $this->getMockBuilder(Connection::class)
+                     ->disableOriginalConstructor()
+                     ->getMock();
+
+        $conn->expects($this->any())
+             ->method('isActive')
+             ->will($this->returnValue($active));
+
+        return $conn;
+    }
+
     // test if response has no data in
 
-    public function testPeekException1() :void {
+    public
+    function testPeekException1(): void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
@@ -63,7 +66,8 @@ class PeekTest extends TestCase
 
     // test if jobId <= 0
 
-    public function testPeekException2() :void {
+    public
+    function testPeekException2(): void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
@@ -81,7 +85,8 @@ class PeekTest extends TestCase
 
     // test if subject is unknown <= 0
 
-    public function testPeekException3() :void {
+    public
+    function testPeekException3(): void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
@@ -93,7 +98,8 @@ class PeekTest extends TestCase
         $client->peek(0);
     }
 
-    public function testPeekException4() :void {
+    public
+    function testPeekException4(): void {
         $conn = $this->getConnection();
 
         $client = new BeansClient($conn);

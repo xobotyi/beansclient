@@ -33,10 +33,10 @@ class Put extends CommandAbstract
     /**
      * Put constructor.
      *
-     * @param                                                 $payload
-     * @param                                                 $priority
-     * @param int                                             $delay
-     * @param int                                             $ttr
+     * @param                                                          $payload
+     * @param                                                          $priority
+     * @param int                                                      $delay
+     * @param int                                                      $ttr
      * @param null|\xobotyi\beansclient\Interfaces\SerializerInterface $serializer
      *
      * @throws \xobotyi\beansclient\Exception\CommandException
@@ -71,7 +71,7 @@ class Put extends CommandAbstract
      * @throws \xobotyi\beansclient\Exception\CommandException
      */
     public
-    function getCommandStr() :string {
+    function getCommandStr(): string {
         $mainCommand = $this->commandName . ' ' . $this->priority . ' ' . $this->delay . ' ' . $this->ttr . ' ';
 
         if ($this->serializer) {
@@ -99,7 +99,7 @@ class Put extends CommandAbstract
      * @throws \xobotyi\beansclient\Exception\CommandException
      */
     public
-    function parseResponse(array $responseHeader, ?string $responseStr) :?array {
+    function parseResponse(array $responseHeader, ?string $responseStr): ?array {
         if ($responseHeader[0] === Response::JOB_TOO_BIG) {
             throw new Exception\CommandException('Job\'s payload size exceeds max-job-size config');
         }

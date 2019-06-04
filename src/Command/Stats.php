@@ -17,14 +17,16 @@ class Stats extends CommandAbstract
     /**
      * Stats constructor.
      */
-    public function __construct() {
+    public
+    function __construct() {
         $this->commandName = Interfaces\CommandInterface::STATS;
     }
 
     /**
      * @return string
      */
-    public function getCommandStr() :string {
+    public
+    function getCommandStr(): string {
         return $this->commandName;
     }
 
@@ -36,7 +38,8 @@ class Stats extends CommandAbstract
      * @throws \Exception
      * @throws \xobotyi\beansclient\Exception\CommandException
      */
-    public function parseResponse(array $responseHeader, ?string $responseStr) :?array {
+    public
+    function parseResponse(array $responseHeader, ?string $responseStr): ?array {
         if ($responseHeader[0] !== Response::OK) {
             throw new Exception\CommandException("Got unexpected status code [${responseHeader[0]}]");
         }

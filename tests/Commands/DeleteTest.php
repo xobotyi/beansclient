@@ -12,21 +12,8 @@ class DeleteTest extends TestCase
     const PORT    = 11300;
     const TIMEOUT = 2;
 
-    private function getConnection(bool $active = true) {
-        $conn = $this->getMockBuilder(Connection::class)
-                     ->disableOriginalConstructor()
-                     ->getMock();
-
-        $conn->expects($this->any())
-             ->method('isActive')
-             ->will($this->returnValue($active));
-
-        return $conn;
-    }
-
-    // test if response has wrong status name
-
-    public function testDelete() :void {
+    public
+    function testDelete(): void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
@@ -39,9 +26,25 @@ class DeleteTest extends TestCase
         self::assertEquals(false, $client->delete(2));
     }
 
+    // test if response has wrong status name
+
+    private
+    function getConnection(bool $active = true) {
+        $conn = $this->getMockBuilder(Connection::class)
+                     ->disableOriginalConstructor()
+                     ->getMock();
+
+        $conn->expects($this->any())
+             ->method('isActive')
+             ->will($this->returnValue($active));
+
+        return $conn;
+    }
+
     // test if response has data in
 
-    public function testDeleteException1() :void {
+    public
+    function testDeleteException1(): void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
@@ -55,7 +58,8 @@ class DeleteTest extends TestCase
 
     // test if job id <=0
 
-    public function testDeleteException2() :void {
+    public
+    function testDeleteException2(): void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
@@ -71,7 +75,8 @@ class DeleteTest extends TestCase
         $client->delete(1);
     }
 
-    public function testDeleteException3() :void {
+    public
+    function testDeleteException3(): void {
         $conn = $this->getConnection();
 
         $conn->method('readln')

@@ -27,7 +27,8 @@ class Reserve extends CommandAbstract
      *
      * @throws \xobotyi\beansclient\Exception\CommandException
      */
-    public function __construct(?int $timeout = 0, ?Interfaces\SerializerInterface $serializer = null) {
+    public
+    function __construct(?int $timeout = 0, ?Interfaces\SerializerInterface $serializer = null) {
         if ($timeout < 0) {
             throw new Exception\CommandException('Timeout must be greater or equal than 0');
         }
@@ -42,7 +43,8 @@ class Reserve extends CommandAbstract
     /**
      * @return string
      */
-    public function getCommandStr() :string {
+    public
+    function getCommandStr(): string {
         return $this->timeout === null ? $this->commandName : Interfaces\CommandInterface::RESERVE_WITH_TIMEOUT . ' ' . $this->timeout;
     }
 
@@ -53,7 +55,8 @@ class Reserve extends CommandAbstract
      * @return array|null
      * @throws \xobotyi\beansclient\Exception\CommandException
      */
-    public function parseResponse(array $responseHeader, ?string $responseStr) :?array {
+    public
+    function parseResponse(array $responseHeader, ?string $responseStr): ?array {
         if ($responseHeader[0] === Response::TIMED_OUT) {
             return null;
         }

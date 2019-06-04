@@ -12,21 +12,8 @@ class StatsTubeTest extends TestCase
     const PORT    = 11300;
     const TIMEOUT = 2;
 
-    private function getConnection(bool $active = true) {
-        $conn = $this->getMockBuilder(Connection::class)
-                     ->disableOriginalConstructor()
-                     ->getMock();
-
-        $conn->expects($this->any())
-             ->method('isActive')
-             ->will($this->returnValue($active));
-
-        return $conn;
-    }
-
-    // test if response has wrong status name
-
-    public function testStatsTube() :void {
+    public
+    function testStatsTube(): void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
@@ -43,9 +30,25 @@ class StatsTubeTest extends TestCase
         self::assertEquals(null, $client->statsTube('test'));
     }
 
+    // test if response has wrong status name
+
+    private
+    function getConnection(bool $active = true) {
+        $conn = $this->getMockBuilder(Connection::class)
+                     ->disableOriginalConstructor()
+                     ->getMock();
+
+        $conn->expects($this->any())
+             ->method('isActive')
+             ->will($this->returnValue($active));
+
+        return $conn;
+    }
+
     // test if response has no data in
 
-    public function testStatsTubeException1() :void {
+    public
+    function testStatsTubeException1(): void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
@@ -59,7 +62,8 @@ class StatsTubeTest extends TestCase
 
     // test if tube name is empty
 
-    public function testStatsTubeException2() :void {
+    public
+    function testStatsTubeException2(): void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
@@ -75,7 +79,8 @@ class StatsTubeTest extends TestCase
         $client->statsTube('test');
     }
 
-    public function testStatsTubeException3() :void {
+    public
+    function testStatsTubeException3(): void {
         $conn = $this->getConnection();
 
         $conn->method('readln')

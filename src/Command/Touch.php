@@ -41,7 +41,7 @@ class Touch extends CommandAbstract
      * @return string
      */
     public
-    function getCommandStr() :string {
+    function getCommandStr(): string {
         return $this->commandName . ' ' . $this->jobId;
     }
 
@@ -53,7 +53,7 @@ class Touch extends CommandAbstract
      * @throws \xobotyi\beansclient\Exception\CommandException
      */
     public
-    function parseResponse(array $responseHeader, ?string $responseStr) :bool {
+    function parseResponse(array $responseHeader, ?string $responseStr): bool {
         if ($responseStr) {
             throw new Exception\CommandException("Unexpected response data passed");
         }

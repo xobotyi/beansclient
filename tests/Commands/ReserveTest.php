@@ -13,21 +13,8 @@ class ReserveTest extends TestCase
     const PORT    = 11300;
     const TIMEOUT = 2;
 
-    private function getConnection(bool $active = true) {
-        $conn = $this->getMockBuilder(Connection::class)
-                     ->disableOriginalConstructor()
-                     ->getMock();
-
-        $conn->expects($this->any())
-             ->method('isActive')
-             ->will($this->returnValue($active));
-
-        return $conn;
-    }
-
-    // test if response has wrong status name
-
-    public function testReserve() :void {
+    public
+    function testReserve(): void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
@@ -45,9 +32,25 @@ class ReserveTest extends TestCase
         self::assertEquals([1, 2, 3, 4], $client->reserve()->payload);
     }
 
+    // test if response has wrong status name
+
+    private
+    function getConnection(bool $active = true) {
+        $conn = $this->getMockBuilder(Connection::class)
+                     ->disableOriginalConstructor()
+                     ->getMock();
+
+        $conn->expects($this->any())
+             ->method('isActive')
+             ->will($this->returnValue($active));
+
+        return $conn;
+    }
+
     // test if response has no data in
 
-    public function testReserveException1() :void {
+    public
+    function testReserveException1(): void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
@@ -61,7 +64,8 @@ class ReserveTest extends TestCase
 
     // test if timeout < 0
 
-    public function testReserveException2() :void {
+    public
+    function testReserveException2(): void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
@@ -77,7 +81,8 @@ class ReserveTest extends TestCase
         $client->reserve();
     }
 
-    public function testReserveException3() :void {
+    public
+    function testReserveException3(): void {
         $conn = $this->getConnection();
 
         $conn->method('readln')

@@ -13,21 +13,8 @@ class UseTubeTest extends TestCase
     const PORT    = 11300;
     const TIMEOUT = 2;
 
-    private function getConnection(bool $active = true) {
-        $conn = $this->getMockBuilder(Connection::class)
-                     ->disableOriginalConstructor()
-                     ->getMock();
-
-        $conn->expects($this->any())
-             ->method('isActive')
-             ->will($this->returnValue($active));
-
-        return $conn;
-    }
-
-    // test if response has another tube name
-
-    public function testUseTube() :void {
+    public
+    function testUseTube(): void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
@@ -40,9 +27,25 @@ class UseTubeTest extends TestCase
         self::assertEquals('test1', $client->dispatchCommand(new UseTube('test1')));
     }
 
+    // test if response has another tube name
+
+    private
+    function getConnection(bool $active = true) {
+        $conn = $this->getMockBuilder(Connection::class)
+                     ->disableOriginalConstructor()
+                     ->getMock();
+
+        $conn->expects($this->any())
+             ->method('isActive')
+             ->will($this->returnValue($active));
+
+        return $conn;
+    }
+
     // test if response has wrong status name
 
-    public function testUseTubeException() :void {
+    public
+    function testUseTubeException(): void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
@@ -57,7 +60,8 @@ class UseTubeTest extends TestCase
 
     // test if response has data in
 
-    public function testUseTubeException1() :void {
+    public
+    function testUseTubeException1(): void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
@@ -71,7 +75,8 @@ class UseTubeTest extends TestCase
 
     // test if tube name is empty
 
-    public function testUseTubeException2() :void {
+    public
+    function testUseTubeException2(): void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
@@ -87,7 +92,8 @@ class UseTubeTest extends TestCase
         $client->useTube('test1');
     }
 
-    public function testUseTubeException3() :void {
+    public
+    function testUseTubeException3(): void {
         $conn = $this->getConnection();
 
         $conn->method('readln')

@@ -16,9 +16,9 @@ abstract
 class SocketBase implements SocketInterface
 {
     public const CONNECTION_TIMEOUT = 1;
-    public const READ_TIMEOUT = 1;
-    public const WRITE_RETRIES = 5;
-    public const READ_RETRIES = 5;
+    public const READ_TIMEOUT       = 1;
+    public const WRITE_RETRIES      = 5;
+    public const READ_RETRIES       = 5;
 
     /**
      * @var resource|null
@@ -80,6 +80,19 @@ class SocketBase implements SocketInterface
     }
 
     /**
+     * @return $this
+     */
+    public
+    function close() {
+        if ($this->socket) {
+            fclose($this->socket);
+            $this->socket = null;
+        }
+
+        return $this;
+    }
+
+    /**
      * Reads up to $bytes bytes from the socket
      *
      * @param int $bytes Amount of bytes to read
@@ -92,7 +105,7 @@ class SocketBase implements SocketInterface
         $this->checkClosed();
         error_clear_last();
 
-        $result = '';
+        $result         = '';
         $bytesReadTotal = 0;
 
         $emptyConsecutiveReads = 0;
@@ -113,11 +126,36 @@ class SocketBase implements SocketInterface
                 throw new SocketException(sprintf("Failed to read %u bytes from socket after %u retries, got only %u bytes (%s:%u)", $bytes, static::READ_RETRIES, $bytesReadTotal, $this->host, $this->port));
             }
 
-            $result .= $read;
+            $result         .= $read;
             $bytesReadTotal += $bytesRead;
         }
 
         return $result;
+    }
+
+    /**
+     * @return $this
+     * @throws \xobotyi\beansclient\Exception\SocketException
+     */
+    private
+    function checkClosed() {
+        if (!$this->socket) {
+            throw new SocketException("Socked is closed");
+        }
+
+        return $this;
+    }
+
+    /**
+     * @throws \xobotyi\beansclient\Exception\SocketException
+     */
+    private
+    function throwLastError() {
+        if ($err = error_get_last()) {
+            throw new SocketException($err['message'], $err['type']);
+        }
+
+        throw new SocketException("Unknown error");
     }
 
     /**
@@ -153,9 +191,9 @@ class SocketBase implements SocketInterface
         $this->checkClosed();
         error_clear_last();
 
-        $retries = 0;
+        $retries      = 0;
         $writtenTotal = 0;
-        $toWrite = strlen($data);
+        $toWrite      = strlen($data);
 
         while (($writtenTotal < $toWrite) && ($retries < static::WRITE_RETRIES)) {
             $written = fwrite($this->socket, mb_substr($data, $writtenTotal, null, '8bit'));
@@ -175,48 +213,10 @@ class SocketBase implements SocketInterface
     }
 
     /**
-     * @return $this
-     */
-    public
-    function close() {
-        if ($this->socket) {
-            fclose($this->socket);
-            $this->socket = null;
-        }
-
-        return $this;
-    }
-
-    /**
      * @return bool
      */
     public
     function isClosed(): bool {
         return !$this->socket;
-    }
-
-    /**
-     * @return $this
-     * @throws \xobotyi\beansclient\Exception\SocketException
-     */
-    private
-    function checkClosed() {
-        if (!$this->socket) {
-            throw new SocketException("Socked is closed");
-        }
-
-        return $this;
-    }
-
-    /**
-     * @throws \xobotyi\beansclient\Exception\SocketException
-     */
-    private
-    function throwLastError() {
-        if ($err = error_get_last()) {
-            throw new SocketException($err['message'], $err['type']);
-        }
-
-        throw new SocketException("Unknown error");
     }
 }

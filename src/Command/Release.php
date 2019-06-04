@@ -36,7 +36,8 @@ class Release extends CommandAbstract
      *
      * @throws \xobotyi\beansclient\Exception\CommandException
      */
-    public function __construct(int $jobId, $priority, int $delay) {
+    public
+    function __construct(int $jobId, $priority, int $delay) {
         if ($jobId <= 0) {
             throw new Exception\CommandException('Job id must be a positive integer');
         }
@@ -60,7 +61,8 @@ class Release extends CommandAbstract
     /**
      * @return string
      */
-    public function getCommandStr() :string {
+    public
+    function getCommandStr(): string {
         return $this->commandName . ' ' . $this->jobId . ' ' . $this->priority . ' ' . $this->delay;
     }
 
@@ -71,7 +73,8 @@ class Release extends CommandAbstract
      * @return null|string
      * @throws \xobotyi\beansclient\Exception\CommandException
      */
-    public function parseResponse(array $responseHeader, ?string $responseStr) :?string {
+    public
+    function parseResponse(array $responseHeader, ?string $responseStr): ?string {
         if ($responseStr) {
             throw new Exception\CommandException("Unexpected response data passed");
         }

@@ -38,7 +38,8 @@ class Peek extends CommandAbstract
      *
      * @throws \xobotyi\beansclient\Exception\CommandException
      */
-    public function __construct($subject, ?Interfaces\SerializerInterface $serializer = null) {
+    public
+    function __construct($subject, ?Interfaces\SerializerInterface $serializer = null) {
         if (is_numeric($subject)) {
             if ($subject <= 0) {
                 throw new Exception\CommandException('Job id must be a positive integer');
@@ -61,7 +62,8 @@ class Peek extends CommandAbstract
     /**
      * @return string
      */
-    public function getCommandStr() :string {
+    public
+    function getCommandStr(): string {
         return $this->jobId
             ? $this->commandName . ' ' . $this->jobId
             : $this->commandName;
@@ -74,7 +76,8 @@ class Peek extends CommandAbstract
      * @return array|null
      * @throws \xobotyi\beansclient\Exception\CommandException
      */
-    public function parseResponse(array $responseHeader, ?string $responseStr) :?array {
+    public
+    function parseResponse(array $responseHeader, ?string $responseStr): ?array {
         if ($responseHeader[0] === Response::NOT_FOUND) {
             return null;
         }

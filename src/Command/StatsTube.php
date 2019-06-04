@@ -26,7 +26,8 @@ class StatsTube extends CommandAbstract
      *
      * @throws \xobotyi\beansclient\Exception\CommandException
      */
-    public function __construct(string $tube) {
+    public
+    function __construct(string $tube) {
         if (!($tube = trim($tube))) {
             throw new Exception\CommandException('Tube name must be a valuable string');
         }
@@ -39,7 +40,8 @@ class StatsTube extends CommandAbstract
     /**
      * @return string
      */
-    public function getCommandStr() :string {
+    public
+    function getCommandStr(): string {
         return $this->commandName . ' ' . $this->tube;
     }
 
@@ -51,7 +53,8 @@ class StatsTube extends CommandAbstract
      * @throws \Exception
      * @throws \xobotyi\beansclient\Exception\CommandException
      */
-    public function parseResponse(array $responseHeader, ?string $responseStr) :?array {
+    public
+    function parseResponse(array $responseHeader, ?string $responseStr): ?array {
         if ($responseHeader[0] === Response::NOT_FOUND) {
             return null;
         }

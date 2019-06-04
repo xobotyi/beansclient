@@ -11,4 +11,6 @@ use Exception;
  *
  * @package xobotyi\beansclient\Exception
  */
-class CommandException extends Exception{}
+class CommandException extends Exception
+{
+}

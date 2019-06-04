@@ -12,21 +12,8 @@ class StatsJobTest extends TestCase
     const PORT    = 11300;
     const TIMEOUT = 2;
 
-    private function getConnection(bool $active = true) {
-        $conn = $this->getMockBuilder(Connection::class)
-                     ->disableOriginalConstructor()
-                     ->getMock();
-
-        $conn->expects($this->any())
-             ->method('isActive')
-             ->will($this->returnValue($active));
-
-        return $conn;
-    }
-
-    // test if response has wrong status name
-
-    public function testStatsJob() :void {
+    public
+    function testStatsJob(): void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
@@ -43,9 +30,25 @@ class StatsJobTest extends TestCase
         self::assertEquals(null, $client->statsJob(1));
     }
 
+    // test if response has wrong status name
+
+    private
+    function getConnection(bool $active = true) {
+        $conn = $this->getMockBuilder(Connection::class)
+                     ->disableOriginalConstructor()
+                     ->getMock();
+
+        $conn->expects($this->any())
+             ->method('isActive')
+             ->will($this->returnValue($active));
+
+        return $conn;
+    }
+
     // test if response has no data in
 
-    public function testStatsJobException1() :void {
+    public
+    function testStatsJobException1(): void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
@@ -59,7 +62,8 @@ class StatsJobTest extends TestCase
 
     // test if job id <=0
 
-    public function testStatsJobException2() :void {
+    public
+    function testStatsJobException2(): void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
@@ -75,7 +79,8 @@ class StatsJobTest extends TestCase
         $client->statsJob(3);
     }
 
-    public function testStatsJobException3() :void {
+    public
+    function testStatsJobException3(): void {
         $conn = $this->getConnection();
 
         $conn->method('readln')

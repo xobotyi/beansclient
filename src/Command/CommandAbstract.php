@@ -33,7 +33,7 @@ class CommandAbstract implements Interfaces\CommandInterface
      * @return string
      */
     public
-    function __toString() :string {
+    function __toString(): string {
         return $this->getCommandStr();
     }
 
@@ -49,7 +49,7 @@ class CommandAbstract implements Interfaces\CommandInterface
      * @return bool
      */
     public
-    function hasPayload() :bool {
+    function hasPayload(): bool {
         return (bool)$this->payload;
     }
 
@@ -79,7 +79,7 @@ class CommandAbstract implements Interfaces\CommandInterface
      * @return \xobotyi\beansclient\Command\CommandAbstract
      */
     public
-    function setSerializer(?Interfaces\SerializerInterface $serialize) :self {
+    function setSerializer(?Interfaces\SerializerInterface $serialize): self {
         $this->serializer = $serialize;
 
         return $this;

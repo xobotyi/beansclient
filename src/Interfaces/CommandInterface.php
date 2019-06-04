@@ -66,7 +66,7 @@ interface CommandInterface
      * @return string
      */
     public
-    function getCommandStr() :string;
+    function getCommandStr(): string;
 
     /**
      * @return mixed
@@ -78,7 +78,7 @@ interface CommandInterface
      * @return bool
      */
     public
-    function hasPayload() :bool;
+    function hasPayload(): bool;
 
     /**
      * @param array       $responseHeader

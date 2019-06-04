@@ -13,21 +13,8 @@ class IgnoreTubeTest extends TestCase
     const PORT    = 11300;
     const TIMEOUT = 2;
 
-    private function getConnection(bool $active = true) {
-        $conn = $this->getMockBuilder(Connection::class)
-                     ->disableOriginalConstructor()
-                     ->getMock();
-
-        $conn->expects($this->any())
-             ->method('isActive')
-             ->will($this->returnValue($active));
-
-        return $conn;
-    }
-
-    // test if response has wrong status name
-
-    public function testIgnoreTube() :void {
+    public
+    function testIgnoreTube(): void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
@@ -40,9 +27,25 @@ class IgnoreTubeTest extends TestCase
         self::assertEquals(123, $client->dispatchCommand(new IgnoreTube('test1')));
     }
 
+    // test if response has wrong status name
+
+    private
+    function getConnection(bool $active = true) {
+        $conn = $this->getMockBuilder(Connection::class)
+                     ->disableOriginalConstructor()
+                     ->getMock();
+
+        $conn->expects($this->any())
+             ->method('isActive')
+             ->will($this->returnValue($active));
+
+        return $conn;
+    }
+
     // test if response has data in
 
-    public function testIgnoreTubeException1() :void {
+    public
+    function testIgnoreTubeException1(): void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
@@ -56,7 +59,8 @@ class IgnoreTubeTest extends TestCase
 
     // test if tube name is empty
 
-    public function testIgnoreTubeException2() :void {
+    public
+    function testIgnoreTubeException2(): void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
@@ -72,7 +76,8 @@ class IgnoreTubeTest extends TestCase
         $client->ignoreTube('test1');
     }
 
-    public function testIgnoreTubeException3() :void {
+    public
+    function testIgnoreTubeException3(): void {
         $conn = $this->getConnection();
 
         $conn->method('readln')

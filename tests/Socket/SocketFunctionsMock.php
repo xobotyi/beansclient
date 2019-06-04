@@ -24,7 +24,7 @@ namespace xobotyi\beansclient\Socket
         $res = $mockedResult === null ? $res : $mockedResult;
 
         if (!$res) {
-            $errno = 2;
+            $errno  = 2;
             $errstr = 'Unable to establish connection';
         }
 
@@ -50,7 +50,7 @@ namespace xobotyi\beansclient\Socket
             return "";
         }
 
-        $str = '';
+        $str      = '';
         $alphabet = 'abdefhiknrstyzABDEFGHKNQRSTYZ23456789';
         for (; $length--;) {
             $str .= $alphabet[rand(0, 36)];

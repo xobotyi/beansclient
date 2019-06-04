@@ -12,7 +12,22 @@ class ListTubeUsedTest extends TestCase
     const PORT    = 11300;
     const TIMEOUT = 2;
 
-    private function getConnection(bool $active = true) {
+    public
+    function testListTubeUsed(): void {
+        $conn = $this->getConnection();
+
+        $conn->method('readln')
+             ->will($this->returnValue("USING test1"));
+
+        $client = new BeansClient($conn);
+
+        self::assertEquals('test1', $client->listTubeUsed());
+    }
+
+    // test if tube name in response is missing
+
+    private
+    function getConnection(bool $active = true) {
         $conn = $this->getMockBuilder(Connection::class)
                      ->disableOriginalConstructor()
                      ->getMock();
@@ -24,22 +39,10 @@ class ListTubeUsedTest extends TestCase
         return $conn;
     }
 
-    // test if tube name in response is missing
-
-    public function testListTubeUsed() :void {
-        $conn = $this->getConnection();
-
-        $conn->method('readln')
-             ->will($this->returnValue("USING test1"));
-
-        $client = new BeansClient($conn);
-
-        self::assertEquals('test1', $client->listTubeUsed());
-    }
-
     // test if response has wrong status name
 
-    public function testListTubeUsedException1() :void {
+    public
+    function testListTubeUsedException1(): void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
@@ -53,7 +56,8 @@ class ListTubeUsedTest extends TestCase
 
     // test if response has data in
 
-    public function testListTubeUsedException2() :void {
+    public
+    function testListTubeUsedException2(): void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
@@ -65,7 +69,8 @@ class ListTubeUsedTest extends TestCase
         $client->listTubeUsed();
     }
 
-    public function testListTubeUsedException3() :void {
+    public
+    function testListTubeUsedException3(): void {
         $conn = $this->getConnection();
 
         $conn->method('readln')

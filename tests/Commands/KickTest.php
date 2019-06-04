@@ -12,21 +12,8 @@ class KickTest extends TestCase
     const PORT    = 11300;
     const TIMEOUT = 2;
 
-    private function getConnection(bool $active = true) {
-        $conn = $this->getMockBuilder(Connection::class)
-                     ->disableOriginalConstructor()
-                     ->getMock();
-
-        $conn->expects($this->any())
-             ->method('isActive')
-             ->will($this->returnValue($active));
-
-        return $conn;
-    }
-
-    // test if response has wrong status name
-
-    public function testKick() :void {
+    public
+    function testKick(): void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
@@ -38,9 +25,25 @@ class KickTest extends TestCase
         self::assertEquals(3, $client->kick(3));
     }
 
+    // test if response has wrong status name
+
+    private
+    function getConnection(bool $active = true) {
+        $conn = $this->getMockBuilder(Connection::class)
+                     ->disableOriginalConstructor()
+                     ->getMock();
+
+        $conn->expects($this->any())
+             ->method('isActive')
+             ->will($this->returnValue($active));
+
+        return $conn;
+    }
+
     // test if response has data in
 
-    public function testKickException1() :void {
+    public
+    function testKickException1(): void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
@@ -54,7 +57,8 @@ class KickTest extends TestCase
 
     // test if jobs count less or equal 0
 
-    public function testKickException2() :void {
+    public
+    function testKickException2(): void {
         $conn = $this->getConnection();
 
         $conn->method('readln')
@@ -70,7 +74,8 @@ class KickTest extends TestCase
         $client->kick(21);
     }
 
-    public function testKickException3() :void {
+    public
+    function testKickException3(): void {
         $conn = $this->getConnection();
 
         $conn->method('readln')

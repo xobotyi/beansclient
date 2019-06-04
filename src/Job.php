@@ -2,6 +2,8 @@
 
 namespace xobotyi\beansclient;
 
+use function is_numeric;
+
 /**
  * Class Job
  *
@@ -90,7 +92,8 @@ class Job
      *
      * @throws \xobotyi\beansclient\Exception\JobException
      */
-    public function __construct(BeansClient &$beansClient, ?int $id, ?string $state = null, $payload = null) {
+    public
+    function __construct(BeansClient &$beansClient, ?int $id, ?string $state = null, $payload = null) {
         $this->setClient($beansClient);
 
         $this->data['id']      = $id;
@@ -106,9 +109,10 @@ class Job
      * @throws \xobotyi\beansclient\Exception\CommandException
      * @throws \xobotyi\beansclient\Exception\JobException
      */
-    public function __get($offset) {
-        if (!\array_key_exists($offset, $this->data)) {
-            trigger_error("Undefined property: " . self::class . "::\${$offset}");
+    public
+    function __get($offset) {
+        if (!array_key_exists($offset, $this->data)) {
+            trigger_error(sprintf("Undefined property: %s::%s", self::class, $offset));
 
             return null;
         }
@@ -118,10 +122,10 @@ class Job
         }
 
         if (!$this->data['state'] || ($this->data[$offset] === null && $this->data['state'] !== self::STATE_DELETED)) {
-            if (\array_key_exists($offset, self::STATS_FIELDS)) {
+            if (array_key_exists($offset, self::STATS_FIELDS)) {
                 $this->stats();
             }
-            else if (\array_key_exists($offset, self::PEEK_FIELDS)) {
+            else if (array_key_exists($offset, self::PEEK_FIELDS)) {
                 $this->peek();
             }
         }
@@ -138,27 +142,44 @@ class Job
     }
 
     /**
-     * @param int $priority
-     *
      * @return \xobotyi\beansclient\Job
      * @throws \xobotyi\beansclient\Exception\ClientException
      * @throws \xobotyi\beansclient\Exception\CommandException
      * @throws \xobotyi\beansclient\Exception\JobException
      */
-    public function bury(int $priority = BeansClient::DEFAULT_PRIORITY) :self {
+    public
+    function stats(): self {
         if (!$this->data['id']) {
             return $this;
         }
 
-        if ($this->client->bury($this->data['id'], $priority)) {
-            $this->data['state']       = self::STATE_BURIED;
-            $this->data['priority']    = $priority;
-            $this->data['delay']       = 0;
-            $this->data['timeLeft']    = 0;
-            $this->data['releaseTime'] = 0;
+        if ($stats = $this->client->statsJob($this->data['id'])) {
+            foreach (self::STATS_FIELDS as $tgt => $src) {
+                if ($src === null) {
+                    switch ($tgt) {
+                        case 'releaseTime':
+                            $this->data['releaseTime'] = ($this->data['state'] === self::STATE_DELAYED || $this->data['state'] === self::STATE_RESERVED)
+                                ? time() + $this->data['timeLeft'] ?? 0
+                                : 0;
+                            break;
+                    }
+                }
+                else if (!array_key_exists($src, $stats)) {
+                    continue;
+                }
+                else if (is_numeric($this->data[$tgt] = $stats[$src])) {
+                    $this->data[$tgt] *= 1;
+                }
+            }
         }
         else {
             $this->clearStats();
+
+            foreach (self::PEEK_FIELDS as $tgt => $src) {
+                $this->data[$tgt] = null;
+            }
+
+            $this->data['state'] = self::STATE_DELETED;
         }
 
         return $this;
@@ -167,7 +188,8 @@ class Job
     /**
      * @return \xobotyi\beansclient\Job
      */
-    private function clearStats() :self {
+    private
+    function clearStats(): self {
         foreach (self::STATS_FIELDS as $field) {
             $this->data[$field] = null;
         }
@@ -181,128 +203,8 @@ class Job
      * @throws \xobotyi\beansclient\Exception\CommandException
      * @throws \xobotyi\beansclient\Exception\JobException
      */
-    public function delete() :self {
-        if (!$this->data['id']) {
-            return $this;
-        }
-
-        $this->clearStats();
-
-        if ($this->client->delete($this->data['id'])) {
-            foreach (self::PEEK_FIELDS as $tgt => $src) {
-                $this->data[$tgt] = null;
-            }
-
-            $this->data['state'] = self::STATE_DELETED;
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return \xobotyi\beansclient\BeansClient
-     */
-    public function getClient() :BeansClient {
-        return $this->client;
-    }
-
-    /**
-     * @param \xobotyi\beansclient\BeansClient $beansClient
-     *
-     * @return $this
-     * @throws \xobotyi\beansclient\Exception\JobException
-     */
-    public function setClient(BeansClient &$beansClient) {
-        if (!$beansClient->getConnection()->isActive()) {
-            throw new Exception\JobException("Given client has inactive connection");
-        }
-
-        $this->client = $beansClient;
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     * @throws \xobotyi\beansclient\Exception\ClientException
-     * @throws \xobotyi\beansclient\Exception\CommandException
-     * @throws \xobotyi\beansclient\Exception\JobException
-     */
-    public function getData() :array {
-        if (!$this->data['id']) {
-            return $this->data;
-        }
-
-        if (!$this->data['tube']) {
-            $this->stats();
-        }
-        if (!$this->data['payload']) {
-            $this->peek();
-        }
-
-        return $this->data;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isBuried() :bool {
-        return $this->data['state'] === self::STATE_BURIED;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isDelayed() :bool {
-        return $this->data['state'] === self::STATE_DELAYED;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isDeleted() :bool {
-        return $this->data['state'] === self::STATE_DELETED;
-    }
-
-    // commands
-
-    /**
-     * @return bool
-     */
-    public function isReady() :bool {
-        return $this->data['state'] === self::STATE_READY;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isReserved() :bool {
-        return $this->data['state'] === self::STATE_RESERVED;
-    }
-
-    /**
-     * @return \xobotyi\beansclient\Job
-     * @throws \xobotyi\beansclient\Exception\ClientException
-     * @throws \xobotyi\beansclient\Exception\CommandException
-     * @throws \xobotyi\beansclient\Exception\JobException
-     */
-    public function kick() :self {
-        if (!$this->data['id']) {
-            return $this;
-        }
-
-        $this->client->kickJob($this->data['id']);
-
-        return $this->stats();
-    }
-
-    /**
-     * @return \xobotyi\beansclient\Job
-     * @throws \xobotyi\beansclient\Exception\ClientException
-     * @throws \xobotyi\beansclient\Exception\CommandException
-     * @throws \xobotyi\beansclient\Exception\JobException
-     */
-    public function peek() :self {
+    public
+    function peek(): self {
         if (!$this->data['id']) {
             return $this;
         }
@@ -323,6 +225,165 @@ class Job
     }
 
     /**
+     * @param int $priority
+     *
+     * @return \xobotyi\beansclient\Job
+     * @throws \xobotyi\beansclient\Exception\ClientException
+     * @throws \xobotyi\beansclient\Exception\CommandException
+     * @throws \xobotyi\beansclient\Exception\JobException
+     */
+    public
+    function bury(int $priority = BeansClient::DEFAULT_PRIORITY): self {
+        if (!$this->data['id']) {
+            return $this;
+        }
+
+        if ($this->client->bury($this->data['id'], $priority)) {
+            $this->data['state']       = self::STATE_BURIED;
+            $this->data['priority']    = $priority;
+            $this->data['delay']       = 0;
+            $this->data['timeLeft']    = 0;
+            $this->data['releaseTime'] = 0;
+        }
+        else {
+            $this->clearStats();
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return \xobotyi\beansclient\Job
+     * @throws \xobotyi\beansclient\Exception\ClientException
+     * @throws \xobotyi\beansclient\Exception\CommandException
+     * @throws \xobotyi\beansclient\Exception\JobException
+     */
+    public
+    function delete(): self {
+        if (!$this->data['id']) {
+            return $this;
+        }
+
+        $this->clearStats();
+
+        if ($this->client->delete($this->data['id'])) {
+            foreach (self::PEEK_FIELDS as $tgt => $src) {
+                $this->data[$tgt] = null;
+            }
+
+            $this->data['state'] = self::STATE_DELETED;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return \xobotyi\beansclient\BeansClient
+     */
+    public
+    function getClient(): BeansClient {
+        return $this->client;
+    }
+
+    /**
+     * @param \xobotyi\beansclient\BeansClient $beansClient
+     *
+     * @return $this
+     * @throws \xobotyi\beansclient\Exception\JobException
+     */
+    public
+    function setClient(BeansClient &$beansClient) {
+        if (!$beansClient->getConnection()->isActive()) {
+            throw new Exception\JobException("Given client has inactive connection");
+        }
+
+        $this->client = $beansClient;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     * @throws \xobotyi\beansclient\Exception\ClientException
+     * @throws \xobotyi\beansclient\Exception\CommandException
+     * @throws \xobotyi\beansclient\Exception\JobException
+     */
+    public
+    function getData(): array {
+        if (!$this->data['id']) {
+            return $this->data;
+        }
+
+        if (!$this->data['tube']) {
+            $this->stats();
+        }
+        if (!$this->data['payload']) {
+            $this->peek();
+        }
+
+        return $this->data;
+    }
+
+    /**
+     * @return bool
+     */
+    public
+    function isBuried(): bool {
+        return $this->data['state'] === self::STATE_BURIED;
+    }
+
+    // commands
+
+    /**
+     * @return bool
+     */
+    public
+    function isDelayed(): bool {
+        return $this->data['state'] === self::STATE_DELAYED;
+    }
+
+    /**
+     * @return bool
+     */
+    public
+    function isDeleted(): bool {
+        return $this->data['state'] === self::STATE_DELETED;
+    }
+
+    /**
+     * @return bool
+     */
+    public
+    function isReady(): bool {
+        return $this->data['state'] === self::STATE_READY;
+    }
+
+    /**
+     * @return bool
+     */
+    public
+    function isReserved(): bool {
+        return $this->data['state'] === self::STATE_RESERVED;
+    }
+
+    /**
+     * @return \xobotyi\beansclient\Job
+     * @throws \xobotyi\beansclient\Exception\ClientException
+     * @throws \xobotyi\beansclient\Exception\CommandException
+     * @throws \xobotyi\beansclient\Exception\JobException
+     */
+    public
+    function kick(): self {
+        if (!$this->data['id']) {
+            return $this;
+        }
+
+        $this->client->kickJob($this->data['id']);
+
+        return $this->stats();
+    }
+
+    /**
      * @param int|float|null $priority
      * @param int|null       $delay
      *
@@ -331,7 +392,8 @@ class Job
      * @throws \xobotyi\beansclient\Exception\CommandException
      * @throws \xobotyi\beansclient\Exception\JobException
      */
-    public function release($priority = null, int $delay = null) {
+    public
+    function release($priority = null, int $delay = null) {
         if (!$this->data['id']) {
             return $this;
         }
@@ -366,50 +428,8 @@ class Job
      * @throws \xobotyi\beansclient\Exception\CommandException
      * @throws \xobotyi\beansclient\Exception\JobException
      */
-    public function stats() :self {
-        if (!$this->data['id']) {
-            return $this;
-        }
-
-        if ($stats = $this->client->statsJob($this->data['id'])) {
-            foreach (self::STATS_FIELDS as $tgt => $src) {
-                if ($src === null) {
-                    switch ($tgt) {
-                        case 'releaseTime':
-                            $this->data['releaseTime'] = ($this->data['state'] === self::STATE_DELAYED || $this->data['state'] === self::STATE_RESERVED)
-                                ? time() + $this->data['timeLeft'] ?? 0
-                                : 0;
-                            break;
-                    }
-                }
-                else if (!\array_key_exists($src, $stats)) {
-                    continue;
-                }
-                else if (\is_numeric($this->data[$tgt] = $stats[$src])) {
-                    $this->data[$tgt] *= 1;
-                }
-            }
-        }
-        else {
-            $this->clearStats();
-
-            foreach (self::PEEK_FIELDS as $tgt => $src) {
-                $this->data[$tgt] = null;
-            }
-
-            $this->data['state'] = self::STATE_DELETED;
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return \xobotyi\beansclient\Job
-     * @throws \xobotyi\beansclient\Exception\ClientException
-     * @throws \xobotyi\beansclient\Exception\CommandException
-     * @throws \xobotyi\beansclient\Exception\JobException
-     */
-    public function touch() :self {
+    public
+    function touch(): self {
         if (!$this->data['id']) {
             return $this;
         }

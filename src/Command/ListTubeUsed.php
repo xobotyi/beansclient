@@ -17,14 +17,16 @@ class ListTubeUsed extends CommandAbstract
     /**
      * ListTubeUsed constructor.
      */
-    public function __construct() {
+    public
+    function __construct() {
         $this->commandName = Interfaces\CommandInterface::LIST_TUBE_USED;
     }
 
     /**
      * @return string
      */
-    public function getCommandStr() :string {
+    public
+    function getCommandStr(): string {
         return $this->commandName;
     }
 
@@ -35,7 +37,8 @@ class ListTubeUsed extends CommandAbstract
      * @return string
      * @throws \xobotyi\beansclient\Exception\CommandException
      */
-    public function parseResponse(array $responseHeader, ?string $responseStr) :string {
+    public
+    function parseResponse(array $responseHeader, ?string $responseStr): string {
         if ($responseStr) {
             throw new CommandException("Unexpected response data passed");
         }

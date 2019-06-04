@@ -26,7 +26,8 @@ class StatsJob extends CommandAbstract
      *
      * @throws \xobotyi\beansclient\Exception\CommandException
      */
-    public function __construct(int $jobId) {
+    public
+    function __construct(int $jobId) {
         if ($jobId <= 0) {
             throw new Exception\CommandException('Job id must be a positive integer');
         }
@@ -39,7 +40,8 @@ class StatsJob extends CommandAbstract
     /**
      * @return string
      */
-    public function getCommandStr() :string {
+    public
+    function getCommandStr(): string {
         return $this->commandName . ' ' . $this->jobId;
     }
 
@@ -51,7 +53,8 @@ class StatsJob extends CommandAbstract
      * @throws \Exception
      * @throws \xobotyi\beansclient\Exception\CommandException
      */
-    public function parseResponse(array $responseHeader, ?string $responseStr) :?array {
+    public
+    function parseResponse(array $responseHeader, ?string $responseStr): ?array {
         if ($responseHeader[0] === Response::NOT_FOUND) {
             return null;
         }
