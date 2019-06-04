@@ -3,7 +3,6 @@
 namespace xobotyi\beansclient;
 
 
-use xobotyi\beansclient\Command;
 use xobotyi\beansclient\Exception;
 use xobotyi\beansclient\Interfaces;
 
