@@ -63,8 +63,6 @@ class CommandAbstract implements Interfaces\CommandInterface
      */
     public
     function parseResponse(array $responseHeader, ?string $responseStr) {
-        var_dump($responseHeader, $responseStr);
-
         if ($responseHeader[0] !== Response::OK) {
             throw new Exception\CommandException("Got unexpected status code [${responseHeader[0]}]");
         }
