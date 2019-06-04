@@ -16,7 +16,7 @@ class TouchTest extends TestCase
     function testTouch(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->withConsecutive()
              ->willReturnOnConsecutiveCalls("TOUCHED", "NOT_FOUND");
 
@@ -47,7 +47,7 @@ class TouchTest extends TestCase
     function testTouchException1(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("SOME_STUFF"));
 
         $client = new BeansClient($conn);
@@ -62,7 +62,7 @@ class TouchTest extends TestCase
     function testTouchException2(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("OK 25"));
 
         $conn->method('read')
@@ -79,7 +79,7 @@ class TouchTest extends TestCase
     function testTouchException3(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("TOUCHED"));
 
         $client = new BeansClient($conn);

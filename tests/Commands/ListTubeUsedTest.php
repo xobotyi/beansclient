@@ -16,7 +16,7 @@ class ListTubeUsedTest extends TestCase
     function testListTubeUsed(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("USING test1"));
 
         $client = new BeansClient($conn);
@@ -45,7 +45,7 @@ class ListTubeUsedTest extends TestCase
     function testListTubeUsedException1(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("USING"));
 
         $client = new BeansClient($conn);
@@ -60,7 +60,7 @@ class ListTubeUsedTest extends TestCase
     function testListTubeUsedException2(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("SOME_STUFF"));
 
         $client = new BeansClient($conn);
@@ -73,7 +73,7 @@ class ListTubeUsedTest extends TestCase
     function testListTubeUsedException3(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("OK 25"));
 
         $conn->method('read')

@@ -37,7 +37,7 @@ class BeansClientTest extends TestCase
     public
     function testException(): void {
         $conn = $this->getConnection();
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("OK"));
 
         $client = new BeansClient($conn);
@@ -50,7 +50,7 @@ class BeansClientTest extends TestCase
     function testException2(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->withConsecutive()
              ->willReturnOnConsecutiveCalls("RESERVED 1 9");
         $conn->method('read')

@@ -16,7 +16,7 @@ class ReleaseTest extends TestCase
     public
     function testListTubeUsedException1(): void {
         $conn = $this->getConnection();
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("OK 9"));
         $conn->method('read')
              ->withConsecutive()
@@ -48,7 +48,7 @@ class ReleaseTest extends TestCase
     public
     function testListTubeUsedException2(): void {
         $conn = $this->getConnection();
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("STUFF"));
 
         $client = new BeansClient($conn);
@@ -63,7 +63,7 @@ class ReleaseTest extends TestCase
     function testRelease(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->withConsecutive()
              ->willReturnOnConsecutiveCalls("RELEASED", "BURIED", "NOT_FOUND");
 
@@ -79,7 +79,7 @@ class ReleaseTest extends TestCase
     public
     function testreleaseException3() {
         $conn = $this->getConnection();
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("RELEASED"));
         $client = new BeansClient($conn);
 
@@ -92,7 +92,7 @@ class ReleaseTest extends TestCase
     public
     function testreleaseException4() {
         $conn = $this->getConnection();
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("RELEASED"));
         $client = new BeansClient($conn);
 
@@ -105,7 +105,7 @@ class ReleaseTest extends TestCase
     public
     function testreleaseException5() {
         $conn = $this->getConnection();
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("RELEASED"));
         $client = new BeansClient($conn);
 
@@ -118,7 +118,7 @@ class ReleaseTest extends TestCase
     public
     function testreleaseException7() {
         $conn = $this->getConnection();
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("RELEASED"));
         $client = new BeansClient($conn);
 
@@ -129,7 +129,7 @@ class ReleaseTest extends TestCase
     public
     function testreleaseException8() {
         $conn = $this->getConnection();
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("RELEASED"));
         $client = new BeansClient($conn);
 

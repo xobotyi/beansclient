@@ -15,7 +15,7 @@ class ListTubesWatchedTest extends TestCase
     function testListTubesWatched(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("OK 25"));
 
         $conn->method('read')

@@ -17,7 +17,7 @@ class ReserveTest extends TestCase
     function testReserve(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->withConsecutive()
              ->willReturnOnConsecutiveCalls("TIMED_OUT", "RESERVED 1 9", "RESERVED 1 9");
         $conn->method('read')
@@ -53,7 +53,7 @@ class ReserveTest extends TestCase
     function testReserveException1(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("SOME_STUFF"));
 
         $client = new BeansClient($conn);
@@ -68,7 +68,7 @@ class ReserveTest extends TestCase
     function testReserveException2(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("OK 0"));
 
         $conn->method('read')
@@ -85,7 +85,7 @@ class ReserveTest extends TestCase
     function testReserveException3(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("TOUCHED"));
 
         $client = new BeansClient($conn);

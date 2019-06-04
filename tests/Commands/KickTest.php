@@ -16,7 +16,7 @@ class KickTest extends TestCase
     function testKick(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->withConsecutive()
              ->willReturnOnConsecutiveCalls("KICKED 3");
 
@@ -46,7 +46,7 @@ class KickTest extends TestCase
     function testKickException1(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("SOME_STUFF"));
 
         $client = new BeansClient($conn);
@@ -61,7 +61,7 @@ class KickTest extends TestCase
     function testKickException2(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("OK 25"));
 
         $conn->method('read')
@@ -78,7 +78,7 @@ class KickTest extends TestCase
     function testKickException3(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("KICKED 3"));
 
         $client = new BeansClient($conn);

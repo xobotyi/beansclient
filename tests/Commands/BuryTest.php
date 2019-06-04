@@ -17,7 +17,7 @@ class BuryTest extends TestCase
     function testBury(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->withConsecutive()
              ->willReturnOnConsecutiveCalls("BURIED", "NOT_FOUND");
 
@@ -48,7 +48,7 @@ class BuryTest extends TestCase
     function testBuryException1(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("SOME_STUFF"));
 
         $client = new BeansClient($conn);
@@ -63,7 +63,7 @@ class BuryTest extends TestCase
     function testBuryException2(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("OK 25"));
 
         $conn->method('read')
@@ -82,7 +82,7 @@ class BuryTest extends TestCase
     function testBuryException3(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("BURIED"));
 
         $client = new BeansClient($conn);
@@ -97,7 +97,7 @@ class BuryTest extends TestCase
     function testBuryException4(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("BURIED"));
 
         $client = new BeansClient($conn);
@@ -112,7 +112,7 @@ class BuryTest extends TestCase
     function testBuryException5(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("BURIED"));
 
         $client = new BeansClient($conn);
@@ -125,7 +125,7 @@ class BuryTest extends TestCase
     function testBuryException6(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("BURIED"));
 
         $client = new BeansClient($conn);

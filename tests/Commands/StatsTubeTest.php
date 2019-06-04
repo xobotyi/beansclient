@@ -16,7 +16,7 @@ class StatsTubeTest extends TestCase
     function testStatsTube(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->withConsecutive()
              ->willReturnOnConsecutiveCalls("OK 25", 'NOT_FOUND');
 
@@ -51,7 +51,7 @@ class StatsTubeTest extends TestCase
     function testStatsTubeException1(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("SOME_STUFF"));
 
         $client = new BeansClient($conn);
@@ -66,7 +66,7 @@ class StatsTubeTest extends TestCase
     function testStatsTubeException2(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("OK 0"));
 
         $conn->method('read')
@@ -83,7 +83,7 @@ class StatsTubeTest extends TestCase
     function testStatsTubeException3(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("BURIED"));
 
         $client = new BeansClient($conn);

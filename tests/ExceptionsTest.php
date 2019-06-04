@@ -22,13 +22,6 @@ class ExceptionsTest extends TestCase
     }
 
     public
-    function testConnectionException1() {
-        $this->expectException(Exception\ConnectionException::class);
-        $this->expectExceptionMessage("Connection error 123: test");
-        throw new Exception\ConnectionException(123, 'test');
-    }
-
-    public
     function testJobException1() {
         $this->expectException(Exception\JobException::class);
         $this->expectExceptionMessage("test");

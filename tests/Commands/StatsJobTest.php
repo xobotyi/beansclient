@@ -16,7 +16,7 @@ class StatsJobTest extends TestCase
     function testStatsJob(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->withConsecutive()
              ->willReturnOnConsecutiveCalls("OK 25", 'NOT_FOUND');
 
@@ -51,7 +51,7 @@ class StatsJobTest extends TestCase
     function testStatsJobException1(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("SOME_STUFF"));
 
         $client = new BeansClient($conn);
@@ -66,7 +66,7 @@ class StatsJobTest extends TestCase
     function testStatsJobException2(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("OK 0"));
 
         $conn->method('read')
@@ -83,7 +83,7 @@ class StatsJobTest extends TestCase
     function testStatsJobException3(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("BURIED"));
 
         $client = new BeansClient($conn);

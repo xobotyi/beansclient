@@ -16,7 +16,7 @@ class DeleteTest extends TestCase
     function testDelete(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->withConsecutive()
              ->willReturnOnConsecutiveCalls("DELETED", "NOT_FOUND");
 
@@ -47,7 +47,7 @@ class DeleteTest extends TestCase
     function testDeleteException1(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("SOME_STUFF"));
 
         $client = new BeansClient($conn);
@@ -62,7 +62,7 @@ class DeleteTest extends TestCase
     function testDeleteException2(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("OK 25"));
 
         $conn->method('read')
@@ -79,7 +79,7 @@ class DeleteTest extends TestCase
     function testDeleteException3(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("BURIED"));
 
         $client = new BeansClient($conn);

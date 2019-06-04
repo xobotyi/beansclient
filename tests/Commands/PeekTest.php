@@ -18,7 +18,7 @@ class PeekTest extends TestCase
     function testPeek(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->withConsecutive()
              ->willReturnOnConsecutiveCalls("NOT_FOUND", "FOUND 1 9", "FOUND 1 9");
         $conn->method('read')
@@ -55,7 +55,7 @@ class PeekTest extends TestCase
     function testPeekException1(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("SOME_STUFF"));
 
         $client = new BeansClient($conn);
@@ -70,7 +70,7 @@ class PeekTest extends TestCase
     function testPeekException2(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("FOUND 0"));
 
         $conn->method('read')
@@ -89,7 +89,7 @@ class PeekTest extends TestCase
     function testPeekException3(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("TOUCHED"));
 
         $client = new BeansClient($conn);

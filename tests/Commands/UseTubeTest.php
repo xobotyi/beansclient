@@ -17,7 +17,7 @@ class UseTubeTest extends TestCase
     function testUseTube(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->withConsecutive()
              ->willReturnOnConsecutiveCalls("USING test1", "USING test1");
 
@@ -48,7 +48,7 @@ class UseTubeTest extends TestCase
     function testUseTubeException(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->withConsecutive()
              ->willReturnOnConsecutiveCalls("USING test2");
 
@@ -64,7 +64,7 @@ class UseTubeTest extends TestCase
     function testUseTubeException1(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("SOME_STUFF"));
 
         $client = new BeansClient($conn);
@@ -79,7 +79,7 @@ class UseTubeTest extends TestCase
     function testUseTubeException2(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("OK 25"));
 
         $conn->method('read')
@@ -96,7 +96,7 @@ class UseTubeTest extends TestCase
     function testUseTubeException3(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("WATCHING 123"));
 
         $client = new BeansClient($conn);

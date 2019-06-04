@@ -16,7 +16,7 @@ class StatsTest extends TestCase
     function testReserveException1(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("SOME_STUFF"));
 
         $client = new BeansClient($conn);
@@ -46,7 +46,7 @@ class StatsTest extends TestCase
     function testReserveException2(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("OK 0"));
 
         $conn->method('read')
@@ -63,7 +63,7 @@ class StatsTest extends TestCase
     function testStats(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("OK 25"));
 
         $conn->method('read')

@@ -66,7 +66,7 @@ class Response
         }
 
         $result = [];
-        $lines  = explode("\n", $str);
+        $lines  = explode("\r\n", $str);
 
         foreach ($lines as $line) {
             if (!$line || $line === '---') {

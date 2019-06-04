@@ -18,7 +18,7 @@ class PutTest extends TestCase
     public
     function testPut() {
         $conn = $this->getConnection();
-        $conn->method('readln')
+        $conn->method('readLine')
              ->withConsecutive()
              ->willReturnOnConsecutiveCalls("INSERTED 1", "BURIED 2");
 
@@ -48,7 +48,7 @@ class PutTest extends TestCase
     public
     function testPutException1() {
         $conn = $this->getConnection();
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("EXPECTED_CRLF"));
         $client = new BeansClient($conn);
 
@@ -61,7 +61,7 @@ class PutTest extends TestCase
     public
     function testPutException10() {
         $conn = $this->getConnection();
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("INSERTED"));
         $client = new BeansClient($conn, new JsonSerializer());
 
@@ -80,7 +80,7 @@ class PutTest extends TestCase
     public
     function testPutException11() {
         $conn = $this->getConnection();
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("INSERTED"));
         $client = new BeansClient($conn, new JsonSerializer());
 
@@ -93,7 +93,7 @@ class PutTest extends TestCase
     public
     function testPutException2() {
         $conn = $this->getConnection();
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("JOB_TOO_BIG"));
         $client = new BeansClient($conn);
 
@@ -106,7 +106,7 @@ class PutTest extends TestCase
     public
     function testPutException3() {
         $conn = $this->getConnection();
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("DRAINING"));
         $client = new BeansClient($conn);
 
@@ -119,7 +119,7 @@ class PutTest extends TestCase
     public
     function testPutException4() {
         $conn = $this->getConnection();
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("INSERTED"));
         $client = new BeansClient($conn);
 
@@ -132,7 +132,7 @@ class PutTest extends TestCase
     public
     function testPutException5() {
         $conn = $this->getConnection();
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("INSERTED"));
         $client = new BeansClient($conn);
 
@@ -145,7 +145,7 @@ class PutTest extends TestCase
     public
     function testPutException6() {
         $conn = $this->getConnection();
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("INSERTED"));
         $client = new BeansClient($conn);
 
@@ -158,7 +158,7 @@ class PutTest extends TestCase
     public
     function testPutException7() {
         $conn = $this->getConnection();
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("INSERTED"));
         $client = new BeansClient($conn);
 
@@ -171,7 +171,7 @@ class PutTest extends TestCase
     public
     function testPutException8() {
         $conn = $this->getConnection();
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("INSERTED"));
         $client = new BeansClient($conn);
 
@@ -182,7 +182,7 @@ class PutTest extends TestCase
     public
     function testPutException9() {
         $conn = $this->getConnection();
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("INSERTED"));
         $client = new BeansClient($conn);
 

@@ -17,7 +17,7 @@ class WatchTubeTest extends TestCase
     function testWatchTube(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->withConsecutive()
              ->willReturnOnConsecutiveCalls("WATCHING 123", "WATCHING 123");
 
@@ -48,7 +48,7 @@ class WatchTubeTest extends TestCase
     function testWatchTubeException1(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("SOME_STUFF"));
 
         $client = new BeansClient($conn);
@@ -63,7 +63,7 @@ class WatchTubeTest extends TestCase
     function testWatchTubeException2(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("OK 25"));
 
         $conn->method('read')
@@ -80,7 +80,7 @@ class WatchTubeTest extends TestCase
     function testWatchTubeException3(): void {
         $conn = $this->getConnection();
 
-        $conn->method('readln')
+        $conn->method('readLine')
              ->will($this->returnValue("WATCHING 123"));
 
         $client = new BeansClient($conn);
