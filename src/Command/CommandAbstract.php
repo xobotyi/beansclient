@@ -14,7 +14,7 @@ use xobotyi\beansclient\Response;
  * @package xobotyi\beansclient\Command
  */
 abstract
-class CommandAbstract implements Interfaces\CommandInterface
+class CommandAbstract
 {
     /**
      * @var string

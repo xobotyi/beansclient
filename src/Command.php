@@ -8,7 +8,7 @@ namespace xobotyi\beansclient;
 use xobotyi\beansclient\Exception\CommandException;
 use xobotyi\beansclient\Interfaces\SerializerInterface;
 
-class CommandBase
+class Command
 {
     public const MAX_PAYLOAD_SIZE = 65536;
 
@@ -48,6 +48,11 @@ class CommandBase
 
         $this->setSerializer($serializer)
              ->setPayload($payload);
+    }
+
+    public
+    function getCommandName(): string {
+        return $this->commandName;
     }
 
     public

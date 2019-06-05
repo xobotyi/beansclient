@@ -20,9 +20,9 @@ class Peek extends CommandAbstract
     public const TYPE_BURIED  = 'buried';
 
     private const SUBCOMMANDS = [
-        self::TYPE_READY   => self::PEEK_READY,
-        self::TYPE_DELAYED => self::PEEK_DELAYED,
-        self::TYPE_BURIED  => self::PEEK_BURIED,
+        self::TYPE_READY   => Interfaces\CommandInterface::PEEK_READY,
+        self::TYPE_DELAYED => Interfaces\CommandInterface::PEEK_DELAYED,
+        self::TYPE_BURIED  => Interfaces\CommandInterface::PEEK_BURIED,
     ];
 
     /**

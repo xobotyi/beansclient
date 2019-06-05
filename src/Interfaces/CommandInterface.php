@@ -62,38 +62,36 @@ interface CommandInterface
         self::QUIT,
     ];
 
-    /**
-     * @return string
-     */
     public
-    function getCommandStr(): string;
+    function getCommandName(): string;
 
-    /**
-     * @return mixed
-     */
     public
-    function getPayload();
+    function getArguments(): array;
 
-    /**
-     * @return bool
-     */
+    public
+    function setSerializer(?SerializerInterface $serializer);
+
+    public
+    function getSerializer(): ?SerializerInterface;
+
+    public
+    function getPayload(): ?string;
+
+    public
+    function getRawPayload();
+
     public
     function hasPayload(): bool;
 
-    /**
-     * @param array       $responseHeader
-     * @param null|string $responseStr
-     *
-     * @return mixed
-     */
     public
-    function parseResponse(array $responseHeader, ?string $responseStr);
+    function setPayload($payload);
 
-    /**
-     * @param \xobotyi\beansclient\Interfaces\SerializerInterface $serialize
-     *
-     * @return mixed
-     */
     public
-    function setSerializer(SerializerInterface $serialize);
+    function buildCommand(): string;
+
+    public
+    function __toString(): string;
+
+    public
+    function processResponse(array $responseHeader, ?string $responseBody = null);
 }
