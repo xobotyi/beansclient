@@ -46,7 +46,7 @@ class ReserveCommandTest extends TestCase
     public
     function testErrorInvalidTimeout() {
         $this->expectException(CommandException::class);
-        $this->expectExceptionMessage("Timeout has to be a positive integer");
+        $this->expectExceptionMessage("Timeout has to be >= 0");
 
         new ReserveCommand(-1);
     }
