@@ -36,6 +36,10 @@ interface CommandInterface
     public const PAUSE_TUBE           = 'pause-tube';
     public const QUIT                 = 'quit';
 
+    // due to https://github.com/beanstalkd/beanstalkd/blob/b5a6f7a23a368ffb31fbf48cdffe95541166d3fa/doc/protocol.txt#L132
+    public const PRIORITY_MAXIMUM = 4294967295;
+    public const PRIORITY_MINIMUM = 0;
+
     public const COMMANDS_LIST = [
         self::PUT,
         self::USE,
