@@ -14,8 +14,8 @@ use xobotyi\beansclient\Response;
 class StatsCommand extends Command implements CommandInterface
 {
     public
-    function __construct(?SerializerInterface $serializer = null) {
-        parent::__construct(CommandInterface::STATS, $serializer);
+    function __construct() {
+        parent::__construct(CommandInterface::STATS);
     }
 
     /**

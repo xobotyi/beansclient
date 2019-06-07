@@ -14,12 +14,12 @@ use xobotyi\beansclient\Response;
 class UseTubeCommand extends Command implements CommandInterface
 {
     public
-    function __construct(string $tubeName, ?SerializerInterface $serializer = null) {
+    function __construct(string $tubeName) {
         if (!($tubeName = trim($tubeName))) {
             throw new CommandException('Tube name has to be a valuable string');
         }
 
-        parent::__construct(CommandInterface::USE, $serializer, [$tubeName]);
+        parent::__construct(CommandInterface::USE, null, [$tubeName]);
     }
 
     /**

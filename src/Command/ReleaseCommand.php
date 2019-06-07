@@ -8,13 +8,12 @@ namespace xobotyi\beansclient\Command;
 use xobotyi\beansclient\Command;
 use xobotyi\beansclient\Exception\CommandException;
 use xobotyi\beansclient\Interfaces\CommandInterface;
-use xobotyi\beansclient\Interfaces\SerializerInterface;
 use xobotyi\beansclient\Response;
 
 class ReleaseCommand extends Command implements CommandInterface
 {
     public
-    function __construct(int $jobId, $priority, int $delay, ?SerializerInterface $serializer = null) {
+    function __construct(int $jobId, $priority, int $delay) {
         if ($jobId <= 0) {
             throw new CommandException('Job id must be a positive integer');
         }
@@ -35,7 +34,7 @@ class ReleaseCommand extends Command implements CommandInterface
             throw new CommandException(sprintf('Priority has to be <= %d, got %d', CommandInterface::PRIORITY_MAXIMUM, $priority));
         }
 
-        parent::__construct(CommandInterface::RELEASE, $serializer, [$jobId, $priority, $delay]);
+        parent::__construct(CommandInterface::RELEASE, null, [$jobId, $priority, $delay]);
     }
 
     public

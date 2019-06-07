@@ -8,18 +8,17 @@ namespace xobotyi\beansclient\Command;
 use xobotyi\beansclient\Command;
 use xobotyi\beansclient\Exception\CommandException;
 use xobotyi\beansclient\Interfaces\CommandInterface;
-use xobotyi\beansclient\Interfaces\SerializerInterface;
 use xobotyi\beansclient\Response;
 
 class StatsJobCommand extends Command implements CommandInterface
 {
     public
-    function __construct(int $jobId, ?SerializerInterface $serializer = null) {
+    function __construct(int $jobId) {
         if ($jobId <= 0) {
             throw new CommandException('Job id must be a positive integer');
         }
 
-        parent::__construct(CommandInterface::STATS_JOB, $serializer, [$jobId]);
+        parent::__construct(CommandInterface::STATS_JOB, null, [$jobId]);
     }
 
     /**
