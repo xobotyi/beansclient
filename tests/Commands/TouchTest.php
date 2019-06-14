@@ -20,7 +20,7 @@ class TouchTest extends TestCase
              ->withConsecutive()
              ->willReturnOnConsecutiveCalls("TOUCHED", "NOT_FOUND");
 
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         self::assertEquals(true, $client->touch(1));
         self::assertEquals(false, $client->touch(2));
@@ -50,7 +50,7 @@ class TouchTest extends TestCase
         $conn->method('readLine')
              ->will($this->returnValue("SOME_STUFF"));
 
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         $this->expectException(CommandException::class);
         $client->touch(1);
@@ -69,7 +69,7 @@ class TouchTest extends TestCase
              ->withConsecutive([25], [2])
              ->willReturnOnConsecutiveCalls("---\r\n- default\r\n- test1", "\r\n");
 
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         $this->expectException(CommandException::class);
         $client->touch(1);
@@ -82,7 +82,7 @@ class TouchTest extends TestCase
         $conn->method('readLine')
              ->will($this->returnValue("TOUCHED"));
 
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         $this->expectException(CommandException::class);
         $client->touch(0);

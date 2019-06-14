@@ -22,7 +22,7 @@ class PutTest extends TestCase
              ->withConsecutive()
              ->willReturnOnConsecutiveCalls("INSERTED 1", "BURIED 2");
 
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         self::assertEquals(1, $client->put('test')->id);
         self::assertEquals('buried', $client->put('test')->state);
@@ -50,7 +50,7 @@ class PutTest extends TestCase
         $conn = $this->getConnection();
         $conn->method('readLine')
              ->will($this->returnValue("EXPECTED_CRLF"));
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         $this->expectException(CommandException::class);
         self::assertEquals([], $client->put('test'));
@@ -63,7 +63,7 @@ class PutTest extends TestCase
         $conn = $this->getConnection();
         $conn->method('readLine')
              ->will($this->returnValue("INSERTED"));
-        $client = new BeansClient($conn, new JsonSerializer());
+        $client = new BeansClientOld($conn, new JsonSerializer());
 
         $str   = '';
         $chars = 'abdefhiknrstyzABDEFGHKNQRSTYZ23456789';
@@ -82,7 +82,7 @@ class PutTest extends TestCase
         $conn = $this->getConnection();
         $conn->method('readLine')
              ->will($this->returnValue("INSERTED"));
-        $client = new BeansClient($conn, new JsonSerializer());
+        $client = new BeansClientOld($conn, new JsonSerializer());
 
         $this->expectException(CommandException::class);
         self::assertEquals([], $client->put(''));
@@ -95,7 +95,7 @@ class PutTest extends TestCase
         $conn = $this->getConnection();
         $conn->method('readLine')
              ->will($this->returnValue("JOB_TOO_BIG"));
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         $this->expectException(CommandException::class);
         self::assertEquals([], $client->put('test'));
@@ -108,7 +108,7 @@ class PutTest extends TestCase
         $conn = $this->getConnection();
         $conn->method('readLine')
              ->will($this->returnValue("DRAINING"));
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         $this->expectException(JobException::class);
         self::assertEquals([], $client->put('test'));
@@ -121,7 +121,7 @@ class PutTest extends TestCase
         $conn = $this->getConnection();
         $conn->method('readLine')
              ->will($this->returnValue("INSERTED"));
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         $this->expectException(CommandException::class);
         self::assertEquals([], $client->put('test', -1));
@@ -134,7 +134,7 @@ class PutTest extends TestCase
         $conn = $this->getConnection();
         $conn->method('readLine')
              ->will($this->returnValue("INSERTED"));
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         $this->expectException(CommandException::class);
         self::assertEquals([], $client->put('test', 0, -1));
@@ -147,7 +147,7 @@ class PutTest extends TestCase
         $conn = $this->getConnection();
         $conn->method('readLine')
              ->will($this->returnValue("INSERTED"));
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         $this->expectException(CommandException::class);
         self::assertEquals([], $client->put('test', 0, 0, 0));
@@ -160,7 +160,7 @@ class PutTest extends TestCase
         $conn = $this->getConnection();
         $conn->method('readLine')
              ->will($this->returnValue("INSERTED"));
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         $this->expectException(CommandException::class);
         self::assertEquals([], $client->put('test', Put::MAX_PRIORITY + 1));
@@ -173,7 +173,7 @@ class PutTest extends TestCase
         $conn = $this->getConnection();
         $conn->method('readLine')
              ->will($this->returnValue("INSERTED"));
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         $this->expectException(CommandException::class);
         self::assertEquals([], $client->put([1, 2, 3]));
@@ -184,7 +184,7 @@ class PutTest extends TestCase
         $conn = $this->getConnection();
         $conn->method('readLine')
              ->will($this->returnValue("INSERTED"));
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         $this->expectException(CommandException::class);
         self::assertEquals([], $client->put('', ''));

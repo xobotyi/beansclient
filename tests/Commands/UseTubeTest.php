@@ -21,7 +21,7 @@ class UseTubeTest extends TestCase
              ->withConsecutive()
              ->willReturnOnConsecutiveCalls("USING test1", "USING test1");
 
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         $client->useTube('test1');
         self::assertEquals('test1', $client->dispatchCommand(new UseTube('test1')));
@@ -52,7 +52,7 @@ class UseTubeTest extends TestCase
              ->withConsecutive()
              ->willReturnOnConsecutiveCalls("USING test2");
 
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         $this->expectException(CommandException::class);
         $client->useTube('test1');
@@ -67,7 +67,7 @@ class UseTubeTest extends TestCase
         $conn->method('readLine')
              ->will($this->returnValue("SOME_STUFF"));
 
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         $this->expectException(CommandException::class);
         $client->useTube('test1');
@@ -86,7 +86,7 @@ class UseTubeTest extends TestCase
              ->withConsecutive([25], [2])
              ->willReturnOnConsecutiveCalls("---\r\n- default\r\n- test1", "\r\n");
 
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         $this->expectException(CommandException::class);
         $client->useTube('test1');
@@ -99,7 +99,7 @@ class UseTubeTest extends TestCase
         $conn->method('readLine')
              ->will($this->returnValue("WATCHING 123"));
 
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         $this->expectException(CommandException::class);
         $client->useTube('   ');

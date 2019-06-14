@@ -19,7 +19,7 @@ class ListTubeUsedTest extends TestCase
         $conn->method('readLine')
              ->will($this->returnValue("USING test1"));
 
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         self::assertEquals('test1', $client->listTubeUsed());
     }
@@ -48,7 +48,7 @@ class ListTubeUsedTest extends TestCase
         $conn->method('readLine')
              ->will($this->returnValue("USING"));
 
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         $this->expectException(CommandException::class);
         $client->listTubeUsed();
@@ -63,7 +63,7 @@ class ListTubeUsedTest extends TestCase
         $conn->method('readLine')
              ->will($this->returnValue("SOME_STUFF"));
 
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         $this->expectException(CommandException::class);
         $client->listTubeUsed();
@@ -80,7 +80,7 @@ class ListTubeUsedTest extends TestCase
              ->withConsecutive([25], [2])
              ->willReturnOnConsecutiveCalls("---\r\n- default\r\n- test1", "\r\n");
 
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         $this->expectException(CommandException::class);
         $client->listTubeUsed();

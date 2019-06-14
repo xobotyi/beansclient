@@ -1,9 +1,7 @@
 <?php
 declare(strict_types=1);
 
-
 namespace xobotyi\beansclient;
-
 
 use xobotyi\beansclient\Exception\CommandException;
 use xobotyi\beansclient\Interfaces\SerializerInterface;
@@ -12,7 +10,7 @@ class Command
 {
     public const MAX_PAYLOAD_SIZE = 65536;
 
-    protected $crlf = BeansClient::CRLF;
+    protected $crlf = BeansClientOld::CRLF;
 
     /**
      * @var string

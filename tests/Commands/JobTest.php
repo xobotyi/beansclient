@@ -24,7 +24,7 @@ class JobTest extends TestCase
                ->withConsecutive()
                ->willReturnOnConsecutiveCalls(true, false);
 
-        $job = new Job($client, 1);
+        $job = new JobOld($client, 1);
 
         self::assertEquals('buried', $job->bury()->state);
         self::assertEquals('ready', $job->bury()->state);
@@ -46,7 +46,7 @@ class JobTest extends TestCase
                  ->willReturn(true);
         }
 
-        $client = $this->getMockBuilder(BeansClient::class)
+        $client = $this->getMockBuilder(BeansClientOld::class)
                        ->setMethods([
                                         'statsJob',
                                         'peek',
@@ -76,7 +76,7 @@ class JobTest extends TestCase
                ->withConsecutive()
                ->willReturnOnConsecutiveCalls(true, false);
 
-        $job = new Job($client, 1);
+        $job = new JobOld($client, 1);
 
         self::assertEquals('deleted', $job->delete()->state);
         self::assertEquals('ready', $job->delete()->state);
@@ -86,7 +86,7 @@ class JobTest extends TestCase
     function testEmptyJob() {
         $client = $this->getClient();
 
-        $job = new Job($client, null);
+        $job = new JobOld($client, null);
 
         $this->assertEquals(null, $job->id);
         $this->assertEquals(null, $job->stats()->state);
@@ -121,14 +121,14 @@ class JobTest extends TestCase
         $client = $this->getClient(false);
 
         $this->expectException(Exception\JobException::class);
-        $job = new Job($client, 1, Job::STATE_READY, '12345');
+        $job = new JobOld($client, 1, JobOld::STATE_READY, '12345');
     }
 
     public
     function testGetClient() {
         $client = $this->getClient();
 
-        $job = new Job($client, 1, Job::STATE_READY, '12345');
+        $job = new JobOld($client, 1, JobOld::STATE_READY, '12345');
         $this->assertEquals($client, $job->getClient());
     }
 
@@ -146,7 +146,7 @@ class JobTest extends TestCase
                        'payload' => '321',
                    ]));
 
-        $job = new Job($client, 1);
+        $job = new JobOld($client, 1);
 
         self::assertEquals([
                                'id'          => 1,
@@ -186,7 +186,7 @@ class JobTest extends TestCase
                        'payload' => '[1,2,3,4]',
                    ]));
 
-        $job = new Job($client, 1);
+        $job = new JobOld($client, 1);
 
         self::assertEquals([
                                'id'          => 1,
@@ -213,7 +213,7 @@ class JobTest extends TestCase
     function testIsBuried() {
         $client = $this->getClient();
 
-        $job = new Job($client, 1, Job::STATE_BURIED, '12345');
+        $job = new JobOld($client, 1, JobOld::STATE_BURIED, '12345');
 
         $this->assertTrue($job->isBuried());
     }
@@ -222,7 +222,7 @@ class JobTest extends TestCase
     function testIsDelayed() {
         $client = $this->getClient();
 
-        $job = new Job($client, 1, Job::STATE_DELAYED, '12345');
+        $job = new JobOld($client, 1, JobOld::STATE_DELAYED, '12345');
 
         $this->assertTrue($job->isDelayed());
     }
@@ -231,7 +231,7 @@ class JobTest extends TestCase
     function testIsDeleted() {
         $client = $this->getClient();
 
-        $job = new Job($client, 1, Job::STATE_DELETED, '12345');
+        $job = new JobOld($client, 1, JobOld::STATE_DELETED, '12345');
 
         $this->assertTrue($job->isDeleted());
     }
@@ -240,7 +240,7 @@ class JobTest extends TestCase
     function testIsReady() {
         $client = $this->getClient();
 
-        $job = new Job($client, 1, Job::STATE_READY, '12345');
+        $job = new JobOld($client, 1, JobOld::STATE_READY, '12345');
 
         $this->assertTrue($job->isReady());
     }
@@ -248,7 +248,7 @@ class JobTest extends TestCase
     public
     function testIsReserved() {
         $client = $this->getClient();
-        $job    = new Job($client, 1, Job::STATE_RESERVED, '12345');
+        $job    = new JobOld($client, 1, JobOld::STATE_RESERVED, '12345');
 
         $this->assertTrue($job->isReserved());
     }
@@ -263,7 +263,7 @@ class JobTest extends TestCase
         $client->method('kickJob')
                ->willReturn(true);
 
-        $job = new Job($client, 1);
+        $job = new JobOld($client, 1);
 
         self::assertEquals('ready', $job->kick()->state);
     }
@@ -272,7 +272,7 @@ class JobTest extends TestCase
     function testNotice() {
         $client = $this->getClient();
 
-        $job = new Job($client, 1, Job::STATE_READY, '12345');
+        $job = new JobOld($client, 1, JobOld::STATE_READY, '12345');
 
         Notice::$enabled = false;
         $this->assertEquals(null, @$job->dfgjhdkfjg);
@@ -295,7 +295,7 @@ class JobTest extends TestCase
                ->withConsecutive()
                ->willReturnOnConsecutiveCalls('RELEASED', 'RELEASED', 'BURIED');
 
-        $job = new Job($client, 1);
+        $job = new JobOld($client, 1);
 
         self::assertEquals(20, $job->release(1, 20)->delay);
         self::assertEquals(0, $job->release(1)->delay);
@@ -307,7 +307,7 @@ class JobTest extends TestCase
         $client1 = $this->getClient();
         $client2 = $this->getClient();
 
-        $job = new Job($client1, 1, Job::STATE_READY, '12345');
+        $job = new JobOld($client1, 1, JobOld::STATE_READY, '12345');
         $this->assertEquals($client2, $job->setClient($client2)->getClient());
     }
 
@@ -325,7 +325,7 @@ class JobTest extends TestCase
                ->withConsecutive()
                ->willReturnOnConsecutiveCalls(true, false);
 
-        $job = new Job($client, 1);
+        $job = new JobOld($client, 1);
 
         self::assertEquals('ready', $job->touch()->state);
         self::assertEquals('buried', $job->touch()->state);
@@ -351,18 +351,18 @@ class JobTest extends TestCase
                        'payload' => '321',
                    ]));
 
-        $job = new Job($client, 1, Job::STATE_READY);
+        $job = new JobOld($client, 1, JobOld::STATE_READY);
 
         $this->assertEquals(2048, $job->priority);
         $this->assertEquals('321', $job->payload);
         $this->assertEquals(1, $job->id);
 
-        $job = new Job($client, 1);
+        $job = new JobOld($client, 1);
 
-        $this->assertEquals(Job::STATE_DELETED, $job->state);
+        $this->assertEquals(JobOld::STATE_DELETED, $job->state);
 
-        $job = new Job($client, 1);
+        $job = new JobOld($client, 1);
 
-        $this->assertEquals(Job::STATE_READY, $job->state);
+        $this->assertEquals(JobOld::STATE_READY, $job->state);
     }
 }

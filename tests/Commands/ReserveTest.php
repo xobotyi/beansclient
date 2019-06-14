@@ -24,11 +24,11 @@ class ReserveTest extends TestCase
              ->withConsecutive([9], [2], [9], [2])
              ->willReturnOnConsecutiveCalls("[1,2,3,4]", "\r\n", "[1,2,3,4]", "\r\n");
 
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
         self::assertEquals(null, $client->reserve()->id);
         self::assertEquals(1, $client->reserve()->id);
 
-        $client = new BeansClient($conn, new JsonSerializer());
+        $client = new BeansClientOld($conn, new JsonSerializer());
         self::assertEquals([1, 2, 3, 4], $client->reserve()->payload);
     }
 
@@ -56,7 +56,7 @@ class ReserveTest extends TestCase
         $conn->method('readLine')
              ->will($this->returnValue("SOME_STUFF"));
 
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         $this->expectException(CommandException::class);
         $client->reserve();
@@ -75,7 +75,7 @@ class ReserveTest extends TestCase
              ->withConsecutive([0], [2])
              ->willReturnOnConsecutiveCalls("", "\r\n");
 
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         $this->expectException(CommandException::class);
         $client->reserve();
@@ -88,7 +88,7 @@ class ReserveTest extends TestCase
         $conn->method('readLine')
              ->will($this->returnValue("TOUCHED"));
 
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         $this->expectException(CommandException::class);
         $client->reserve(-1);

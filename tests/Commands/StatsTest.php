@@ -19,7 +19,7 @@ class StatsTest extends TestCase
         $conn->method('readLine')
              ->will($this->returnValue("SOME_STUFF"));
 
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         $this->expectException(CommandException::class);
         $client->stats();
@@ -53,7 +53,7 @@ class StatsTest extends TestCase
              ->withConsecutive([0], [2])
              ->willReturnOnConsecutiveCalls("", "\r\n");
 
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         $this->expectException(CommandException::class);
         $client->stats();
@@ -70,7 +70,7 @@ class StatsTest extends TestCase
              ->withConsecutive([25], [2])
              ->willReturnOnConsecutiveCalls("---\r\n- default\r\n- test1\r\njobs: 25\r\nrequests: 100", "\r\n");
 
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         self::assertEquals(['default', 'test1', 'jobs' => 25, 'requests' => 100], $client->stats());
     }

@@ -1,7 +1,7 @@
 <?php
+declare(strict_types=1);
 
 namespace xobotyi\beansclient;
-
 
 use Exception;
 
@@ -38,18 +38,18 @@ class Response
 
     // list of error responses
     public const ERROR_RESPONSES = [
-        self::OUT_OF_MEMORY,
-        self::INTERNAL_ERROR,
-        self::BAD_FORMAT,
-        self::DRAINING,
-        self::UNKNOWN_COMMAND,
+        self::OUT_OF_MEMORY   => self::OUT_OF_MEMORY,
+        self::INTERNAL_ERROR  => self::INTERNAL_ERROR,
+        self::BAD_FORMAT      => self::BAD_FORMAT,
+        self::DRAINING        => self::DRAINING,
+        self::UNKNOWN_COMMAND => self::UNKNOWN_COMMAND,
     ];
 
     // list of responses followed by data
     public const DATA_RESPONSES = [
-        self::OK,
-        self::RESERVED,
-        self::FOUND,
+        self::OK       => self::OK,
+        self::RESERVED => self::RESERVED,
+        self::FOUND    => self::FOUND,
     ];
 
     /**

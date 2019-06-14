@@ -21,7 +21,7 @@ class WatchTubeTest extends TestCase
              ->withConsecutive()
              ->willReturnOnConsecutiveCalls("WATCHING 123", "WATCHING 123");
 
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         $client->watchTube('test1');
         self::assertEquals(123, $client->dispatchCommand(new WatchTube('test1')));
@@ -51,7 +51,7 @@ class WatchTubeTest extends TestCase
         $conn->method('readLine')
              ->will($this->returnValue("SOME_STUFF"));
 
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         $this->expectException(CommandException::class);
         $client->watchTube('test1');
@@ -70,7 +70,7 @@ class WatchTubeTest extends TestCase
              ->withConsecutive([25], [2])
              ->willReturnOnConsecutiveCalls("---\r\n- default\r\n- test1", "\r\n");
 
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         $this->expectException(CommandException::class);
         $client->watchTube('test1');
@@ -83,7 +83,7 @@ class WatchTubeTest extends TestCase
         $conn->method('readLine')
              ->will($this->returnValue("WATCHING 123"));
 
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         $this->expectException(CommandException::class);
         $client->watchTube('   ');

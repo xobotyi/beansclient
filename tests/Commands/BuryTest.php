@@ -21,7 +21,7 @@ class BuryTest extends TestCase
              ->withConsecutive()
              ->willReturnOnConsecutiveCalls("BURIED", "NOT_FOUND");
 
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         self::assertEquals(true, $client->bury(1));
         self::assertEquals(false, $client->bury(2));
@@ -51,7 +51,7 @@ class BuryTest extends TestCase
         $conn->method('readLine')
              ->will($this->returnValue("SOME_STUFF"));
 
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         $this->expectException(CommandException::class);
         $client->bury(1);
@@ -70,7 +70,7 @@ class BuryTest extends TestCase
              ->withConsecutive([25], [2])
              ->willReturnOnConsecutiveCalls("---\r\n- default\r\n- test1", "\r\n");
 
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         $this->expectException(CommandException::class);
         $client->bury(1);
@@ -85,7 +85,7 @@ class BuryTest extends TestCase
         $conn->method('readLine')
              ->will($this->returnValue("BURIED"));
 
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         $this->expectException(CommandException::class);
         $client->bury(0);
@@ -100,7 +100,7 @@ class BuryTest extends TestCase
         $conn->method('readLine')
              ->will($this->returnValue("BURIED"));
 
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         $this->expectException(CommandException::class);
         $client->bury(1, '');
@@ -115,7 +115,7 @@ class BuryTest extends TestCase
         $conn->method('readLine')
              ->will($this->returnValue("BURIED"));
 
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         $this->expectException(CommandException::class);
         $client->bury(1, -1);
@@ -128,7 +128,7 @@ class BuryTest extends TestCase
         $conn->method('readLine')
              ->will($this->returnValue("BURIED"));
 
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         $this->expectException(CommandException::class);
         $client->bury(1, Put::MAX_PRIORITY + 1);

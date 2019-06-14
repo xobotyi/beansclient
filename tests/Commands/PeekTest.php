@@ -25,12 +25,12 @@ class PeekTest extends TestCase
              ->withConsecutive([9], [2], [9], [2])
              ->willReturnOnConsecutiveCalls("[1,2,3,4]", "\r\n", "[1,2,3,4]", "\r\n");
 
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         self::assertEquals(null, $client->peek(Peek::TYPE_BURIED));
         self::assertEquals(['id' => 1, 'payload' => '[1,2,3,4]'], $client->peek(1));
 
-        $client = new BeansClient($conn, new JsonSerializer());
+        $client = new BeansClientOld($conn, new JsonSerializer());
         self::assertEquals(['id' => 1, 'payload' => [1, 2, 3, 4]], $client->peek(1));
     }
 
@@ -58,7 +58,7 @@ class PeekTest extends TestCase
         $conn->method('readLine')
              ->will($this->returnValue("SOME_STUFF"));
 
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         $this->expectException(CommandException::class);
         $client->peek(123);
@@ -77,7 +77,7 @@ class PeekTest extends TestCase
              ->withConsecutive([0], [2])
              ->willReturnOnConsecutiveCalls("", "\r\n");
 
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         $this->expectException(CommandException::class);
         $client->peek(123);
@@ -92,7 +92,7 @@ class PeekTest extends TestCase
         $conn->method('readLine')
              ->will($this->returnValue("TOUCHED"));
 
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         $this->expectException(CommandException::class);
         $client->peek(0);
@@ -102,7 +102,7 @@ class PeekTest extends TestCase
     function testPeekException4(): void {
         $conn = $this->getConnection();
 
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         $this->expectException(CommandException::class);
         $client->peek('stuff');

@@ -1,9 +1,7 @@
 <?php
 declare(strict_types=1);
 
-
 namespace xobotyi\beansclient;
-
 
 use xobotyi\beansclient\Socket\StreamSocket;
 

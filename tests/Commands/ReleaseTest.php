@@ -22,7 +22,7 @@ class ReleaseTest extends TestCase
              ->withConsecutive()
              ->willReturnOnConsecutiveCalls("---\r\n12", "\r\n");
 
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         $this->expectException(CommandException::class);
         $client->release(13);
@@ -51,7 +51,7 @@ class ReleaseTest extends TestCase
         $conn->method('readLine')
              ->will($this->returnValue("STUFF"));
 
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         $this->expectException(CommandException::class);
         $client->release(13);
@@ -67,7 +67,7 @@ class ReleaseTest extends TestCase
              ->withConsecutive()
              ->willReturnOnConsecutiveCalls("RELEASED", "BURIED", "NOT_FOUND");
 
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         self::assertEquals('RELEASED', $client->release(123));
         self::assertEquals('BURIED', $client->release(13));
@@ -81,7 +81,7 @@ class ReleaseTest extends TestCase
         $conn = $this->getConnection();
         $conn->method('readLine')
              ->will($this->returnValue("RELEASED"));
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         $this->expectException(CommandException::class);
         self::assertEquals([], $client->release(13, ''));
@@ -94,7 +94,7 @@ class ReleaseTest extends TestCase
         $conn = $this->getConnection();
         $conn->method('readLine')
              ->will($this->returnValue("RELEASED"));
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         $this->expectException(CommandException::class);
         self::assertEquals([], $client->release(13, -1));
@@ -107,7 +107,7 @@ class ReleaseTest extends TestCase
         $conn = $this->getConnection();
         $conn->method('readLine')
              ->will($this->returnValue("RELEASED"));
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         $this->expectException(CommandException::class);
         self::assertEquals([], $client->release(13, 0, -1));
@@ -120,7 +120,7 @@ class ReleaseTest extends TestCase
         $conn = $this->getConnection();
         $conn->method('readLine')
              ->will($this->returnValue("RELEASED"));
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         $this->expectException(CommandException::class);
         self::assertEquals([], $client->release(13, Put::MAX_PRIORITY + 1));
@@ -131,7 +131,7 @@ class ReleaseTest extends TestCase
         $conn = $this->getConnection();
         $conn->method('readLine')
              ->will($this->returnValue("RELEASED"));
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         $this->expectException(CommandException::class);
         self::assertEquals([], $client->release(-1));

@@ -1,32 +1,55 @@
 <?php
+declare(strict_types=1);
 
 namespace xobotyi\beansclient;
 
-
-use xobotyi\beansclient\Exception;
-use xobotyi\beansclient\Interfaces;
+use xobotyi\beansclient\Exception\ClientException;
+use xobotyi\beansclient\Exception\CommandException;
+use xobotyi\beansclient\Interfaces\CommandInterface;
+use xobotyi\beansclient\Interfaces\ConnectionInterface;
+use xobotyi\beansclient\Interfaces\SerializerInterface;
 
 /**
  * Class BeansClient
- *
  * @package xobotyi\beansclient
  */
 class BeansClient
 {
-    public const CRLF             = "\r\n";
-    public const CRLF_LEN         = 2;
-    public const DEFAULT_PRIORITY = 2048;
-    public const DEFAULT_DELAY    = 0;
-    public const DEFAULT_TTR      = 30;
-    public const DEFAULT_TUBE     = 'default';
     /**
-     * @var Interfaces\ConnectionInterface
+     *
      */
-    private $connection;
+    public const CRLF = "\r\n";
     /**
-     * @var Interfaces\SerializerInterface|null
+     *
+     */
+    public const CRLF_LEN = 2;
+    /**
+     *
+     */
+    public const DEFAULT_PRIORITY = 2048;
+    /**
+     *
+     */
+    public const DEFAULT_DELAY = 0;
+    /**
+     *
+     */
+    public const DEFAULT_TTR = 30;
+    /**
+     *
+     */
+    public const DEFAULT_TUBE = 'default';
+
+
+    /**
+     * @var \xobotyi\beansclient\Interfaces\SerializerInterface | null
      */
     private $serializer;
+
+    /**
+     * @var \xobotyi\beansclient\Interfaces\ConnectionInterface
+     */
+    private $connection;
 
     /**
      * BeansClient constructor.
@@ -37,94 +60,16 @@ class BeansClient
      * @throws \xobotyi\beansclient\Exception\ClientException
      */
     public
-    function __construct(Interfaces\ConnectionInterface $connection, ?Interfaces\SerializerInterface $serializer = null) {
-        $this->setConnection($connection);
-        $this->setSerializer($serializer);
-    }
-
-    /**
-     * @param int $jobId
-     * @param int $priority
-     *
-     * @return bool
-     * @throws \Exception
-     * @throws \xobotyi\beansclient\Exception\ClientException
-     * @throws \xobotyi\beansclient\Exception\CommandException
-     * @throws \xobotyi\beansclient\Exception\JobException
-     */
-    public
-    function bury(int $jobId, $priority = self::DEFAULT_PRIORITY): bool {
-        return $this->dispatchCommand(new Command\Bury($jobId, $priority));
-    }
-
-    /**
-     * @param \xobotyi\beansclient\Command\CommandAbstract $cmd
-     *
-     * @return mixed
-     * @throws \Exception
-     * @throws \xobotyi\beansclient\Exception\ClientException
-     * @throws \xobotyi\beansclient\Exception\CommandException
-     * @throws \xobotyi\beansclient\Exception\JobException
-     */
-    public
-    function dispatchCommand(Command\CommandAbstract $cmd) {
-        $request = $cmd->getCommandStr() . self::CRLF;
-
-        $this->connection->write($request);
-
-        $responseHeader = explode(' ', $this->connection->readLine());
-
-        // throwing exception if there is an error response
-        if (in_array($responseHeader[0], Response::ERROR_RESPONSES)) {
-            throw new Exception\JobException("Got {$responseHeader[0]} in response to {$cmd->getCommandStr()}");
-        }
-
-        // if request contains data - read it
-        if (in_array($responseHeader[0], Response::DATA_RESPONSES)) {
-            if (count($responseHeader) === 1) {
-                throw new Exception\ClientException("Got no data length in response to {$cmd->getCommandStr()} [" . implode(' ', $responseHeader) . "]");
-            }
-
-            $data = $this->connection->read((int)$responseHeader[count($responseHeader) - 1]);
-            $crlf = $this->connection->read(self::CRLF_LEN);
-
-            if ($crlf !== self::CRLF) {
-                throw new Exception\ClientException(sprintf('Expected CRLF[%s] after %u byte(s) of data, got %s',
-                                                            str_replace(["\r", "\n", "\t"], [
-                                                                "\\r",
-                                                                "\\n",
-                                                                "\\t",
-                                                            ], self::CRLF),
-                                                            $responseHeader[1],
-                                                            str_replace(["\r", "\n", "\t"], ["\\r", "\\n", "\\t"], $crlf)));
-            }
-        }
-        else {
-            $data = null;
-        }
-
-        return $cmd->parseResponse($responseHeader, $data);
-    }
-
-    /**
-     * @param int $jobId
-     *
-     * @return bool
-     * @throws \Exception
-     * @throws \xobotyi\beansclient\Exception\ClientException
-     * @throws \xobotyi\beansclient\Exception\CommandException
-     * @throws \xobotyi\beansclient\Exception\JobException
-     */
-    public
-    function delete(int $jobId): bool {
-        return $this->dispatchCommand(new Command\Delete($jobId));
+    function __construct(ConnectionInterface $connection, ?SerializerInterface $serializer = null) {
+        $this->setConnection($connection)
+             ->setSerializer($serializer);
     }
 
     /**
      * @return \xobotyi\beansclient\Interfaces\ConnectionInterface
      */
     public
-    function getConnection(): Interfaces\ConnectionInterface {
+    function getConnection(): ConnectionInterface {
         return $this->connection;
     }
 
@@ -135,23 +80,21 @@ class BeansClient
      * @throws \xobotyi\beansclient\Exception\ClientException
      */
     public
-    function setConnection(Interfaces\ConnectionInterface $connection): self {
+    function setConnection(ConnectionInterface $connection): self {
         if (!$connection->isActive()) {
-            throw new Exception\ClientException('Given connection is not active');
+            throw new ClientException('Unable to set inactive connection');
         }
+
         $this->connection = $connection;
 
         return $this;
     }
 
-    // COMMANDS
-    // jobs
-
     /**
      * @return null|\xobotyi\beansclient\Interfaces\SerializerInterface
      */
     public
-    function getSerializer(): ?Interfaces\SerializerInterface {
+    function getSerializer(): ?SerializerInterface {
         return $this->serializer;
     }
 
@@ -161,104 +104,185 @@ class BeansClient
      * @return \xobotyi\beansclient\BeansClient
      */
     public
-    function setSerializer(?Interfaces\SerializerInterface $serializer): self {
+    function setSerializer(?SerializerInterface $serializer): self {
         $this->serializer = $serializer;
 
         return $this;
     }
 
     /**
-     * @param string $tube
+     * @param \xobotyi\beansclient\Interfaces\CommandInterface $command
      *
-     * @return \xobotyi\beansclient\BeansClient
-     * @throws \Exception
+     * @return mixed
      * @throws \xobotyi\beansclient\Exception\ClientException
      * @throws \xobotyi\beansclient\Exception\CommandException
-     * @throws \xobotyi\beansclient\Exception\JobException
      */
     public
-    function ignoreTube(string $tube): self {
-        $this->dispatchCommand(new Command\IgnoreTube($tube));
+    function dispatchCommand(CommandInterface $command) {
+        if (!$this->connection->isActive()) {
+            throw new ClientException("Unable to dispatch command, connection is not active");
+        }
 
-        return $this;
+        $commandString = (string)$command;
+        $this->connection->write($commandString);
+
+        $responseHeaders = $this->connection->readLine();
+
+        if (!$responseHeaders) {
+            throw new CommandException(sprintf("Got nothing in response to `%s`", $commandString));
+        }
+
+        $responseHeaders = explode(' ', $responseHeaders);
+
+        // if error response - throw
+        if (Response::ERROR_RESPONSES[$responseHeaders[0]] ?? false) {
+            throw new CommandException(sprintf("Got error `%s` in response to `%s`", $responseHeaders[0], $commandString));
+        }
+
+        $data = null;
+
+        // if data response - read it
+        if (Response::DATA_RESPONSES[$responseHeaders[0]] ?? false) {
+            if (($responseHeaders[1] ?? null) === null) {
+                throw new ClientException(sprintf("Missing data length in response to `%s` [%s]",
+                                                   $commandString,
+                                                   implode(' ', $responseHeaders)));
+            }
+
+            $dataLength = (int)$responseHeaders[count($responseHeaders) - 1];
+
+            $data = $this->connection->read($dataLength);
+            $crlf = $this->connection->read(self::CRLF_LEN);
+
+            if ($crlf !== self::CRLF) {
+                throw new ClientException(sprintf('Expected CRLF (%s) after %u byte(s) of data, got `%s`',
+                                                  str_replace(["\r", "\n", "\t"],
+                                                              ["\\r", "\\n", "\\t",],
+                                                              self::CRLF),
+                                                  $dataLength,
+                                                  str_replace(["\r", "\n", "\t"],
+                                                              ["\\r", "\\n", "\\t"],
+                                                              $crlf)));
+            }
+        }
+
+        return $command->processResponse($responseHeaders, $data);
     }
 
     /**
-     * @param int $count
+     * @param int       $jobId
+     * @param int|float $priority
      *
-     * @return int
-     * @throws \Exception
+     * @return bool
      * @throws \xobotyi\beansclient\Exception\ClientException
      * @throws \xobotyi\beansclient\Exception\CommandException
-     * @throws \xobotyi\beansclient\Exception\JobException
      */
     public
-    function kick(int $count): int {
-        return $this->dispatchCommand(new Command\Kick($count));
+    function bury(int $jobId, $priority): bool {
+        return $this->dispatchCommand(new Command\BuryCommand($jobId, $priority));
     }
 
     /**
      * @param int $jobId
      *
      * @return bool
-     * @throws \Exception
      * @throws \xobotyi\beansclient\Exception\ClientException
      * @throws \xobotyi\beansclient\Exception\CommandException
-     * @throws \xobotyi\beansclient\Exception\JobException
+     */
+    public
+    function delete(int $jobId): bool {
+        return $this->dispatchCommand(new Command\DeleteCommand($jobId));
+    }
+
+    /**
+     * @param string $tubeName
+     *
+     * @return null|int
+     * @throws \xobotyi\beansclient\Exception\ClientException
+     * @throws \xobotyi\beansclient\Exception\CommandException
+     */
+    public
+    function ignore(string $tubeName): ?int {
+        return $this->dispatchCommand(new Command\IgnoreTubeCommand($tubeName));
+    }
+
+    /**
+     * @param int $count
+     *
+     * @return int
+     * @throws \xobotyi\beansclient\Exception\ClientException
+     * @throws \xobotyi\beansclient\Exception\CommandException
+     */
+    public
+    function kick(int $count): int {
+        return $this->dispatchCommand(new Command\KickCommand($count));
+    }
+
+    /**
+     * @param int $jobId
+     *
+     * @return bool
+     * @throws \xobotyi\beansclient\Exception\ClientException
+     * @throws \xobotyi\beansclient\Exception\CommandException
      */
     public
     function kickJob(int $jobId): bool {
-        return $this->dispatchCommand(new Command\KickJob($jobId));
-    }
-
-    /**
-     * @return string
-     * @throws \Exception
-     * @throws \xobotyi\beansclient\Exception\ClientException
-     * @throws \xobotyi\beansclient\Exception\CommandException
-     * @throws \xobotyi\beansclient\Exception\JobException
-     */
-    public
-    function listTubeUsed(): string {
-        return $this->dispatchCommand(new Command\ListTubeUsed());
+        return $this->dispatchCommand(new Command\KickJobCommand($jobId));
     }
 
     /**
      * @return array
-     * @throws \Exception
      * @throws \xobotyi\beansclient\Exception\ClientException
      * @throws \xobotyi\beansclient\Exception\CommandException
-     * @throws \xobotyi\beansclient\Exception\JobException
      */
     public
     function listTubes(): array {
-        return $this->dispatchCommand(new Command\ListTubes());
+        return $this->dispatchCommand(new Command\ListTubesCommand());
     }
 
     /**
      * @return array
-     * @throws \Exception
      * @throws \xobotyi\beansclient\Exception\ClientException
      * @throws \xobotyi\beansclient\Exception\CommandException
-     * @throws \xobotyi\beansclient\Exception\JobException
      */
     public
-    function listTubesWatched(): array {
-        return $this->dispatchCommand(new Command\ListTubesWatched());
+    function listWatchedTubes(): array {
+        return $this->dispatchCommand(new Command\ListTubesWatchedCommand());
+    }
+
+    /**
+     * @return array
+     * @throws \xobotyi\beansclient\Exception\ClientException
+     * @throws \xobotyi\beansclient\Exception\CommandException
+     */
+    public
+    function listUsedTubes(): array {
+        return $this->dispatchCommand(new Command\ListTubeUsedCommand());
+    }
+
+    /**
+     * @param string    $tubeName
+     * @param int|float $delay
+     *
+     * @return bool
+     * @throws \xobotyi\beansclient\Exception\ClientException
+     * @throws \xobotyi\beansclient\Exception\CommandException
+     */
+    public
+    function pause(string $tubeName, $delay): bool {
+        return $this->dispatchCommand(new Command\PauseCommand($tubeName, $delay));
     }
 
     /**
      * @param $subject
      *
-     * @return array|null
-     * @throws \Exception
+     * @return null|array
      * @throws \xobotyi\beansclient\Exception\ClientException
      * @throws \xobotyi\beansclient\Exception\CommandException
-     * @throws \xobotyi\beansclient\Exception\JobException
      */
     public
     function peek($subject): ?array {
-        return $this->dispatchCommand(new Command\Peek($subject, $this->serializer));
+        return $this->dispatchCommand(new Command\PeekCommand($subject));
     }
 
     /**
@@ -268,142 +292,120 @@ class BeansClient
      * @param int $ttr
      *
      * @return \xobotyi\beansclient\Job
-     *
-     * @throws \Exception
      * @throws \xobotyi\beansclient\Exception\ClientException
      * @throws \xobotyi\beansclient\Exception\CommandException
-     * @throws \xobotyi\beansclient\Exception\JobException
      */
     public
     function put($payload, $priority = self::DEFAULT_PRIORITY, int $delay = self::DEFAULT_DELAY, int $ttr = self::DEFAULT_TTR): Job {
-        $res = $this->dispatchCommand(new Command\Put($payload, $priority, $delay, $ttr, $this->serializer));
-
-        return $res
-            ? new Job($this, $res['id'], strtolower($res['status']), $payload)
-            : new Job($this, null);
+        return $this->dispatchCommand(new Command\PutCommand($payload, $priority, $delay, $ttr));
     }
 
-    // tubes
-
     /**
-     * @param int       $jobId
-     * @param int|float $priority
-     * @param int       $delay
+     * @param int $jobId
+     * @param int $priority
+     * @param int $delay
      *
-     * @return string|null
-     * @throws \Exception
+     * @return null|string
      * @throws \xobotyi\beansclient\Exception\ClientException
      * @throws \xobotyi\beansclient\Exception\CommandException
-     * @throws \xobotyi\beansclient\Exception\JobException
      */
     public
     function release(int $jobId, $priority = self::DEFAULT_PRIORITY, int $delay = self::DEFAULT_DELAY): ?string {
-        return $this->dispatchCommand(new Command\Release($jobId, $priority, $delay));
+        return $this->dispatchCommand(new Command\ReleaseCommand($jobId, $priority, $delay));
     }
 
     /**
-     * @param int|null $timeout
+     * @param int $timeout
      *
-     * @return \xobotyi\beansclient\Job
-     *
-     * @throws \Exception
+     * @return null|\xobotyi\beansclient\Job
      * @throws \xobotyi\beansclient\Exception\ClientException
      * @throws \xobotyi\beansclient\Exception\CommandException
-     * @throws \xobotyi\beansclient\Exception\JobException
      */
     public
-    function reserve(?int $timeout = 0): Job {
-        $res = $this->dispatchCommand(new Command\Reserve($timeout, $this->serializer));
+    function reserve(int $timeout = 0): ?Job {
+        $result = $this->dispatchCommand(new Command\ReserveCommand($timeout, $this->serializer));
 
-        return $res
-            ? new Job($this, $res['id'], Job::STATE_RESERVED, $res['payload'])
-            : new Job($this, null);
+        if (!$result) {
+            return null;
+        }
+
+        return new Job($this, $result['id'], Job::STATE_RESERVED, $result['payload']);
     }
 
     /**
-     * @return array|null
-     * @throws \Exception
+     * @return array
      * @throws \xobotyi\beansclient\Exception\ClientException
      * @throws \xobotyi\beansclient\Exception\CommandException
-     * @throws \xobotyi\beansclient\Exception\JobException
      */
     public
-    function stats(): ?array {
-        return $this->dispatchCommand(new Command\Stats());
+    function stats(): array {
+        return $this->dispatchCommand(new Command\StatsCommand());
     }
 
     /**
      * @param int $jobId
      *
-     * @return array|null
-     * @throws \Exception
+     * @return null|array
      * @throws \xobotyi\beansclient\Exception\ClientException
      * @throws \xobotyi\beansclient\Exception\CommandException
-     * @throws \xobotyi\beansclient\Exception\JobException
      */
     public
     function statsJob(int $jobId): ?array {
-        return $this->dispatchCommand(new Command\StatsJob($jobId));
+        return $this->dispatchCommand(new Command\StatsJobCommand($jobId));
     }
 
     /**
      * @param string $tubeName
      *
-     * @return array|null
-     * @throws \Exception
+     * @return null|array
      * @throws \xobotyi\beansclient\Exception\ClientException
      * @throws \xobotyi\beansclient\Exception\CommandException
-     * @throws \xobotyi\beansclient\Exception\JobException
      */
     public
     function statsTube(string $tubeName): ?array {
-        return $this->dispatchCommand(new Command\StatsTube($tubeName));
+        return $this->dispatchCommand(new Command\StatsTubeCommand($tubeName));
     }
 
     /**
      * @param int $jobId
      *
      * @return bool
-     * @throws \Exception
      * @throws \xobotyi\beansclient\Exception\ClientException
      * @throws \xobotyi\beansclient\Exception\CommandException
-     * @throws \xobotyi\beansclient\Exception\JobException
      */
     public
     function touch(int $jobId): bool {
-        return $this->dispatchCommand(new Command\Touch($jobId));
+        return $this->dispatchCommand(new Command\TouchCommand($jobId));
     }
 
     /**
-     * @param string $tube
+     * @param string $tubeName
      *
      * @return \xobotyi\beansclient\BeansClient
-     * @throws \Exception
      * @throws \xobotyi\beansclient\Exception\ClientException
      * @throws \xobotyi\beansclient\Exception\CommandException
-     * @throws \xobotyi\beansclient\Exception\JobException
      */
     public
-    function useTube(string $tube): self {
-        if ($tube !== $this->dispatchCommand(new Command\UseTube($tube))) {
-            throw new Exception\CommandException("Tube used not matches requested tube");
+    function useTube(string $tubeName): self {
+        $usedTube = $this->dispatchCommand(new Command\UseTubeCommand($tubeName));
+
+        if ($tubeName !== $usedTube) {
+            throw new CommandException(sprintf("Failed to use `%s` tube, using `%s` instead", $tubeName, $usedTube));
         }
 
         return $this;
     }
 
     /**
-     * @param string $tube
+     * @param string $tubeName
      *
      * @return \xobotyi\beansclient\BeansClient
-     * @throws \Exception
      * @throws \xobotyi\beansclient\Exception\ClientException
      * @throws \xobotyi\beansclient\Exception\CommandException
-     * @throws \xobotyi\beansclient\Exception\JobException
      */
     public
-    function watchTube(string $tube): self {
-        $this->dispatchCommand(new Command\WatchTube($tube));
+    function watchTube(string $tubeName): self {
+        $this->dispatchCommand(new Command\WatchTubeCommand($tubeName));
 
         return $this;
     }

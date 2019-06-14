@@ -20,7 +20,7 @@ class KickJobTest extends TestCase
              ->withConsecutive()
              ->willReturnOnConsecutiveCalls("KICKED", "NOT_FOUND");
 
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         self::assertEquals(true, $client->kickJob(1));
         self::assertEquals(false, $client->kickJob(2));
@@ -50,7 +50,7 @@ class KickJobTest extends TestCase
         $conn->method('readLine')
              ->will($this->returnValue("SOME_STUFF"));
 
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         $this->expectException(CommandException::class);
         $client->kickJob(1);
@@ -69,7 +69,7 @@ class KickJobTest extends TestCase
              ->withConsecutive([25], [2])
              ->willReturnOnConsecutiveCalls("---\r\n- default\r\n- test1", "\r\n");
 
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         $this->expectException(CommandException::class);
         $client->kickJob(1);
@@ -82,7 +82,7 @@ class KickJobTest extends TestCase
         $conn->method('readLine')
              ->will($this->returnValue("BURIED"));
 
-        $client = new BeansClient($conn);
+        $client = new BeansClientOld($conn);
 
         $this->expectException(CommandException::class);
         $client->kickJob(0);
