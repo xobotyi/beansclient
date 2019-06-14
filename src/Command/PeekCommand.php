@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace xobotyi\beansclient\Command;
 
-
 use xobotyi\beansclient\Command;
 use xobotyi\beansclient\Exception\CommandException;
 use xobotyi\beansclient\Interfaces\CommandInterface;

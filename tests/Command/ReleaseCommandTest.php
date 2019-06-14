@@ -47,7 +47,7 @@ class ReleaseCommandTest extends TestCase
     public
     function testErrorInvalidPriority0() {
         $this->expectException(CommandException::class);
-        $this->expectExceptionMessage(sprintf('Priority has to numeric, got %s', "string"));
+        $this->expectExceptionMessage(sprintf('Priority has to be a number, got %s', "string"));
 
         new ReleaseCommand(1, "hey!", 1);
     }

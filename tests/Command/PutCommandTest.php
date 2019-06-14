@@ -62,7 +62,7 @@ class PutCommandTest extends TestCase
     public
     function testExceptionBadPriority2() {
         $this->expectException(CommandException::class);
-        $this->expectExceptionMessage(sprintf('Priority has to numeric, got %s', 'string'));
+        $this->expectExceptionMessage(sprintf('Priority has to be a number, got %s', 'string'));
 
         new PutCommand('', "asd", 0, 3);
     }

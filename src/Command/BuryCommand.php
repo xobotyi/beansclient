@@ -1,8 +1,7 @@
 <?php
-
+declare(strict_types=1);
 
 namespace xobotyi\beansclient\Command;
-
 
 use xobotyi\beansclient\Command;
 use xobotyi\beansclient\Exception\CommandException;
@@ -18,7 +17,7 @@ class BuryCommand extends Command implements CommandInterface
         }
 
         if (!is_numeric($priority)) {
-            throw new CommandException(sprintf('Priority has to numeric, got %s', gettype($priority)));
+            throw new CommandException(sprintf('Priority has to be a number, got %s', gettype($priority)));
         }
 
         if ($priority < CommandInterface::PRIORITY_MINIMUM) {

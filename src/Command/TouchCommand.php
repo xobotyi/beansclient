@@ -1,9 +1,7 @@
 <?php
 declare(strict_types=1);
 
-
 namespace xobotyi\beansclient\Command;
-
 
 use xobotyi\beansclient\Command;
 use xobotyi\beansclient\Exception\CommandException;
@@ -12,7 +10,6 @@ use xobotyi\beansclient\Response;
 
 class TouchCommand extends Command implements CommandInterface
 {
-
     public
     function __construct(int $jobId) {
         if ($jobId <= 0) {
