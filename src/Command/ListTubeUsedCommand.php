@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 
 
 namespace xobotyi\beansclient\Command;
@@ -10,23 +9,15 @@ use xobotyi\beansclient\Exception\CommandException;
 use xobotyi\beansclient\Interfaces\CommandInterface;
 use xobotyi\beansclient\Response;
 
-class StatsCommand extends Command implements CommandInterface
+class ListTubeUsedCommand extends Command implements CommandInterface
 {
     public
     function __construct() {
-        parent::__construct(CommandInterface::STATS);
+        parent::__construct(CommandInterface::LIST_TUBE_USED);
     }
 
-    /**
-     * @param array       $responseHeader
-     * @param null|string $responseBody
-     *
-     * @return null | array
-     * @throws \xobotyi\beansclient\Exception\CommandException
-     * @throws \Exception
-     */
     public
-    function processResponse(array $responseHeader, ?string $responseBody = null): array {
+    function processResponse(array $responseHeader, ?string $responseBody = null) {
         if ($responseHeader[0] !== Response::OK) {
             throw new CommandException(sprintf('Got unexpected status code `%s`', $responseHeader[0]));
         }
@@ -35,6 +26,6 @@ class StatsCommand extends Command implements CommandInterface
             throw new CommandException(sprintf("Expected response body, got `%s`", $responseBody));
         }
 
-        return Response::YamlParse($responseBody, true);
+        return Response::YamlParse($responseBody, false);
     }
 }

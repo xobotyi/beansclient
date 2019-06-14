@@ -76,6 +76,6 @@ class Bury extends CommandAbstract
             return false;
         }
 
-        throw new Exception\CommandException("Got unexpected status code [${responseHeader[0]}]");
+        throw new Exception\CommandException(sprintf('Got unexpected status code `%s`', $responseHeader[0]));
     }
 }

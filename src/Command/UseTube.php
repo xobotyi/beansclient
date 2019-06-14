@@ -58,7 +58,7 @@ class UseTube extends CommandAbstract
             throw new Exception\CommandException("Unexpected response data passed");
         }
         else if ($responseHeader[0] !== Response::USING) {
-            throw new Exception\CommandException("Got unexpected status code [${responseHeader[0]}]");
+            throw new Exception\CommandException(sprintf('Got unexpected status code `%s`', $responseHeader[0]));
         }
 
         return $responseHeader[1];

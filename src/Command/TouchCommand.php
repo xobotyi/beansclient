@@ -38,6 +38,6 @@ class TouchCommand extends Command implements CommandInterface
             return false;
         }
 
-        throw new CommandException("Got unexpected status code `${responseHeader[0]}`");
+        throw new CommandException(sprintf('Got unexpected status code `%s`', $responseHeader[0]));
     }
 }

@@ -50,6 +50,6 @@ class ListTubeUsed extends CommandAbstract
             return $responseHeader[1];
         }
 
-        throw new CommandException("Got unexpected status code [${responseHeader[0]}]");
+        throw new CommandException(sprintf('Got unexpected status code `%s`', $responseHeader[0]));
     }
 }

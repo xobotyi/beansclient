@@ -38,7 +38,7 @@ class ReserveCommand extends Command implements CommandInterface
         }
 
         if ($responseHeader[0] !== Response::RESERVED) {
-            throw new CommandException("Got unexpected status code `${responseHeader[0]}`");
+            throw new CommandException(sprintf('Got unexpected status code `%s`', $responseHeader[0]));
         }
 
         return [

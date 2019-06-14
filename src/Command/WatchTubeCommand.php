@@ -32,7 +32,7 @@ class WatchTubeCommand extends Command implements CommandInterface
     public
     function processResponse(array $responseHeader, ?string $responseBody = null): string {
         if ($responseHeader[0] !== Response::WATCHING) {
-            throw new CommandException("Got unexpected status code `${responseHeader[0]}`");
+            throw new CommandException(sprintf('Got unexpected status code `%s`', $responseHeader[0]));
         }
 
         return $responseHeader[1];

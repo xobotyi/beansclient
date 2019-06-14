@@ -104,7 +104,7 @@ class Put extends CommandAbstract
             throw new Exception\CommandException('Job\'s payload size exceeds max-job-size config');
         }
         else if ($responseHeader[0] !== Response::INSERTED && $responseHeader[0] !== Response::BURIED) {
-            throw new Exception\CommandException("Got unexpected status code [${responseHeader[0]}]");
+            throw new Exception\CommandException(sprintf('Got unexpected status code `%s`', $responseHeader[0]));
         }
         else if (!isset($responseHeader[1])) {
             throw new Exception\CommandException("Response is missing job id [" . implode('', $responseHeader) . "]");

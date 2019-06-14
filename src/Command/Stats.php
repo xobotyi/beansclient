@@ -41,7 +41,7 @@ class Stats extends CommandAbstract
     public
     function parseResponse(array $responseHeader, ?string $responseStr): ?array {
         if ($responseHeader[0] !== Response::OK) {
-            throw new Exception\CommandException("Got unexpected status code [${responseHeader[0]}]");
+            throw new Exception\CommandException(sprintf('Got unexpected status code `%s`', $responseHeader[0]));
         }
         else if (!$responseStr) {
             throw new Exception\CommandException('Got unexpected empty response');

@@ -8,7 +8,6 @@ namespace xobotyi\beansclient\Command;
 use xobotyi\beansclient\Command;
 use xobotyi\beansclient\Exception\CommandException;
 use xobotyi\beansclient\Interfaces\CommandInterface;
-use xobotyi\beansclient\Interfaces\SerializerInterface;
 use xobotyi\beansclient\Response;
 
 class UseTubeCommand extends Command implements CommandInterface
@@ -32,7 +31,7 @@ class UseTubeCommand extends Command implements CommandInterface
     public
     function processResponse(array $responseHeader, ?string $responseBody = null): string {
         if ($responseHeader[0] !== Response::USING) {
-            throw new CommandException("Got unexpected status code `${responseHeader[0]}`");
+            throw new CommandException(sprintf('Got unexpected status code `%s`', $responseHeader[0]));
         }
 
         return $responseHeader[1];

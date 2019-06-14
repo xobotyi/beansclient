@@ -61,7 +61,7 @@ class Reserve extends CommandAbstract
             return null;
         }
         else if ($responseHeader[0] !== Response::RESERVED) {
-            throw new Exception\CommandException("Got unexpected status code [${responseHeader[0]}]");
+            throw new Exception\CommandException(sprintf('Got unexpected status code `%s`', $responseHeader[0]));
         }
         else if (!$responseStr) {
             throw new Exception\CommandException('Got unexpected empty response');
