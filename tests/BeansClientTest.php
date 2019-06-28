@@ -106,7 +106,7 @@ class BeansClientTest extends TestCase
 
     public
     function testExceptionCrlfMissmatch() {
-        $conn    = getConnectionMock($this,);
+        $conn    = getConnectionMock($this);
         $client  = new BeansClient($conn);
         $command = new ListTubesCommand();
 
