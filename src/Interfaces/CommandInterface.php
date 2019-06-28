@@ -36,6 +36,10 @@ interface CommandInterface
     public const PAUSE_TUBE           = 'pause-tube';
     public const QUIT                 = 'quit';
 
+    // due to https://github.com/beanstalkd/beanstalkd/blob/b5a6f7a23a368ffb31fbf48cdffe95541166d3fa/doc/protocol.txt#L132
+    public const PRIORITY_MAXIMUM = 4294967295;
+    public const PRIORITY_MINIMUM = 0;
+
     public const COMMANDS_LIST = [
         self::PUT,
         self::USE,
@@ -62,38 +66,36 @@ interface CommandInterface
         self::QUIT,
     ];
 
-    /**
-     * @return string
-     */
     public
-    function getCommandStr(): string;
+    function getCommandName(): string;
 
-    /**
-     * @return mixed
-     */
     public
-    function getPayload();
+    function getArguments(): array;
 
-    /**
-     * @return bool
-     */
+    public
+    function setSerializer(?SerializerInterface $serializer);
+
+    public
+    function getSerializer(): ?SerializerInterface;
+
+    public
+    function getPayload(): ?string;
+
+    public
+    function getRawPayload();
+
     public
     function hasPayload(): bool;
 
-    /**
-     * @param array       $responseHeader
-     * @param null|string $responseStr
-     *
-     * @return mixed
-     */
     public
-    function parseResponse(array $responseHeader, ?string $responseStr);
+    function setPayload($payload);
 
-    /**
-     * @param \xobotyi\beansclient\Interfaces\SerializerInterface $serialize
-     *
-     * @return mixed
-     */
     public
-    function setSerializer(SerializerInterface $serialize);
+    function buildCommand(): string;
+
+    public
+    function __toString(): string;
+
+    public
+    function processResponse(array $responseHeader, ?string $responseBody = null);
 }
