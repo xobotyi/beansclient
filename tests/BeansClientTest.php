@@ -15,7 +15,7 @@ class BeansClientTest extends TestCase
 {
     public
     function testConstruction() {
-        $conn       = getConnectionMock($this,true);
+        $conn       = getConnectionMock($this, true);
         $serializer = new JsonSerializer();
 
         $client = new BeansClient($conn, $serializer);
@@ -29,7 +29,7 @@ class BeansClientTest extends TestCase
         $this->expectException(ClientException::class);
         $this->expectExceptionMessage("Unable to set inactive connection");
 
-        new BeansClient(getConnectionMock($this,false));
+        new BeansClient(getConnectionMock($this, false));
     }
 
     public
@@ -56,7 +56,7 @@ class BeansClientTest extends TestCase
 
     public
     function testEmptyCommandResponseException() {
-        $conn    = getConnectionMock($this,true);
+        $conn    = getConnectionMock($this, true);
         $client  = new BeansClient($conn);
         $command = new ListTubesCommand();
 
@@ -72,7 +72,7 @@ class BeansClientTest extends TestCase
 
     public
     function testErrorResponseException() {
-        $conn    = getConnectionMock($this,true);
+        $conn    = getConnectionMock($this, true);
         $client  = new BeansClient($conn);
         $command = new ListTubesCommand();
 
@@ -88,7 +88,7 @@ class BeansClientTest extends TestCase
 
     public
     function testExceptionMissingDataLength() {
-        $conn    = getConnectionMock($this,);
+        $conn    = getConnectionMock($this);
         $client  = new BeansClient($conn);
         $command = new ListTubesCommand();
 

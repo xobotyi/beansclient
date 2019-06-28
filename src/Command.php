@@ -59,6 +59,16 @@ class Command
     }
 
     /**
+     * Returns the payload's serializer
+     *
+     * @return null|\xobotyi\beansclient\Interfaces\SerializerInterface
+     */
+    public
+    function getSerializer(): ?SerializerInterface {
+        return $this->serializer;
+    }
+
+    /**
      * Sets the payload's serializer
      *
      * @param \xobotyi\beansclient\Interfaces\SerializerInterface $serializer
@@ -73,16 +83,6 @@ class Command
     }
 
     /**
-     * Returns the payload's serializer
-     *
-     * @return null|\xobotyi\beansclient\Interfaces\SerializerInterface
-     */
-    public
-    function getSerializer(): ?SerializerInterface {
-        return $this->serializer;
-    }
-
-    /**
      * Returns current serialized payload
      *
      * @return null|string
@@ -90,26 +90,6 @@ class Command
     public
     function getPayload(): ?string {
         return $this->payload;
-    }
-
-    /**
-     * Returns unserialized payload
-     *
-     * @return mixed
-     */
-    public
-    function getRawPayload() {
-        return $this->rawPayload;
-    }
-
-    /**
-     * Returns true if command has non-null payload
-     *
-     * @return bool
-     */
-    public
-    function hasPayload(): bool {
-        return $this->payload !== null;
     }
 
     /**
@@ -150,6 +130,31 @@ class Command
     }
 
     /**
+     * Returns unserialized payload
+     *
+     * @return mixed
+     */
+    public
+    function getRawPayload() {
+        return $this->rawPayload;
+    }
+
+    /**
+     * Returns true if command has non-null payload
+     *
+     * @return bool
+     */
+    public
+    function hasPayload(): bool {
+        return $this->payload !== null;
+    }
+
+    public
+    function __toString(): string {
+        return $this->buildCommand();
+    }
+
+    /**
      * Returns built command string
      *
      * @return string
@@ -167,10 +172,5 @@ class Command
         }
 
         return implode(" ", $parts);
-    }
-
-    public
-    function __toString(): string {
-        return $this->buildCommand();
     }
 }

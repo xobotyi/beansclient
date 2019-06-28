@@ -100,6 +100,79 @@ class Job
     }
 
     public
+    function stats(): self {
+        if (!$this->data['id']) {
+            return $this;
+        }
+
+        if ($jobStats = $this->client->statsJob($this->data['id'])) {
+            foreach (self::STATS_COMMAND_FIELDS as $targetField => $sourceField) {
+                if ($sourceField === false) {
+                    if ($targetField === 'releaseTime') {
+                        $this->data['releaseTime'] = ($this->data['state'] === self::STATE_DELAYED || $this->data['state'] === self::STATE_RESERVED)
+                            ? time() + $jobStats['time-left'] ?? 0
+                            : 0;
+                    }
+
+                    continue;
+                }
+
+                if (!isset($jobStats[$sourceField]) && !array_key_exists($sourceField, $jobStats)) {
+                    continue;
+                }
+
+                if (is_numeric($this->data[$targetField] = $jobStats[$sourceField])) {
+                    $this->data[$targetField] *= 1;
+                }
+            }
+        }
+        else {
+            $this->clearStatsFields();
+            $this->data['state'] = self::STATE_DELETED;
+        }
+
+        return $this;
+    }
+
+    private
+    function clearStatsFields(): self {
+        foreach (self::STATS_COMMAND_FIELDS as $field => $src) {
+            $this->data[$field] = null;
+        }
+
+        return $this;
+    }
+
+    public
+    function peek(): self {
+        if (!$this->data['id']) {
+            return $this;
+        }
+
+        $job = $this->client->peek($this->data['id']);
+
+        foreach (self::PEEK_COMMAND_FIELDS as $targetField => $sourceField) {
+            if ($sourceField === 'payload') {
+                $serializer               = $this->client->getSerializer();
+                $this->data[$targetField] = (is_string($job[$sourceField]) && $serializer)
+                    ? $serializer->unserialize($job[$sourceField])
+                    : $job[$sourceField];
+
+                continue;
+            }
+
+//            $this->data[$targetField] = $job[$sourceField] ?? null; // not needed yet
+        }
+
+        return $this;
+    }
+
+    public
+    function getClient(): ?BeansClient {
+        return $this->client;
+    }
+
+    public
     function setClient(BeansClient $client): self {
         if (!$client->getConnection()->isActive()) {
             throw new JobException("Given client has inactive connection");
@@ -108,11 +181,6 @@ class Job
         $this->client = $client;
 
         return $this;
-    }
-
-    public
-    function getClient(): ?BeansClient {
-        return $this->client;
     }
 
     public
@@ -155,39 +223,6 @@ class Job
         }
 
         return $this->data;
-    }
-
-    private
-    function clearStatsFields(): self {
-        foreach (self::STATS_COMMAND_FIELDS as $field => $src) {
-            $this->data[$field] = null;
-        }
-
-        return $this;
-    }
-
-    public
-    function peek(): self {
-        if (!$this->data['id']) {
-            return $this;
-        }
-
-        $job = $this->client->peek($this->data['id']);
-
-        foreach (self::PEEK_COMMAND_FIELDS as $targetField => $sourceField) {
-            if ($sourceField === 'payload') {
-                $serializer               = $this->client->getSerializer();
-                $this->data[$targetField] = (is_string($job[$sourceField]) && $serializer)
-                    ? $serializer->unserialize($job[$sourceField])
-                    : $job[$sourceField];
-
-                continue;
-            }
-
-//            $this->data[$targetField] = $job[$sourceField] ?? null; // not needed yet
-        }
-
-        return $this;
     }
 
     public
@@ -292,41 +327,6 @@ class Job
         }
         else {
             $this->stats();
-        }
-
-        return $this;
-    }
-
-    public
-    function stats(): self {
-        if (!$this->data['id']) {
-            return $this;
-        }
-
-        if ($jobStats = $this->client->statsJob($this->data['id'])) {
-            foreach (self::STATS_COMMAND_FIELDS as $targetField => $sourceField) {
-                if ($sourceField === false) {
-                    if ($targetField === 'releaseTime') {
-                        $this->data['releaseTime'] = ($this->data['state'] === self::STATE_DELAYED || $this->data['state'] === self::STATE_RESERVED)
-                            ? time() + $jobStats['time-left'] ?? 0
-                            : 0;
-                    }
-
-                    continue;
-                }
-
-                if (!isset($jobStats[$sourceField]) && !array_key_exists($sourceField, $jobStats)) {
-                    continue;
-                }
-
-                if (is_numeric($this->data[$targetField] = $jobStats[$sourceField])) {
-                    $this->data[$targetField] *= 1;
-                }
-            }
-        }
-        else {
-            $this->clearStatsFields();
-            $this->data['state'] = self::STATE_DELETED;
         }
 
         return $this;

@@ -111,6 +111,19 @@ class BeansClient
     }
 
     /**
+     * @param int       $jobId
+     * @param int|float $priority
+     *
+     * @return bool
+     * @throws \xobotyi\beansclient\Exception\ClientException
+     * @throws \xobotyi\beansclient\Exception\CommandException
+     */
+    public
+    function bury(int $jobId, $priority): bool {
+        return $this->dispatchCommand(new Command\BuryCommand($jobId, $priority));
+    }
+
+    /**
      * @param \xobotyi\beansclient\Interfaces\CommandInterface $command
      *
      * @return mixed
@@ -167,19 +180,6 @@ class BeansClient
         }
 
         return $command->processResponse($responseHeaders, $data);
-    }
-
-    /**
-     * @param int       $jobId
-     * @param int|float $priority
-     *
-     * @return bool
-     * @throws \xobotyi\beansclient\Exception\ClientException
-     * @throws \xobotyi\beansclient\Exception\CommandException
-     */
-    public
-    function bury(int $jobId, $priority): bool {
-        return $this->dispatchCommand(new Command\BuryCommand($jobId, $priority));
     }
 
     /**
