@@ -26,7 +26,6 @@ class ResponseTest extends TestCase
 
     public
     function testYamlParseException(): void {
-
         $str = "---\r\n-  ";
 
         $this->expectException(Exception::class);

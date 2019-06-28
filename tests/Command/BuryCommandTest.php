@@ -3,6 +3,7 @@
 
 namespace xobotyi\beansclient\Command;
 
+include_once __DIR__ . "/rollup.php";
 
 use PHPUnit\Framework\TestCase;
 use xobotyi\beansclient\Exception\CommandException;
@@ -17,6 +18,20 @@ class BuryCommandTest extends TestCase
 
         $this->assertEquals($command->getCommandName(), CommandInterface::BURY);
         $this->assertEquals($command->getArguments(), [1, 2]);
+    }
+
+    public
+    function testClientCommand() {
+        $client = getBeansclientMock($this)
+            ->setMethods(['dispatchCommand'])
+            ->getMock();
+
+        $client->expects($this->once())
+               ->method('dispatchCommand')
+               ->will($this->returnValue(true))
+               ->with($this->isInstanceOf(BuryCommand::class));
+
+        $client->bury(1, 1);
     }
 
     public

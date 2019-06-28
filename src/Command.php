@@ -10,7 +10,7 @@ class Command
 {
     public const MAX_PAYLOAD_SIZE = 65536;
 
-    protected $crlf = BeansClientOld::CRLF;
+    protected $crlf = BeansClient::CRLF;
 
     /**
      * @var string

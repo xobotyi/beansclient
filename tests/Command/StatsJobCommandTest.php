@@ -18,6 +18,20 @@ class StatsJobCommandTest extends TestCase
     }
 
     public
+    function testClientCommand() {
+        $client = getBeansclientMock($this)
+            ->setMethods(['dispatchCommand'])
+            ->getMock();
+
+        $client->expects($this->once())
+               ->method('dispatchCommand')
+               ->will($this->returnValue([]))
+               ->with($this->isInstanceOf(StatsJobCommand::class));
+
+        $client->statsJob(1);
+    }
+
+    public
     function testCorrectResponse() {
         $command = new StatsJobCommand(1);
 

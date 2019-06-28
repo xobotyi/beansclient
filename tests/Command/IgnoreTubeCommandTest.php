@@ -20,6 +20,20 @@ class IgnoreTubeCommandTest extends TestCase
     }
 
     public
+    function testClientCommand() {
+        $client = getBeansclientMock($this)
+            ->setMethods(['dispatchCommand'])
+            ->getMock();
+
+        $client->expects($this->once())
+               ->method('dispatchCommand')
+               ->will($this->returnValue(3))
+               ->with($this->isInstanceOf(IgnoreTubeCommand::class));
+
+        $client->ignore('testTube');
+    }
+
+    public
     function testCorrectResponse() {
         $command = new IgnoreTubeCommand('testTube');
 

@@ -26,6 +26,21 @@ class ReserveCommandTest extends TestCase
     }
 
     public
+    function testClientCommand() {
+        $client = getBeansclientMock($this)
+            ->setMethods(['dispatchCommand'])
+            ->getMock();
+
+        $client->expects($this->atLeastOnce())
+               ->method('dispatchCommand')
+               ->will($this->onConsecutiveCalls(['id' => 2, 'payload' => null], null))
+               ->with($this->isInstanceOf(ReserveCommand::class));
+
+        $client->reserve(2);
+        $client->reserve(2);
+    }
+
+    public
     function testCorrectResponse() {
         $command = new ReserveCommand();
 

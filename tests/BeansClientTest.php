@@ -3,6 +3,8 @@
 
 namespace xobotyi\beansclient;
 
+include_once __DIR__ . "/Command/rollup.php";
+
 use PHPUnit\Framework\TestCase;
 use xobotyi\beansclient\Command\ListTubesCommand;
 use xobotyi\beansclient\Exception\ClientException;
@@ -11,22 +13,9 @@ use xobotyi\beansclient\Serializer\JsonSerializer;
 
 class BeansClientTest extends TestCase
 {
-    private
-    function getConnection(bool $active = true) {
-        $conn = $this->getMockBuilder(Connection::class)
-                     ->disableOriginalConstructor()
-                     ->getMock();
-
-        $conn->expects($this->any())
-             ->method('isActive')
-             ->will($this->returnValue($active));
-
-        return $conn;
-    }
-
     public
     function testConstruction() {
-        $conn       = $this->getConnection(true);
+        $conn       = getConnectionMock($this,true);
         $serializer = new JsonSerializer();
 
         $client = new BeansClient($conn, $serializer);
@@ -40,7 +29,7 @@ class BeansClientTest extends TestCase
         $this->expectException(ClientException::class);
         $this->expectExceptionMessage("Unable to set inactive connection");
 
-        new BeansClient($this->getConnection(false));
+        new BeansClient(getConnectionMock($this,false));
     }
 
     public
@@ -67,7 +56,7 @@ class BeansClientTest extends TestCase
 
     public
     function testEmptyCommandResponseException() {
-        $conn    = $this->getConnection(true);
+        $conn    = getConnectionMock($this,true);
         $client  = new BeansClient($conn);
         $command = new ListTubesCommand();
 
@@ -83,7 +72,7 @@ class BeansClientTest extends TestCase
 
     public
     function testErrorResponseException() {
-        $conn    = $this->getConnection(true);
+        $conn    = getConnectionMock($this,true);
         $client  = new BeansClient($conn);
         $command = new ListTubesCommand();
 
@@ -99,7 +88,7 @@ class BeansClientTest extends TestCase
 
     public
     function testExceptionMissingDataLength() {
-        $conn    = $this->getConnection();
+        $conn    = getConnectionMock($this,);
         $client  = new BeansClient($conn);
         $command = new ListTubesCommand();
 
@@ -117,7 +106,7 @@ class BeansClientTest extends TestCase
 
     public
     function testExceptionCrlfMissmatch() {
-        $conn    = $this->getConnection();
+        $conn    = getConnectionMock($this,);
         $client  = new BeansClient($conn);
         $command = new ListTubesCommand();
 

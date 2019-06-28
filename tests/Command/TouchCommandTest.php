@@ -18,6 +18,20 @@ class TouchCommandTest extends TestCase
     }
 
     public
+    function testClientCommand() {
+        $client = getBeansclientMock($this)
+            ->setMethods(['dispatchCommand'])
+            ->getMock();
+
+        $client->expects($this->once())
+               ->method('dispatchCommand')
+               ->will($this->returnValue(true))
+               ->with($this->isInstanceOf(TouchCommand::class));
+
+        $client->touch(1);
+    }
+
+    public
     function testCorrectResponse() {
         $command = new TouchCommand(1);
 

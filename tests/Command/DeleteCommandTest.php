@@ -20,6 +20,20 @@ class DeleteCommandTest extends TestCase
     }
 
     public
+    function testClientCommand() {
+        $client = getBeansclientMock($this)
+            ->setMethods(['dispatchCommand'])
+            ->getMock();
+
+        $client->expects($this->once())
+               ->method('dispatchCommand')
+               ->will($this->returnValue(true))
+               ->with($this->isInstanceOf(DeleteCommand::class));
+
+        $client->delete(1);
+    }
+
+    public
     function testCorrectResponse() {
         $command = new DeleteCommand(2);
 

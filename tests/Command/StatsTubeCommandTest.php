@@ -18,6 +18,20 @@ class StatsTubeCommandTest extends TestCase
     }
 
     public
+    function testClientCommand() {
+        $client = getBeansclientMock($this)
+            ->setMethods(['dispatchCommand'])
+            ->getMock();
+
+        $client->expects($this->once())
+               ->method('dispatchCommand')
+               ->will($this->returnValue([]))
+               ->with($this->isInstanceOf(StatsTubeCommand::class));
+
+        $client->statsTube('testTube');
+    }
+
+    public
     function testCorrectResponse() {
         $command = new StatsTubeCommand('testTube');
 

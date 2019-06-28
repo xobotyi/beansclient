@@ -20,6 +20,20 @@ class ListTubeUsedCommandTest extends TestCase
     }
 
     public
+    function testClientCommand() {
+        $client = getBeansclientMock($this)
+            ->setMethods(['dispatchCommand'])
+            ->getMock();
+
+        $client->expects($this->once())
+               ->method('dispatchCommand')
+               ->will($this->returnValue([]))
+               ->with($this->isInstanceOf(ListTubeUsedCommand::class));
+
+        $client->listUsedTubes();
+    }
+
+    public
     function testCorrectResponse() {
         $command = new ListTubeUsedCommand();
 

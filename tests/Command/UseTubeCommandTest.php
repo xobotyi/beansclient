@@ -18,6 +18,38 @@ class UseTubeCommandTest extends TestCase
     }
 
     public
+    function testClientCommand() {
+        $client = getBeansclientMock($this)
+            ->setMethods(['dispatchCommand'])
+            ->getMock();
+
+        $client->expects($this->once())
+               ->method('dispatchCommand')
+               ->will($this->returnValue('testTube'))
+               ->with($this->isInstanceOf(UseTubeCommand::class));
+
+        $client->useTube('testTube');
+    }
+
+    public
+    function testClientErrorTubeName() {
+        $client = getBeansclientMock($this)
+            ->setMethods(['dispatchCommand'])
+            ->getMock();
+
+        $client->expects($this->once())
+               ->method('dispatchCommand')
+               ->will($this->returnValue('testTube2'))
+               ->with($this->isInstanceOf(UseTubeCommand::class));
+
+
+        $this->expectException(CommandException::class);
+        $this->expectExceptionMessage(sprintf("Failed to use `%s` tube, using `%s` instead", 'testTube', 'testTube2'));
+
+        $client->useTube('testTube');
+    }
+
+    public
     function testCorrectResponse() {
         $command = new UseTubeCommand('testTube');
 

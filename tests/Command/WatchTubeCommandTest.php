@@ -18,6 +18,20 @@ class WatchTubeCommandTest extends TestCase
     }
 
     public
+    function testClientCommand() {
+        $client = getBeansclientMock($this)
+            ->setMethods(['dispatchCommand'])
+            ->getMock();
+
+        $client->expects($this->once())
+               ->method('dispatchCommand')
+               ->will($this->returnValue('testTube'))
+               ->with($this->isInstanceOf(WatchTubeCommand::class));
+
+        $client->watchTube('testTube');
+    }
+
+    public
     function testCorrectResponse() {
         $command = new WatchTubeCommand('testTube');
 

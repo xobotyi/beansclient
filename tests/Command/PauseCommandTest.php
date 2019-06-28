@@ -20,6 +20,20 @@ class PauseCommandTest extends TestCase
     }
 
     public
+    function testClientCommand() {
+        $client = getBeansclientMock($this)
+            ->setMethods(['dispatchCommand'])
+            ->getMock();
+
+        $client->expects($this->once())
+               ->method('dispatchCommand')
+               ->will($this->returnValue(true))
+               ->with($this->isInstanceOf(PauseCommand::class));
+
+        $client->pause("testTube", 123);
+    }
+
+    public
     function testCorrectResponse() {
         $command = new PauseCommand("testTube", 123);
 

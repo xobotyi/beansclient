@@ -20,6 +20,20 @@ class ReleaseCommandTest extends TestCase
     }
 
     public
+    function testClientCommand() {
+        $client = getBeansclientMock($this)
+            ->setMethods(['dispatchCommand'])
+            ->getMock();
+
+        $client->expects($this->once())
+               ->method('dispatchCommand')
+               ->will($this->returnValue("asdasd"))
+               ->with($this->isInstanceOf(ReleaseCommand::class));
+
+        $client->release(2);
+    }
+
+    public
     function testCorrectResponse() {
         $command = new ReleaseCommand(1, 2, 3);
 

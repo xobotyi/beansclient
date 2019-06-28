@@ -20,6 +20,20 @@ class KickCommandTest extends TestCase
     }
 
     public
+    function testClientCommand() {
+        $client = getBeansclientMock($this)
+            ->setMethods(['dispatchCommand'])
+            ->getMock();
+
+        $client->expects($this->once())
+               ->method('dispatchCommand')
+               ->will($this->returnValue(3))
+               ->with($this->isInstanceOf(KickCommand::class));
+
+        $client->kick(3);
+    }
+
+    public
     function testCorrectResponse() {
         $command = new KickCommand(2);
 

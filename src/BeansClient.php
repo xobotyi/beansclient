@@ -145,8 +145,8 @@ class BeansClient
         if (Response::DATA_RESPONSES[$responseHeaders[0]] ?? false) {
             if (($responseHeaders[1] ?? null) === null) {
                 throw new ClientException(sprintf("Missing data length in response to `%s` [%s]",
-                                                   $commandString,
-                                                   implode(' ', $responseHeaders)));
+                                                  $commandString,
+                                                  implode(' ', $responseHeaders)));
             }
 
             $dataLength = (int)$responseHeaders[count($responseHeaders) - 1];

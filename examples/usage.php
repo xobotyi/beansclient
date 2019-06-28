@@ -3,11 +3,11 @@
 
 include_once __DIR__ . '/../vendor/autoload.php';
 
-use xobotyi\beansclient\BeansClientOld;
+use xobotyi\beansclient\BeansClient;
 use xobotyi\beansclient\Connection;
 
 $connection  = new Connection('127.0.0.1', 11300, 2, false);
-$beansClient = new BeansClientOld($connection);
+$beansClient = new BeansClient($connection);
 
 ##            ##
 #   PRODUCER   #
@@ -32,7 +32,7 @@ if ($job) {
     sleep(2);
     echo "And now job will be released in {$job->timeLeft} seconds\n";
 
-    $job->release(BeansClientOld::DEFAULT_PRIORITY, 5);
+    $job->release(BeansClient::DEFAULT_PRIORITY, 5);
     echo "Job is released and delayed for {$job->delay} seconds\n";
     echo "\n*sleeping for 2 seconds*\n\n";
     sleep(2);

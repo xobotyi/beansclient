@@ -32,6 +32,20 @@ class PeekCommandTest extends TestCase
     }
 
     public
+    function testClientCommand() {
+        $client = getBeansclientMock($this)
+            ->setMethods(['dispatchCommand'])
+            ->getMock();
+
+        $client->expects($this->once())
+               ->method('dispatchCommand')
+               ->will($this->returnValue([]))
+               ->with($this->isInstanceOf(PeekCommand::class));
+
+        $client->peek(1);
+    }
+
+    public
     function testCorrectResponse() {
         $command = new PeekCommand(1);
 
