@@ -1,28 +1,25 @@
 <h1 align="center">BeansClient</h1>
 <p align="center">
     <a href="https://packagist.org/packages/xobotyi/beansclient">
-        <img alt="License" src="https://poser.pugx.org/xobotyi/beansclient/license" />
-    </a>
-    <a href="https://packagist.org/packages/xobotyi/beansclient">
-        <img alt="PHP 7 ready" src="http://php7ready.timesplinter.ch/xobotyi/beansclient/badge.svg" />
+        <img src="https://badgen.net/packagist/v/xobotyi/beansclient" />
     </a>
     <a href="https://travis-ci.org/xobotyi/beansclient">
-        <img alt="Build Status" src="https://travis-ci.org/xobotyi/beansclient.svg?branch=master" />
+        <img src="https://badgen.net/travis/xobotyi/beansclient/master" />
     </a>
     <a href="https://www.codacy.com/app/xobotyi/beansclient">
-        <img alt="Codacy Grade" src="https://api.codacy.com/project/badge/Grade/0b787b1f74ce43828162298bef1d7868" />
+        <img src="https://badgen.net/codacy/grade/0b787b1f74ce43828162298bef1d7868" />
     </a>
     <a href="https://scrutinizer-ci.com/g/xobotyi/beansclient/">
-        <img alt="Scrutinizer Code Quality" src="https://scrutinizer-ci.com/g/xobotyi/beansclient/badges/quality-score.png?b=master" />
+        <img src="https://scrutinizer-ci.com/g/xobotyi/beansclient/badges/quality-score.png?b=master" />
     </a>
     <a href="https://www.codacy.com/app/xobotyi/beansclient">
-        <img alt="Codacy Coverage" src="https://api.codacy.com/project/badge/Coverage/0b787b1f74ce43828162298bef1d7868" />
+        <img src="https://badgen.net/codacy/coverage/0b787b1f74ce43828162298bef1d7868" />
     </a>
     <a href="https://packagist.org/packages/xobotyi/beansclient">
-        <img alt="Latest Stable Version" src="https://poser.pugx.org/xobotyi/beansclient/v/stable" />
+        <img src="https://badgen.net/packagist/dt/xobotyi/beansclient" />
     </a>
     <a href="https://packagist.org/packages/xobotyi/beansclient">
-        <img alt="Total Downloads" src="https://poser.pugx.org/xobotyi/beansclient/downloads" />
+        <img src="https://badgen.net/packagist/license/xobotyi/beansclient" />
     </a>
 </p>
 
