@@ -74,7 +74,9 @@ interface ConnectionInterface
 
     /**
      * @param string $str
+     *
+     * @return int Bytes written
      */
     public
-    function write(string $str): void;
+    function write(string $str): int;
 }

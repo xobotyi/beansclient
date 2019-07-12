@@ -25,7 +25,7 @@ interface SocketInterface
     function readLine(): string;
 
     public
-    function write(string $data);
+    function write(string $data): int;
 
     public
     function close();

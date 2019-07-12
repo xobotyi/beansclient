@@ -123,10 +123,11 @@ class Connection implements Interfaces\ConnectionInterface
      *
      * @param string $data String to write into the socket
      *
+     * @return int
      * @throws \xobotyi\beansclient\Exception\SocketException
      */
     public
-    function write(string $data): void {
-        $this->socket->write($data);
+    function write(string $data): int {
+        return $this->socket->write($data);
     }
 }
