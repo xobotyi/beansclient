@@ -425,7 +425,7 @@ class BeansClient
      */
     public
     function peek($subject): ?array {
-        return $this->dispatchCommand(new Command\PeekCommand($subject));
+        return $this->dispatchCommand(new Command\PeekCommand($subject,$this->serializer ?: null));
     }
 
     /**
@@ -444,7 +444,7 @@ class BeansClient
         $delay    = is_null($delay) ? $this->defaultDelay : $delay;
         $ttr      = is_null($ttr) ? $this->defaultTTR : $ttr;
 
-        return $this->dispatchCommand(new Command\PutCommand($payload, $priority, $delay, $ttr));
+        return $this->dispatchCommand(new Command\PutCommand($payload, $priority, $delay, $ttr, $this->serializer ?: null));
     }
 
     /**
@@ -472,7 +472,7 @@ class BeansClient
      */
     public
     function reserve(int $timeout = 0): ?Job {
-        $result = $this->dispatchCommand(new Command\ReserveCommand($timeout, $this->serializer));
+        $result = $this->dispatchCommand(new Command\ReserveCommand($timeout, $this->serializer ?: null));
 
         if (!$result) {
             return null;
