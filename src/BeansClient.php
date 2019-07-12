@@ -15,30 +15,11 @@ use xobotyi\beansclient\Interfaces\SerializerInterface;
  */
 class BeansClient
 {
-    /**
-     *
-     */
-    public const CRLF = "\r\n";
-    /**
-     *
-     */
-    public const CRLF_LEN = 2;
-    /**
-     *
-     */
+    public const CRLF             = "\r\n";
+    public const CRLF_LEN         = 2;
     public const DEFAULT_PRIORITY = 2048;
-    /**
-     *
-     */
-    public const DEFAULT_DELAY = 0;
-    /**
-     *
-     */
-    public const DEFAULT_TTR = 30;
-    /**
-     *
-     */
-    public const DEFAULT_TUBE = 'default';
+    public const DEFAULT_DELAY    = 0;
+    public const DEFAULT_TTR      = 30;
 
 
     /**
@@ -52,18 +33,161 @@ class BeansClient
     private $connection;
 
     /**
+     * @var string
+     */
+    private $defaultTube;
+    /**
+     * @var int
+     */
+    private $defaultTTR;
+    /**
+     * @var int
+     */
+    private $defaultDelay;
+    /**
+     * @var int|float
+     */
+    private $defaultPriority;
+
+    /**
+     * @return string
+     */
+    public
+    function getDefaultTube() {
+        return $this->defaultTube;
+    }
+
+    /**
+     * @param string $defaultTube
+     *
+     * @return \xobotyi\beansclient\BeansClient
+     * @throws \xobotyi\beansclient\Exception\ClientException
+     */
+    public
+    function setDefaultTube(string $defaultTube): self {
+        if (!($defaultTube = trim($defaultTube))) {
+            throw new ClientException('Default tube name has to be a valuable string');
+        }
+
+        $this->defaultTube = $defaultTube;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public
+    function getDefaultTTR(): int {
+        return $this->defaultTTR;
+    }
+
+    /**
+     * @param int $defaultTTR
+     *
+     * @return \xobotyi\beansclient\BeansClient
+     * @throws \xobotyi\beansclient\Exception\ClientException
+     */
+    public
+    function setDefaultTTR(int $defaultTTR): self {
+        if ($defaultTTR < 0) {
+            throw new ClientException('Default TTR has to be >= 0');
+        }
+
+        $this->defaultTTR = $defaultTTR;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public
+    function getDefaultDelay(): int {
+        return $this->defaultDelay;
+    }
+
+    /**
+     * @param int $defaultDelay
+     *
+     * @return \xobotyi\beansclient\BeansClient
+     * @throws \xobotyi\beansclient\Exception\ClientException
+     */
+    public
+    function setDefaultDelay(int $defaultDelay): self {
+        if ($defaultDelay < 0) {
+            throw new ClientException('Default delay has to be >= 0');
+        }
+
+        $this->defaultDelay = $defaultDelay;
+
+        return $this;
+    }
+
+    /**
+     * @return int|float
+     */
+    public
+    function getDefaultPriority() {
+        return $this->defaultPriority;
+    }
+
+    /**
+     * @param int|float $defaultPriority
+     *
+     * @return \xobotyi\beansclient\BeansClient
+     * @throws \xobotyi\beansclient\Exception\ClientException
+     */
+    public
+    function setDefaultPriority($defaultPriority): self {
+
+        if (!is_numeric($defaultPriority)) {
+            throw new ClientException(sprintf('Default priority has to be a number, got %s', gettype($defaultPriority)));
+        }
+
+        if ($defaultPriority < CommandInterface::PRIORITY_MINIMUM) {
+            throw new ClientException(sprintf('Default priority has to be >= %d, got %d', CommandInterface::PRIORITY_MINIMUM, $defaultPriority));
+        }
+
+        if ($defaultPriority > CommandInterface::PRIORITY_MAXIMUM) {
+            throw new ClientException(sprintf('Default priority has to be <= %d, got %d', CommandInterface::PRIORITY_MAXIMUM, $defaultPriority));
+        }
+
+        $this->defaultPriority = $defaultPriority;
+
+        return $this;
+    }
+
+    /**
      * BeansClient constructor.
      *
      * @param \xobotyi\beansclient\Interfaces\ConnectionInterface      $connection
      * @param null|\xobotyi\beansclient\Interfaces\SerializerInterface $serializer
      *
+     * @param string                                                   $defaultTube
+     * @param int|float                                                $defaultPriority
+     * @param int                                                      $defaultTTR
+     * @param int                                                      $defaultDelay
+     *
      * @throws \xobotyi\beansclient\Exception\ClientException
+     * @throws \xobotyi\beansclient\Exception\CommandException
      */
     public
-    function __construct(ConnectionInterface $connection, ?SerializerInterface $serializer = null) {
+    function __construct(ConnectionInterface $connection, ?SerializerInterface $serializer = null,
+                         ?string $defaultTube = null, $defaultPriority = self::DEFAULT_PRIORITY,
+                         int $defaultTTR = self::DEFAULT_TTR, int $defaultDelay = self::DEFAULT_DELAY) {
         $this->setConnection($connection)
-             ->setSerializer($serializer);
+             ->setSerializer($serializer)
+             ->setDefaultTube($defaultTube)
+             ->setDefaultTTR($defaultTTR)
+             ->setDefaultPriority($defaultPriority)
+             ->setDefaultDelay($defaultDelay);
+
+        if ($defaultTube) {
+            $this->useTube($defaultTube);
+        }
     }
+
 
     /**
      * @return \xobotyi\beansclient\Interfaces\ConnectionInterface
@@ -119,7 +243,9 @@ class BeansClient
      * @throws \xobotyi\beansclient\Exception\CommandException
      */
     public
-    function bury(int $jobId, $priority): bool {
+    function bury(int $jobId, $priority = null): bool {
+        $priority = is_null($priority) ? $this->defaultPriority : $priority;
+
         return $this->dispatchCommand(new Command\BuryCommand($jobId, $priority));
     }
 
@@ -296,7 +422,11 @@ class BeansClient
      * @throws \xobotyi\beansclient\Exception\CommandException
      */
     public
-    function put($payload, $priority = self::DEFAULT_PRIORITY, int $delay = self::DEFAULT_DELAY, int $ttr = self::DEFAULT_TTR): Job {
+    function put($payload, $priority = null, ?int $delay = null, ?int $ttr = null): Job {
+        $priority = is_null($priority) ? $this->defaultPriority : $priority;
+        $delay    = is_null($delay) ? $this->defaultDelay : $delay;
+        $ttr      = is_null($ttr) ? $this->defaultTTR : $ttr;
+
         return $this->dispatchCommand(new Command\PutCommand($payload, $priority, $delay, $ttr));
     }
 
@@ -310,7 +440,9 @@ class BeansClient
      * @throws \xobotyi\beansclient\Exception\CommandException
      */
     public
-    function release(int $jobId, $priority = self::DEFAULT_PRIORITY, int $delay = self::DEFAULT_DELAY): ?string {
+    function release(int $jobId, $priority = null, ?int $delay = null): ?string {
+        $priority = is_null($priority) ? $this->defaultPriority : $priority;
+        $delay    = is_null($delay) ? $this->defaultDelay : $delay;
         return $this->dispatchCommand(new Command\ReleaseCommand($jobId, $priority, $delay));
     }
 
