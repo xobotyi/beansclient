@@ -183,11 +183,11 @@ class SocketBase implements SocketInterface
      *
      * @param string $data String to write into the socket
      *
-     * @return $this
+     * @return int
      * @throws \xobotyi\beansclient\Exception\SocketException
      */
     public
-    function write(string $data) {
+    function write(string $data): int {
         $this->checkClosed();
         error_clear_last();
 
@@ -209,7 +209,7 @@ class SocketBase implements SocketInterface
             }
         }
 
-        return $this;
+        return $writtenTotal;
     }
 
     /**

@@ -50,6 +50,113 @@ class BeansClient
     private $defaultPriority;
 
     /**
+     * BeansClient constructor.
+     *
+     * @param \xobotyi\beansclient\Interfaces\ConnectionInterface      $connection
+     * @param null|\xobotyi\beansclient\Interfaces\SerializerInterface $serializer
+     *
+     * @param string                                                   $defaultTube
+     * @param int|float                                                $defaultPriority
+     * @param int                                                      $defaultTTR
+     * @param int                                                      $defaultDelay
+     *
+     * @throws \xobotyi\beansclient\Exception\ClientException
+     * @throws \xobotyi\beansclient\Exception\CommandException
+     */
+    public
+    function __construct(ConnectionInterface $connection, ?SerializerInterface $serializer = null,
+                         ?string $defaultTube = null, $defaultPriority = self::DEFAULT_PRIORITY,
+                         int $defaultTTR = self::DEFAULT_TTR, int $defaultDelay = self::DEFAULT_DELAY) {
+        $this->setConnection($connection)
+             ->setSerializer($serializer)
+             ->setDefaultTTR($defaultTTR)
+             ->setDefaultPriority($defaultPriority)
+             ->setDefaultDelay($defaultDelay);
+
+        if ($defaultTube) {
+            $this->setDefaultTube($defaultTube)
+                 ->useTube($defaultTube);
+        }
+    }
+
+    /**
+     * @param string $tubeName
+     *
+     * @return \xobotyi\beansclient\BeansClient
+     * @throws \xobotyi\beansclient\Exception\ClientException
+     * @throws \xobotyi\beansclient\Exception\CommandException
+     */
+    public
+    function useTube(string $tubeName): self {
+        $usedTube = $this->dispatchCommand(new Command\UseTubeCommand($tubeName));
+
+        if ($tubeName !== $usedTube) {
+            throw new CommandException(sprintf("Failed to use `%s` tube, using `%s` instead", $tubeName, $usedTube));
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param \xobotyi\beansclient\Interfaces\CommandInterface $command
+     *
+     * @return mixed
+     * @throws \xobotyi\beansclient\Exception\ClientException
+     * @throws \xobotyi\beansclient\Exception\CommandException
+     */
+    public
+    function dispatchCommand(CommandInterface $command) {
+        if (!$this->connection->isActive()) {
+            throw new ClientException("Unable to dispatch command, connection is not active");
+        }
+
+        $commandString = (string)$command;
+        $this->connection->write($commandString . self::CRLF);
+
+        $responseHeaders = $this->connection->readLine();
+
+        if (!$responseHeaders) {
+            throw new CommandException(sprintf("Got nothing in response to `%s`", $commandString));
+        }
+
+        $responseHeaders = explode(' ', $responseHeaders);
+
+        // if error response - throw
+        if (Response::ERROR_RESPONSES[$responseHeaders[0]] ?? false) {
+            throw new CommandException(sprintf("Got error `%s` in response to `%s`", $responseHeaders[0], $commandString));
+        }
+
+        $data = null;
+
+        // if data response - read it
+        if (Response::DATA_RESPONSES[$responseHeaders[0]] ?? false) {
+            if (($responseHeaders[1] ?? null) === null) {
+                throw new ClientException(sprintf("Missing data length in response to `%s` [%s]",
+                                                  $commandString,
+                                                  implode(' ', $responseHeaders)));
+            }
+
+            $dataLength = (int)$responseHeaders[count($responseHeaders) - 1];
+
+            $data = $this->connection->read($dataLength);
+            $crlf = $this->connection->read(self::CRLF_LEN);
+
+            if ($crlf !== self::CRLF) {
+                throw new ClientException(sprintf('Expected CRLF (%s) after %u byte(s) of data, got `%s`',
+                                                  str_replace(["\r", "\n", "\t"],
+                                                              ["\\r", "\\n", "\\t",],
+                                                              self::CRLF),
+                                                  $dataLength,
+                                                  str_replace(["\r", "\n", "\t"],
+                                                              ["\\r", "\\n", "\\t"],
+                                                              $crlf)));
+            }
+        }
+
+        return $command->processResponse($responseHeaders, $data);
+    }
+
+    /**
      * @return string
      */
     public
@@ -159,37 +266,6 @@ class BeansClient
     }
 
     /**
-     * BeansClient constructor.
-     *
-     * @param \xobotyi\beansclient\Interfaces\ConnectionInterface      $connection
-     * @param null|\xobotyi\beansclient\Interfaces\SerializerInterface $serializer
-     *
-     * @param string                                                   $defaultTube
-     * @param int|float                                                $defaultPriority
-     * @param int                                                      $defaultTTR
-     * @param int                                                      $defaultDelay
-     *
-     * @throws \xobotyi\beansclient\Exception\ClientException
-     * @throws \xobotyi\beansclient\Exception\CommandException
-     */
-    public
-    function __construct(ConnectionInterface $connection, ?SerializerInterface $serializer = null,
-                         ?string $defaultTube = null, $defaultPriority = self::DEFAULT_PRIORITY,
-                         int $defaultTTR = self::DEFAULT_TTR, int $defaultDelay = self::DEFAULT_DELAY) {
-        $this->setConnection($connection)
-             ->setSerializer($serializer)
-             ->setDefaultTTR($defaultTTR)
-             ->setDefaultPriority($defaultPriority)
-             ->setDefaultDelay($defaultDelay);
-
-        if ($defaultTube) {
-            $this->setDefaultTube($defaultTube)
-                 ->useTube($defaultTube);
-        }
-    }
-
-
-    /**
      * @return \xobotyi\beansclient\Interfaces\ConnectionInterface
      */
     public
@@ -247,65 +323,6 @@ class BeansClient
         $priority = is_null($priority) ? $this->defaultPriority : $priority;
 
         return $this->dispatchCommand(new Command\BuryCommand($jobId, $priority));
-    }
-
-    /**
-     * @param \xobotyi\beansclient\Interfaces\CommandInterface $command
-     *
-     * @return mixed
-     * @throws \xobotyi\beansclient\Exception\ClientException
-     * @throws \xobotyi\beansclient\Exception\CommandException
-     */
-    public
-    function dispatchCommand(CommandInterface $command) {
-        if (!$this->connection->isActive()) {
-            throw new ClientException("Unable to dispatch command, connection is not active");
-        }
-
-        $commandString = (string)$command;
-        $this->connection->write($commandString);
-
-        $responseHeaders = $this->connection->readLine();
-
-        if (!$responseHeaders) {
-            throw new CommandException(sprintf("Got nothing in response to `%s`", $commandString));
-        }
-
-        $responseHeaders = explode(' ', $responseHeaders);
-
-        // if error response - throw
-        if (Response::ERROR_RESPONSES[$responseHeaders[0]] ?? false) {
-            throw new CommandException(sprintf("Got error `%s` in response to `%s`", $responseHeaders[0], $commandString));
-        }
-
-        $data = null;
-
-        // if data response - read it
-        if (Response::DATA_RESPONSES[$responseHeaders[0]] ?? false) {
-            if (($responseHeaders[1] ?? null) === null) {
-                throw new ClientException(sprintf("Missing data length in response to `%s` [%s]",
-                                                  $commandString,
-                                                  implode(' ', $responseHeaders)));
-            }
-
-            $dataLength = (int)$responseHeaders[count($responseHeaders) - 1];
-
-            $data = $this->connection->read($dataLength);
-            $crlf = $this->connection->read(self::CRLF_LEN);
-
-            if ($crlf !== self::CRLF) {
-                throw new ClientException(sprintf('Expected CRLF (%s) after %u byte(s) of data, got `%s`',
-                                                  str_replace(["\r", "\n", "\t"],
-                                                              ["\\r", "\\n", "\\t",],
-                                                              self::CRLF),
-                                                  $dataLength,
-                                                  str_replace(["\r", "\n", "\t"],
-                                                              ["\\r", "\\n", "\\t"],
-                                                              $crlf)));
-            }
-        }
-
-        return $command->processResponse($responseHeaders, $data);
     }
 
     /**
@@ -508,24 +525,6 @@ class BeansClient
     public
     function touch(int $jobId): bool {
         return $this->dispatchCommand(new Command\TouchCommand($jobId));
-    }
-
-    /**
-     * @param string $tubeName
-     *
-     * @return \xobotyi\beansclient\BeansClient
-     * @throws \xobotyi\beansclient\Exception\ClientException
-     * @throws \xobotyi\beansclient\Exception\CommandException
-     */
-    public
-    function useTube(string $tubeName): self {
-        $usedTube = $this->dispatchCommand(new Command\UseTubeCommand($tubeName));
-
-        if ($tubeName !== $usedTube) {
-            throw new CommandException(sprintf("Failed to use `%s` tube, using `%s` instead", $tubeName, $usedTube));
-        }
-
-        return $this;
     }
 
     /**

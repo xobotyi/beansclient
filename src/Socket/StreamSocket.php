@@ -39,7 +39,7 @@ class StreamSocket extends SocketBase
 
         $this->socket = @stream_socket_client($uri, $errno, $msg, $this->timeout, $flags, stream_context_create());
 
-        if (!$this->socket || $errno || $msg) {
+        if (empty($this->socket) || !isset($errno) || !isset($msg)) {
             throw new SocketException($msg, $errno);
         }
 
