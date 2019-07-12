@@ -7,7 +7,6 @@ namespace xobotyi\beansclient\Command;
 use PHPUnit\Framework\TestCase;
 use xobotyi\beansclient\Exception\CommandException;
 use xobotyi\beansclient\Interfaces\CommandInterface;
-use xobotyi\beansclient\Job;
 use xobotyi\beansclient\Response;
 
 class PutCommandTest extends TestCase
@@ -29,10 +28,13 @@ class PutCommandTest extends TestCase
 
         $client->expects($this->once())
                ->method('dispatchCommand')
-               ->will($this->returnValue(new Job($client)))
+               ->will($this->returnValue([
+                                             'id'     => (int)12,
+                                             'status' => Response::INSERTED,
+                                         ]))
                ->with($this->isInstanceOf(PutCommand::class));
 
-        $client->put('test', 2, 0, 3);
+        $this->assertEquals(12, $client->put('test', 2, 0, 3)->id);
     }
 
     public
