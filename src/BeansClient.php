@@ -425,7 +425,7 @@ class BeansClient
      */
     public
     function peek($subject): ?array {
-        return $this->dispatchCommand(new Command\PeekCommand($subject,$this->serializer ?: null));
+        return $this->dispatchCommand(new Command\PeekCommand($subject, $this->serializer ?: null));
     }
 
     /**
@@ -444,7 +444,17 @@ class BeansClient
         $delay    = is_null($delay) ? $this->defaultDelay : $delay;
         $ttr      = is_null($ttr) ? $this->defaultTTR : $ttr;
 
-        return $this->dispatchCommand(new Command\PutCommand($payload, $priority, $delay, $ttr, $this->serializer ?: null));
+        $commandData = $this->dispatchCommand(new Command\PutCommand($payload, $priority, $delay, $ttr, $this->serializer ?: null));
+
+        if($commandData['status'] ?? null){
+            $commandData['status'] = mb_strtolower($commandData['status']);
+
+            if($commandData['status'] === 'inserted'){
+                $commandData['status'] = Job::STATE_READY;
+            }
+        }
+
+        return new Job($this, $commandData['id'] ?? null, $commandData['status'] ?? null);
     }
 
     /**
