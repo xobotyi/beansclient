@@ -5,6 +5,28 @@ namespace xobotyi\beansclient;
 
 use xobotyi\beansclient\Exception\JobException;
 
+/**
+ * Class Job
+ *
+ * @property-read int    id
+ * @property-read mixed  payload
+ * @property-read string tube
+ * @property-read string state
+ * @property-read int    priority
+ * @property-read int    age
+ * @property-read int    delay
+ * @property-read int    ttr
+ * @property-read int    timeLeft
+ * @property-read int    releaseTime
+ * @property-read int    file
+ * @property-read int    reserves
+ * @property-read int    timeouts
+ * @property-read int    releases
+ * @property-read int    buries
+ * @property-read int    kicks
+ *
+ * @package xobotyi\beansclient
+ */
 class Job
 {
     public const STATE_DELETED  = "deleted";
