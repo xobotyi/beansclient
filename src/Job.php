@@ -29,11 +29,11 @@ use xobotyi\beansclient\Exception\JobException;
  */
 class Job
 {
-    public const STATE_DELETED  = "deleted";
-    public const STATE_READY    = "ready";
-    public const STATE_RESERVED = "reserved";
-    public const STATE_DELAYED  = "delayed";
-    public const STATE_BURIED   = "buried";
+    public const STATE_DELETED  = "DELETED";
+    public const STATE_READY    = "READY";
+    public const STATE_RESERVED = "RESERVED";
+    public const STATE_DELAYED  = "DELAYED";
+    public const STATE_BURIED   = "BURIED";
 
     private const STATS_COMMAND_FIELDS = [
         "tube"        => "tube",
