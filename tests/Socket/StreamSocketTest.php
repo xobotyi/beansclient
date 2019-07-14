@@ -14,7 +14,7 @@ class StreamSocketTest extends TestCase
         gethostbynamel(null, false);
 
         $this->expectException(SocketException::class);
-        $this->expectExceptionMessage("Host 'localhost' not exists or unreachable");
+        $this->expectExceptionMessage("Host `localhost` not exists or unreachable");
 
         $sock = new StreamSocket();
     }

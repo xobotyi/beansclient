@@ -113,15 +113,15 @@ class Command
             $payload = $this->serializer->serialize($payload);
         }
         else if (!is_numeric($payload) && !is_string($payload)) {
-            throw new CommandException("No serializer provided, payload has to be a string or a number. Configure serializer or cast payload to the string manually.");
+            throw new CommandException('No serializer provided, payload has to be a string or a number. Configure serializer or cast payload to the string manually.');
         }
         else {
             $payload = (string)$payload;
         }
 
-        $this->payloadSize = mb_strlen($payload, "8bit");
+        $this->payloadSize = mb_strlen($payload, '8bit');
         if ($this->payloadSize > self::MAX_PAYLOAD_SIZE) {
-            throw new CommandException(sprintf("Maximum payload size is %s bytes, got %s.", self::MAX_PAYLOAD_SIZE, $this->payloadSize));
+            throw new CommandException(sprintf('Maximum payload size is `%s` bytes, got `%s`.', self::MAX_PAYLOAD_SIZE, $this->payloadSize));
         }
 
         $this->payload = $payload;
@@ -164,13 +164,13 @@ class Command
         $parts = [$this->commandName];
 
         if ($this->arguments) {
-            $parts[] = implode(" ", $this->arguments);
+            $parts[] = implode(' ', $this->arguments);
         }
 
         if ($this->payloadSize) {
             $parts[] = $this->payloadSize . $this->crlf . $this->payload;
         }
 
-        return implode(" ", $parts);
+        return implode(' ', $parts);
     }
 }

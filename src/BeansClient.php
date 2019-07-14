@@ -91,7 +91,7 @@ class BeansClient
         $usedTube = $this->dispatchCommand(new Command\UseTubeCommand($tubeName));
 
         if ($tubeName !== $usedTube) {
-            throw new CommandException(sprintf("Failed to use `%s` tube, using `%s` instead", $tubeName, $usedTube));
+            throw new CommandException(sprintf('Failed to use `%s` tube, using `%s` instead', $tubeName, $usedTube));
         }
 
         return $this;
@@ -107,7 +107,7 @@ class BeansClient
     public
     function dispatchCommand(CommandInterface $command) {
         if (!$this->connection->isActive()) {
-            throw new ClientException("Unable to dispatch command, connection is not active");
+            throw new ClientException('Unable to dispatch command, connection is not active');
         }
 
         $commandString = (string)$command;
@@ -116,14 +116,14 @@ class BeansClient
         $responseHeaders = $this->connection->readLine();
 
         if (!$responseHeaders) {
-            throw new CommandException(sprintf("Got nothing in response to `%s`", $commandString));
+            throw new CommandException(sprintf('Got nothing in response to `%s`', $commandString));
         }
 
         $responseHeaders = explode(' ', $responseHeaders);
 
         // if error response - throw
         if (Response::ERROR_RESPONSES[$responseHeaders[0]] ?? false) {
-            throw new CommandException(sprintf("Got error `%s` in response to `%s`", $responseHeaders[0], $commandString));
+            throw new CommandException(sprintf('Got error `%s` in response to `%s`', $responseHeaders[0], $commandString));
         }
 
         $data = null;
@@ -131,7 +131,7 @@ class BeansClient
         // if data response - read it
         if (Response::DATA_RESPONSES[$responseHeaders[0]] ?? false) {
             if (($responseHeaders[1] ?? null) === null) {
-                throw new ClientException(sprintf("Missing data length in response to `%s` [%s]",
+                throw new ClientException(sprintf('Missing data length in response to `%s` [%s]',
                                                   $commandString,
                                                   implode(' ', $responseHeaders)));
             }
@@ -144,11 +144,11 @@ class BeansClient
             if ($crlf !== self::CRLF) {
                 throw new ClientException(sprintf('Expected CRLF (%s) after %u byte(s) of data, got `%s`',
                                                   str_replace(["\r", "\n", "\t"],
-                                                              ["\\r", "\\n", "\\t",],
+                                                              ['\r', '\n', '\t',],
                                                               self::CRLF),
                                                   $dataLength,
                                                   str_replace(["\r", "\n", "\t"],
-                                                              ["\\r", "\\n", "\\t"],
+                                                              ['\r', '\n', '\t'],
                                                               $crlf)));
             }
         }
@@ -439,7 +439,7 @@ class BeansClient
      * @throws \xobotyi\beansclient\Exception\CommandException
      */
     public
-    function put($payload, $priority = null, ?int $delay = null, ?int $ttr = null): Job {
+    function put($payload, $priority = null, ?int $delay = null, ?int $ttr = null): ?Job {
         $priority = is_null($priority) ? $this->defaultPriority : $priority;
         $delay    = is_null($delay) ? $this->defaultDelay : $delay;
         $ttr      = is_null($ttr) ? $this->defaultTTR : $ttr;
@@ -454,7 +454,9 @@ class BeansClient
             }
         }
 
-        return new Job($this, $commandData['id'] ?? null, $commandData['status'] ?? null);
+        return empty($commandData['id'])
+            ? null
+            : new Job($this, $commandData['id'] ?? null, $commandData['status'] ?? null);
     }
 
     /**

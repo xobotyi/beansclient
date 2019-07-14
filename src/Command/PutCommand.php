@@ -39,11 +39,11 @@ class PutCommand extends Command implements CommandInterface
     public
     function processResponse(array $responseHeader, ?string $responseBody = null): array {
         if ($responseHeader[0] === Response::DRAINING) {
-            throw new CommandException("Server is in 'drain mode', try another server or or disconnect and try later.");
+            throw new CommandException('Server is in `drain mode`, try another server or or disconnect and try later.');
         }
 
         if ($responseHeader[0] === Response::JOB_TOO_BIG) {
-            throw new CommandException("Job's payload size exceeds max-job-size config");
+            throw new CommandException('Job`s payload size exceeds max-job-size config');
         }
 
         if ($responseHeader[0] !== Response::INSERTED && $responseHeader[0] !== Response::BURIED) {

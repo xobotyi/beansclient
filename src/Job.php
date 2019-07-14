@@ -29,50 +29,50 @@ use xobotyi\beansclient\Exception\JobException;
  */
 class Job
 {
-    public const STATE_DELETED  = "deleted";
-    public const STATE_READY    = "ready";
-    public const STATE_RESERVED = "reserved";
-    public const STATE_DELAYED  = "delayed";
-    public const STATE_BURIED   = "buried";
+    public const STATE_DELETED  = 'deleted';
+    public const STATE_READY    = 'ready';
+    public const STATE_RESERVED = 'reserved';
+    public const STATE_DELAYED  = 'delayed';
+    public const STATE_BURIED   = 'buried';
 
     private const STATS_COMMAND_FIELDS = [
-        "tube"        => "tube",
-        "state"       => "state",
-        "priority"    => "pri",
-        "age"         => "age",
-        "delay"       => "delay",
-        "ttr"         => "ttr",
-        "timeLeft"    => "time-left",
-        "releaseTime" => false,
-        "file"        => "file",
-        "reserves"    => "reserves",
-        "timeouts"    => "timeouts",
-        "releases"    => "releases",
-        "buries"      => "buries",
-        "kicks"       => "kicks",
+        'tube'        => 'tube',
+        'state'       => 'state',
+        'priority'    => 'pri',
+        'age'         => 'age',
+        'delay'       => 'delay',
+        'ttr'         => 'ttr',
+        'timeLeft'    => 'time-left',
+        'releaseTime' => false,
+        'file'        => 'file',
+        'reserves'    => 'reserves',
+        'timeouts'    => 'timeouts',
+        'releases'    => 'releases',
+        'buries'      => 'buries',
+        'kicks'       => 'kicks',
     ];
 
     private const PEEK_COMMAND_FIELDS = [
-        "payload" => "payload",
+        'payload' => 'payload',
     ];
 
     private $data = [
-        "id"          => null,
-        "payload"     => null,
-        "tube"        => null,
-        "state"       => null,
-        "priority"    => null,
-        "age"         => null,
-        "delay"       => null,
-        "ttr"         => null,
-        "timeLeft"    => null,
-        "releaseTime" => null,
-        "file"        => null,
-        "reserves"    => null,
-        "timeouts"    => null,
-        "releases"    => null,
-        "buries"      => null,
-        "kicks"       => null,
+        'id'          => null,
+        'payload'     => null,
+        'tube'        => null,
+        'state'       => null,
+        'priority'    => null,
+        'age'         => null,
+        'delay'       => null,
+        'ttr'         => null,
+        'timeLeft'    => null,
+        'releaseTime' => null,
+        'file'        => null,
+        'reserves'    => null,
+        'timeouts'    => null,
+        'releases'    => null,
+        'buries'      => null,
+        'kicks'       => null,
     ];
 
     /**
@@ -92,7 +92,7 @@ class Job
     public
     function __get($offset) {
         if (!isset($this->data[$offset]) && !array_key_exists($offset, $this->data)) {
-            trigger_error(sprintf("Undefined property: %s::%s", self::class, $offset));
+            trigger_error(sprintf('Undefined property: %s::%s', self::class, $offset));
 
             return null;
         }
@@ -197,7 +197,7 @@ class Job
     public
     function setClient(BeansClient $client): self {
         if (!$client->getConnection()->isActive()) {
-            throw new JobException("Given client has inactive connection");
+            throw new JobException('Given client has inactive connection');
         }
 
         $this->client = $client;

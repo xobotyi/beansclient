@@ -123,7 +123,7 @@ class SocketBase implements SocketInterface
                 $emptyConsecutiveReads = 0;
             }
             else if (++$emptyConsecutiveReads === static::READ_RETRIES) {
-                throw new SocketException(sprintf("Failed to read %u bytes from socket after %u retries, got only %u bytes (%s:%u)", $bytes, static::READ_RETRIES, $bytesReadTotal, $this->host, $this->port));
+                throw new SocketException(sprintf('Failed to read %u bytes from socket after %u retries, got only %u bytes (%s:%u)', $bytes, static::READ_RETRIES, $bytesReadTotal, $this->host, $this->port));
             }
 
             $result         .= $read;
@@ -140,7 +140,7 @@ class SocketBase implements SocketInterface
     private
     function checkClosed() {
         if (!$this->socket) {
-            throw new SocketException("Socked is closed");
+            throw new SocketException('Socked is closed');
         }
 
         return $this;
@@ -155,7 +155,7 @@ class SocketBase implements SocketInterface
             throw new SocketException($err['message'], $err['type']);
         }
 
-        throw new SocketException("Unknown error");
+        throw new SocketException('Unknown error');
     }
 
     /**
@@ -205,7 +205,7 @@ class SocketBase implements SocketInterface
             $writtenTotal += $written;
 
             if (++$retries === static::WRITE_RETRIES) {
-                throw new SocketException(sprintf("Failed to write data to socket after %u retries (%s:%u)", static::WRITE_RETRIES, $this->host, $this->port));
+                throw new SocketException(sprintf('Failed to write data to socket after %u retries (%s:%u)', static::WRITE_RETRIES, $this->host, $this->port));
             }
         }
 

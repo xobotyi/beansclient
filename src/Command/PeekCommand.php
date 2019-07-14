@@ -11,9 +11,9 @@ use xobotyi\beansclient\Response;
 
 class PeekCommand extends Command implements CommandInterface
 {
-    public const TYPE_READY   = "ready";
-    public const TYPE_DELAYED = "delayed";
-    public const TYPE_BURIED  = "buried";
+    public const TYPE_READY   = 'ready';
+    public const TYPE_DELAYED = 'delayed';
+    public const TYPE_BURIED  = 'buried';
 
     private const SUBCOMMANDS = [
         self::TYPE_READY   => CommandInterface::PEEK_READY,
@@ -49,7 +49,7 @@ class PeekCommand extends Command implements CommandInterface
         }
 
         if (!$responseBody) {
-            throw new CommandException(sprintf("Expected response body, got `%s`", $responseBody));
+            throw new CommandException(sprintf('Expected response body, got `%s`', $responseBody));
         }
 
         return ($responseBody && $this->serializer) ? $this->serializer->unserialize($responseBody) : $responseBody;

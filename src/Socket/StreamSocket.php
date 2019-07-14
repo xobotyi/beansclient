@@ -31,7 +31,7 @@ class StreamSocket extends SocketBase
 
         $ip = gethostbynamel($this->host);
         if (empty($ip)) {
-            throw new SocketException("Host '{$this->host}' not exists or unreachable");
+            throw new SocketException(sprintf('Host `%s` not exists or unreachable', $this->host));
         }
 
         $uri   = "tcp://{$ip[0]}:{$this->port}";
