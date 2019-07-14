@@ -446,10 +446,10 @@ class BeansClient
 
         $commandData = $this->dispatchCommand(new Command\PutCommand($payload, $priority, $delay, $ttr, $this->serializer ?: null));
 
-        if($commandData['status'] ?? null){
+        if ($commandData['status'] ?? null) {
             $commandData['status'] = mb_strtolower($commandData['status']);
 
-            if($commandData['status'] === 'inserted'){
+            if ($commandData['status'] === 'inserted') {
                 $commandData['status'] = Job::STATE_READY;
             }
         }
@@ -481,7 +481,7 @@ class BeansClient
      * @throws \xobotyi\beansclient\Exception\CommandException
      */
     public
-    function reserve(int $timeout = 0): ?Job {
+    function reserve(?int $timeout = null): ?Job {
         $result = $this->dispatchCommand(new Command\ReserveCommand($timeout, $this->serializer ?: null));
 
         if (!$result) {
