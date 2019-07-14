@@ -23,6 +23,11 @@ class ReserveCommandTest extends TestCase
 
         $this->assertEquals($command->getCommandName(), CommandInterface::RESERVE_WITH_TIMEOUT);
         $this->assertEquals($command->getArguments(), [3]);
+
+        $command = new ReserveCommand(0);
+
+        $this->assertEquals($command->getCommandName(), CommandInterface::RESERVE_WITH_TIMEOUT);
+        $this->assertEquals($command->getArguments(), [0]);
     }
 
     public

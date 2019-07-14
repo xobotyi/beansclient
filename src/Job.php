@@ -275,6 +275,8 @@ class Job
             return $this;
         }
 
+        $this->client->delete($this->data['id']);
+
         $this->clearStatsFields();
         $this->data['state'] = self::STATE_DELETED;
 
