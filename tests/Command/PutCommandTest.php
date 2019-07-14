@@ -95,7 +95,7 @@ class PutCommandTest extends TestCase
     public
     function testExceptionDrainMode() {
         $this->expectException(CommandException::class);
-        $this->expectExceptionMessage('Server is in \'drain mode\', try another server or or disconnect and try later.');
+        $this->expectExceptionMessage('Server is in `drain mode`, try another server or or disconnect and try later.');
 
         $command = new PutCommand('test', 2, 0, 3);
         $command->processResponse([Response::DRAINING, '24']);
@@ -104,7 +104,7 @@ class PutCommandTest extends TestCase
     public
     function testExceptionPayloadSizeExceeded() {
         $this->expectException(CommandException::class);
-        $this->expectExceptionMessage('Job\'s payload size exceeds max-job-size config');
+        $this->expectExceptionMessage('Job`s payload size exceeds max-job-size config');
 
         $command = new PutCommand('test', 2, 0, 3);
         $command->processResponse([Response::JOB_TOO_BIG, '24']);
@@ -113,7 +113,7 @@ class PutCommandTest extends TestCase
     public
     function testExceptionUndexpectedStatus() {
         $this->expectException(CommandException::class);
-        $this->expectExceptionMessage(sprintf("Got unexpected status code `%s`", Response::OUT_OF_MEMORY));
+        $this->expectExceptionMessage(sprintf('Got unexpected status code `%s`', Response::OUT_OF_MEMORY));
 
         $command = new PutCommand('test', 2, 0, 3);
         $command->processResponse([Response::OUT_OF_MEMORY, '24']);

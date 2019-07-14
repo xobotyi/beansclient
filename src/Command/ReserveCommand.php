@@ -14,7 +14,7 @@ class ReserveCommand extends Command implements CommandInterface
     public
     function __construct(?int $timeout = null, ?SerializerInterface $serializer = null) {
         if ($timeout < 0) {
-            throw new CommandException("Timeout has to be >= 0");
+            throw new CommandException('Timeout has to be >= 0');
         }
 
         if ($timeout !== null) {

@@ -22,7 +22,7 @@ class ListTubesWatchedCommand extends Command implements CommandInterface
         }
 
         if (!$responseBody) {
-            throw new CommandException(sprintf("Expected response body, got `%s`", $responseBody));
+            throw new CommandException(sprintf('Expected response body, got `%s`', $responseBody));
         }
 
         return Response::YamlParse($responseBody, false);

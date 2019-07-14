@@ -13,7 +13,7 @@ class KickCommand extends Command implements CommandInterface
     public
     function __construct(int $count) {
         if ($count <= 0) {
-            throw new CommandException("Kick count has to be a positive integer");
+            throw new CommandException('Kick count has to be a positive integer');
         }
 
         parent::__construct(CommandInterface::KICK, null, [$count]);

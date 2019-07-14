@@ -63,7 +63,7 @@ class CommandTest extends TestCase
     function testExceptionPayloadTooBig() {
         $this->expectException(CommandException::class);
         $this->expectExceptionMessage(
-            sprintf("Maximum payload size is %s bytes, got %s.", Command::MAX_PAYLOAD_SIZE, Command::MAX_PAYLOAD_SIZE + 25)
+            sprintf("Maximum payload size is `%s` bytes, got `%s`.", Command::MAX_PAYLOAD_SIZE, Command::MAX_PAYLOAD_SIZE + 25)
         );
 
         new Command("test", null, null, random_bytes(Command::MAX_PAYLOAD_SIZE + 25));
