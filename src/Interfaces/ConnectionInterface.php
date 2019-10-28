@@ -59,18 +59,21 @@ interface ConnectionInterface
     function isPersistent(): bool;
 
     /**
-     * @param int $length
+     * @param int      $length
+     * @param int|null $timeout
      *
      * @return string
      */
     public
-    function read(int $length): string;
+    function read(int $length, int $timeout = null): string;
 
     /**
+     * @param int|null $timeout
+     *
      * @return string
      */
     public
-    function readLine(): string;
+    function readLine(int $timeout = null): string;
 
     /**
      * @param string $str

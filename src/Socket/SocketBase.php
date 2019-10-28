@@ -95,13 +95,14 @@ class SocketBase implements SocketInterface
     /**
      * Reads up to $bytes bytes from the socket
      *
-     * @param int $bytes Amount of bytes to read
+     * @param int      $bytes   Amount of bytes to read
+     * @param int|null $timeout Amount of seconds to wait the response
      *
      * @return string
      * @throws \xobotyi\beansclient\Exception\SocketException
      */
     public
-    function read(int $bytes): string {
+    function read(int $bytes, int $timeout = null): string {
         $this->checkClosed();
         error_clear_last();
 
@@ -110,6 +111,7 @@ class SocketBase implements SocketInterface
 
         $emptyConsecutiveReads = 0;
 
+        $timeout !== null && stream_set_timeout($this->socket, $timeout);
         while ($bytesReadTotal < $bytes) {
             $read = fread($this->socket, $bytes - $bytesReadTotal);
 
@@ -129,8 +131,33 @@ class SocketBase implements SocketInterface
             $result         .= $read;
             $bytesReadTotal += $bytesRead;
         }
+        $timeout !== null && stream_set_timeout($this->socket, static::READ_TIMEOUT);
 
         return $result;
+    }
+
+    /**
+     * Reads up to newline from socket
+     *
+     * @param int|null $timeout Amount of seconds to wait the response
+     *
+     * @return string
+     * @throws \xobotyi\beansclient\Exception\SocketException
+     */
+    public
+    function readLine(int $timeout = null): string {
+        $this->checkClosed();
+        error_clear_last();
+
+        $timeout !== null && stream_set_timeout($this->socket, $timeout);
+        $result = fgets($this->socket, 8192);
+        $timeout !== null && stream_set_timeout($this->socket, static::READ_TIMEOUT);
+
+        if ($result === false) {
+            $this->throwLastError();
+        }
+
+        return rtrim($result);
     }
 
     /**
@@ -156,26 +183,6 @@ class SocketBase implements SocketInterface
         }
 
         throw new SocketException('Unknown error');
-    }
-
-    /**
-     * Reads up to newline from socket
-     *
-     * @return string
-     * @throws \xobotyi\beansclient\Exception\SocketException
-     */
-    public
-    function readLine(): string {
-        $this->checkClosed();
-        error_clear_last();
-
-        $result = fgets($this->socket, 8192);
-
-        if ($result === false) {
-            $this->throwLastError();
-        }
-
-        return rtrim($result);
     }
 
     /**

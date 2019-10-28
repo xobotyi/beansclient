@@ -100,12 +100,14 @@ class BeansClient
     /**
      * @param \xobotyi\beansclient\Interfaces\CommandInterface $command
      *
+     * @param int|null                                         $readTimeout Amount of seconds to wait the response
+     *
      * @return mixed
      * @throws \xobotyi\beansclient\Exception\ClientException
      * @throws \xobotyi\beansclient\Exception\CommandException
      */
     public
-    function dispatchCommand(CommandInterface $command) {
+    function dispatchCommand(CommandInterface $command, int $readTimeout = null) {
         if (!$this->connection->isActive()) {
             throw new ClientException('Unable to dispatch command, connection is not active');
         }
@@ -113,7 +115,7 @@ class BeansClient
         $commandString = (string)$command;
         $this->connection->write($commandString . self::CRLF);
 
-        $responseHeaders = $this->connection->readLine();
+        $responseHeaders = $this->connection->readLine($readTimeout);
 
         if (!$responseHeaders) {
             throw new CommandException(sprintf('Got nothing in response to `%s`', $commandString));
@@ -247,7 +249,6 @@ class BeansClient
      */
     public
     function setDefaultPriority($defaultPriority): self {
-
         if (!is_numeric($defaultPriority)) {
             throw new ClientException(sprintf('Default priority has to be a number, got %s', gettype($defaultPriority)));
         }
@@ -484,7 +485,7 @@ class BeansClient
      */
     public
     function reserve(?int $timeout = null): ?Job {
-        $result = $this->dispatchCommand(new Command\ReserveCommand($timeout, $this->serializer ?: null));
+        $result = $this->dispatchCommand(new Command\ReserveCommand($timeout, $this->serializer ?: null), $timeout);
 
         if (!$result) {
             return null;
