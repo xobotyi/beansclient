@@ -179,15 +179,15 @@ Beanstalkd job's payload can be only a string, so if we want to use non-string p
 Beansclient provides JSON serializer out of the box, but you can use any serializer you want, just implement the `Serializer` interface.
 ```php
 use xobotyi\beansclient\BeansClient;
-use xobotyi\beansclient\Serializer\Json;
+use xobotyi\beansclient\Serializer\JsonSerializer;
 
-$client = new BeansClient(new Connection(), new Json());
-$client->getSerializer(); //  instance of \xobotyi\beansclient\Serializer\Json
+$client = new BeansClient(new Connection(), new JsonSerializer());
+$client->getSerializer(); //  instance of \xobotyi\beansclient\Serializer\JsonSerializer
 
 #or
 
 $client = new BeansClient(new Connection());
-$beansClient->setSerializer(new Json())
+$beansClient->setSerializer(new JsonSerializer())
             ->getSerializer(); //  instance of \xobotyi\beansclient\Serializer\Json
 ```
 If you will not provide serializer with second parameter of `BeansClient` constructor, payload in `put` command mist be string or stringable value.  
