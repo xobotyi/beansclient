@@ -16,9 +16,11 @@ abstract
 class SocketBase implements SocketInterface
 {
     public const CONNECTION_TIMEOUT = 1;
-    public const READ_TIMEOUT       = 1;
+    public const READ_TIMEOUT       = 0;
     public const WRITE_RETRIES      = 5;
     public const READ_RETRIES       = 5;
+
+    public const READ_TIMEOUT_LEEWAY = 1;
 
     /**
      * @var resource|null
@@ -111,7 +113,7 @@ class SocketBase implements SocketInterface
 
         $emptyConsecutiveReads = 0;
 
-        $timeout !== null && stream_set_timeout($this->socket, $timeout);
+        $timeout !== null && stream_set_timeout($this->socket, $timeout + static::READ_TIMEOUT_LEEWAY);
         while ($bytesReadTotal < $bytes) {
             $read = fread($this->socket, $bytes - $bytesReadTotal);
 
@@ -131,7 +133,7 @@ class SocketBase implements SocketInterface
             $result         .= $read;
             $bytesReadTotal += $bytesRead;
         }
-        $timeout !== null && stream_set_timeout($this->socket, static::READ_TIMEOUT);
+        $timeout !== null && stream_set_timeout($this->socket, static::READ_TIMEOUT + static::READ_TIMEOUT_LEEWAY);
 
         return $result;
     }
@@ -149,9 +151,9 @@ class SocketBase implements SocketInterface
         $this->checkClosed();
         error_clear_last();
 
-        $timeout !== null && stream_set_timeout($this->socket, $timeout);
+        $timeout !== null && stream_set_timeout($this->socket, $timeout + static::READ_TIMEOUT_LEEWAY);
         $result = fgets($this->socket, 8192);
-        $timeout !== null && stream_set_timeout($this->socket, static::READ_TIMEOUT);
+        $timeout !== null && stream_set_timeout($this->socket, static::READ_TIMEOUT + static::READ_TIMEOUT_LEEWAY);
 
         if ($result === false) {
             $this->throwLastError();
