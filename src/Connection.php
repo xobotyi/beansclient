@@ -97,25 +97,28 @@ class Connection implements Interfaces\ConnectionInterface
     /**
      * Reads up to $bytes bytes from the socket
      *
-     * @param int $bytes Amount of bytes to read
+     * @param int      $bytes   Amount of bytes to read
+     * @param int|null $timeout Amount of seconds to wait the response
      *
      * @return string
      * @throws \xobotyi\beansclient\Exception\SocketException
      */
     public
-    function read(int $bytes): string {
-        return $this->socket->read($bytes);
+    function read(int $bytes, int $timeout = null): string {
+        return $this->socket->read($bytes, $timeout);
     }
 
     /**
      * Reads up to newline from socket
      *
+     * @param int|null $timeout Amount of seconds to wait the response
+     *
      * @return string
      * @throws \xobotyi\beansclient\Exception\SocketException
      */
     public
-    function readLine(): string {
-        return $this->socket->readLine();
+    function readLine(int $timeout = null): string {
+        return $this->socket->readLine($timeout);
     }
 
     /**
