@@ -43,6 +43,6 @@ class StreamSocket extends SocketBase
             throw new SocketException($msg, $errno);
         }
 
-        stream_set_timeout($this->socket, static::READ_TIMEOUT);
+        stream_set_timeout($this->socket, static::READ_TIMEOUT + static::READ_TIMEOUT_LEEWAY);
     }
 }
