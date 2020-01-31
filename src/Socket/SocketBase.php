@@ -16,9 +16,9 @@ abstract
 class SocketBase implements SocketInterface
 {
     public const CONNECTION_TIMEOUT = 1;
-    public const READ_TIMEOUT       = 0;
-    public const WRITE_RETRIES      = 5;
-    public const READ_RETRIES       = 5;
+    public const READ_TIMEOUT = 0;
+    public const WRITE_RETRIES = 5;
+    public const READ_RETRIES = 5;
 
     public const READ_TIMEOUT_LEEWAY = 1;
 
@@ -48,7 +48,8 @@ class SocketBase implements SocketInterface
      * @return null|string
      */
     public
-    function getHost(): ?string {
+    function getHost(): ?string
+    {
         return $this->host;
     }
 
@@ -56,7 +57,8 @@ class SocketBase implements SocketInterface
      * @return null|int
      */
     public
-    function getPort(): ?int {
+    function getPort(): ?int
+    {
         return $this->port;
     }
 
@@ -64,7 +66,8 @@ class SocketBase implements SocketInterface
      * @return null|int
      */
     public
-    function getTimeout(): ?int {
+    function getTimeout(): ?int
+    {
         return $this->timeout;
     }
 
@@ -72,12 +75,14 @@ class SocketBase implements SocketInterface
      * @return null|bool
      */
     public
-    function isPersistent(): ?bool {
+    function isPersistent(): ?bool
+    {
         return $this->persistent;
     }
 
     public
-    function __destruct() {
+    function __destruct()
+    {
         $this->close();
     }
 
@@ -85,7 +90,8 @@ class SocketBase implements SocketInterface
      * @return $this
      */
     public
-    function close() {
+    function close()
+    {
         if ($this->socket) {
             fclose($this->socket);
             $this->socket = null;
@@ -97,18 +103,19 @@ class SocketBase implements SocketInterface
     /**
      * Reads up to $bytes bytes from the socket
      *
-     * @param int      $bytes   Amount of bytes to read
+     * @param int $bytes Amount of bytes to read
      * @param int|null $timeout Amount of seconds to wait the response
      *
      * @return string
      * @throws \xobotyi\beansclient\Exception\SocketException
      */
     public
-    function read(int $bytes, int $timeout = null): string {
+    function read(int $bytes, int $timeout = null): string
+    {
         $this->checkClosed();
         error_clear_last();
 
-        $result         = '';
+        $result = '';
         $bytesReadTotal = 0;
 
         $emptyConsecutiveReads = 0;
@@ -125,12 +132,11 @@ class SocketBase implements SocketInterface
 
             if ($bytesRead) {
                 $emptyConsecutiveReads = 0;
-            }
-            else if (++$emptyConsecutiveReads === static::READ_RETRIES) {
+            } else if (++$emptyConsecutiveReads === static::READ_RETRIES) {
                 throw new SocketException(sprintf('Failed to read %u bytes from socket after %u retries, got only %u bytes (%s:%u)', $bytes, static::READ_RETRIES, $bytesReadTotal, $this->host, $this->port));
             }
 
-            $result         .= $read;
+            $result .= $read;
             $bytesReadTotal += $bytesRead;
         }
         $timeout !== null && stream_set_timeout($this->socket, static::READ_TIMEOUT + static::READ_TIMEOUT_LEEWAY);
@@ -147,12 +153,13 @@ class SocketBase implements SocketInterface
      * @throws \xobotyi\beansclient\Exception\SocketException
      */
     public
-    function readLine(int $timeout = null): string {
+    function readLine(int $timeout = null): string
+    {
         $this->checkClosed();
         error_clear_last();
 
         $timeout !== null && stream_set_timeout($this->socket, $timeout + static::READ_TIMEOUT_LEEWAY);
-        $result = fgets($this->socket, 8192);
+        $result = stream_get_line($this->socket, 8192, "\n");
         $timeout !== null && stream_set_timeout($this->socket, static::READ_TIMEOUT + static::READ_TIMEOUT_LEEWAY);
 
         if ($result === false) {
@@ -167,7 +174,8 @@ class SocketBase implements SocketInterface
      * @throws \xobotyi\beansclient\Exception\SocketException
      */
     private
-    function checkClosed() {
+    function checkClosed()
+    {
         if (!$this->socket) {
             throw new SocketException('Socked is closed');
         }
@@ -179,7 +187,8 @@ class SocketBase implements SocketInterface
      * @throws \xobotyi\beansclient\Exception\SocketException
      */
     private
-    function throwLastError() {
+    function throwLastError()
+    {
         if ($err = error_get_last()) {
             throw new SocketException($err['message'], $err['type']);
         }
@@ -196,13 +205,14 @@ class SocketBase implements SocketInterface
      * @throws \xobotyi\beansclient\Exception\SocketException
      */
     public
-    function write(string $data): int {
+    function write(string $data): int
+    {
         $this->checkClosed();
         error_clear_last();
 
-        $retries      = 0;
+        $retries = 0;
         $writtenTotal = 0;
-        $toWrite      = strlen($data);
+        $toWrite = strlen($data);
 
         while (($writtenTotal < $toWrite) && ($retries < static::WRITE_RETRIES)) {
             $written = fwrite($this->socket, mb_substr($data, $writtenTotal, null, '8bit'));
@@ -225,7 +235,8 @@ class SocketBase implements SocketInterface
      * @return bool
      */
     public
-    function isClosed(): bool {
+    function isClosed(): bool
+    {
         return !$this->socket;
     }
 }
