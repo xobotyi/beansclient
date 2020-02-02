@@ -26,9 +26,13 @@
     "ext-mbstring": "*",
     "ext-json": "*"
   },
+  "suggest": {
+    "ext-sockets": "Provides most robust interconnection with sockets"
+  },
   "require-dev": {
     "phpunit/phpunit": "^7.0.0",
-    "codacy/coverage": "^1.0.0"
+    "codacy/coverage": "^1.0.0",
+    "ext-sockets": "*"
   },
   "autoload": {
     "psr-4": {
