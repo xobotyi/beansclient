@@ -35,48 +35,53 @@ class Command
     protected $rawPayload = null;
 
     /**
-     * @var \xobotyi\beansclient\Interfaces\SerializerInterface
+     * @var SerializerInterface
      */
     protected $serializer;
 
     public
-    function __construct(string $commandName, ?SerializerInterface $serializer = null, ?array $arguments = [], $payload = null) {
+    function __construct(string $commandName, ?SerializerInterface $serializer = null, ?array $arguments = [], $payload = null)
+    {
         $this->commandName = $commandName;
-        $this->arguments   = $arguments ?: [];
+        $this->arguments = $arguments ?: [];
 
         $this->setSerializer($serializer)
-             ->setPayload($payload);
+            ->setPayload($payload);
     }
 
     public
-    function getCommandName(): string {
+    function getCommandName(): string
+    {
         return $this->commandName;
     }
 
     public
-    function getArguments(): array {
+    function getArguments(): array
+    {
         return $this->arguments;
     }
 
     /**
      * Returns the payload's serializer
      *
-     * @return null|\xobotyi\beansclient\Interfaces\SerializerInterface
+     * @return null|SerializerInterface
      */
     public
-    function getSerializer(): ?SerializerInterface {
+    function getSerializer(): ?SerializerInterface
+    {
         return $this->serializer;
     }
 
     /**
      * Sets the payload's serializer
      *
-     * @param \xobotyi\beansclient\Interfaces\SerializerInterface $serializer
+     * @param SerializerInterface $serializer
      *
      * @return $this
      */
     public
-    function setSerializer(?SerializerInterface $serializer) {
+    function setSerializer(?SerializerInterface $serializer)
+    {
         $this->serializer = $serializer;
 
         return $this;
@@ -88,7 +93,8 @@ class Command
      * @return null|string
      */
     public
-    function getPayload(): ?string {
+    function getPayload(): ?string
+    {
         return $this->payload;
     }
 
@@ -96,14 +102,15 @@ class Command
      * @param $payload
      *
      * @return $this
-     * @throws \xobotyi\beansclient\Exception\CommandException
+     * @throws CommandException
      */
     public
-    function setPayload($payload) {
+    function setPayload($payload)
+    {
         $this->rawPayload = $payload;
 
         if (!$payload) {
-            $this->payload     = null;
+            $this->payload = null;
             $this->payloadSize = 0;
 
             return $this;
@@ -111,11 +118,9 @@ class Command
 
         if ($this->serializer) {
             $payload = $this->serializer->serialize($payload);
-        }
-        else if (!is_numeric($payload) && !is_string($payload)) {
+        } else if (!is_numeric($payload) && !is_string($payload)) {
             throw new CommandException('No serializer provided, payload has to be a string or a number. Configure serializer or cast payload to the string manually.');
-        }
-        else {
+        } else {
             $payload = (string)$payload;
         }
 
@@ -135,7 +140,8 @@ class Command
      * @return mixed
      */
     public
-    function getRawPayload() {
+    function getRawPayload()
+    {
         return $this->rawPayload;
     }
 
@@ -145,12 +151,14 @@ class Command
      * @return bool
      */
     public
-    function hasPayload(): bool {
+    function hasPayload(): bool
+    {
         return $this->payload !== null;
     }
 
     public
-    function __toString(): string {
+    function __toString(): string
+    {
         return $this->buildCommand();
     }
 
@@ -160,7 +168,8 @@ class Command
      * @return string
      */
     public
-    function buildCommand(): string {
+    function buildCommand(): string
+    {
         $parts = [$this->commandName];
 
         if ($this->arguments) {

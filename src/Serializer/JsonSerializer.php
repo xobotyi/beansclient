@@ -18,7 +18,8 @@ class JsonSerializer implements SerializerInterface
      * @return string
      */
     public
-    function serialize($data): string {
+    function serialize($data): string
+    {
         return json_encode($data);
     }
 
@@ -28,7 +29,8 @@ class JsonSerializer implements SerializerInterface
      * @return mixed
      */
     public
-    function unserialize(string $str) {
+    function unserialize(string $str)
+    {
         return json_decode($str, true);
     }
 }

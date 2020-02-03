@@ -11,7 +11,8 @@ use xobotyi\beansclient\Response;
 class BuryCommand extends Command implements CommandInterface
 {
     public
-    function __construct(int $jobId, $priority) {
+    function __construct(int $jobId, $priority)
+    {
         if ($jobId <= 0) {
             throw new CommandException('Job id must be a positive integer');
         }
@@ -33,7 +34,8 @@ class BuryCommand extends Command implements CommandInterface
 
 
     public
-    function processResponse(array $responseHeader, ?string $responseBody = null): bool {
+    function processResponse(array $responseHeader, ?string $responseBody = null): bool
+    {
         if ($responseHeader[0] === Response::BURIED) {
             return true;
         }

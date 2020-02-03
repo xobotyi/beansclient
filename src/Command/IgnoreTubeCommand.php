@@ -11,7 +11,8 @@ use xobotyi\beansclient\Response;
 class IgnoreTubeCommand extends Command implements CommandInterface
 {
     public
-    function __construct(string $tubeName) {
+    function __construct(string $tubeName)
+    {
         if (!($tubeName = trim($tubeName))) {
             throw new CommandException('Tube name has to be a valuable string');
         }
@@ -20,7 +21,8 @@ class IgnoreTubeCommand extends Command implements CommandInterface
     }
 
     public
-    function processResponse(array $responseHeader, ?string $responseBody = null): ?int {
+    function processResponse(array $responseHeader, ?string $responseBody = null): ?int
+    {
         if ($responseHeader[0] === Response::NOT_IGNORED) {
             return null;
         }

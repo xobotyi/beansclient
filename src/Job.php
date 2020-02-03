@@ -8,48 +8,48 @@ use xobotyi\beansclient\Exception\JobException;
 /**
  * Class Job
  *
- * @property-read int    id
- * @property-read mixed  payload
+ * @property-read int id
+ * @property-read mixed payload
  * @property-read string tube
  * @property-read string state
- * @property-read int    priority
- * @property-read int    age
- * @property-read int    delay
- * @property-read int    ttr
- * @property-read int    timeLeft
- * @property-read int    releaseTime
- * @property-read int    file
- * @property-read int    reserves
- * @property-read int    timeouts
- * @property-read int    releases
- * @property-read int    buries
- * @property-read int    kicks
+ * @property-read int priority
+ * @property-read int age
+ * @property-read int delay
+ * @property-read int ttr
+ * @property-read int timeLeft
+ * @property-read int releaseTime
+ * @property-read int file
+ * @property-read int reserves
+ * @property-read int timeouts
+ * @property-read int releases
+ * @property-read int buries
+ * @property-read int kicks
  *
  * @package xobotyi\beansclient
  */
 class Job
 {
-    public const STATE_DELETED  = 'deleted';
-    public const STATE_READY    = 'ready';
+    public const STATE_DELETED = 'deleted';
+    public const STATE_READY = 'ready';
     public const STATE_RESERVED = 'reserved';
-    public const STATE_DELAYED  = 'delayed';
-    public const STATE_BURIED   = 'buried';
+    public const STATE_DELAYED = 'delayed';
+    public const STATE_BURIED = 'buried';
 
     private const STATS_COMMAND_FIELDS = [
-        'tube'        => 'tube',
-        'state'       => 'state',
-        'priority'    => 'pri',
-        'age'         => 'age',
-        'delay'       => 'delay',
-        'ttr'         => 'ttr',
-        'timeLeft'    => 'time-left',
+        'tube' => 'tube',
+        'state' => 'state',
+        'priority' => 'pri',
+        'age' => 'age',
+        'delay' => 'delay',
+        'ttr' => 'ttr',
+        'timeLeft' => 'time-left',
         'releaseTime' => false,
-        'file'        => 'file',
-        'reserves'    => 'reserves',
-        'timeouts'    => 'timeouts',
-        'releases'    => 'releases',
-        'buries'      => 'buries',
-        'kicks'       => 'kicks',
+        'file' => 'file',
+        'reserves' => 'reserves',
+        'timeouts' => 'timeouts',
+        'releases' => 'releases',
+        'buries' => 'buries',
+        'kicks' => 'kicks',
     ];
 
     private const PEEK_COMMAND_FIELDS = [
@@ -57,40 +57,42 @@ class Job
     ];
 
     private $data = [
-        'id'          => null,
-        'payload'     => null,
-        'tube'        => null,
-        'state'       => null,
-        'priority'    => null,
-        'age'         => null,
-        'delay'       => null,
-        'ttr'         => null,
-        'timeLeft'    => null,
+        'id' => null,
+        'payload' => null,
+        'tube' => null,
+        'state' => null,
+        'priority' => null,
+        'age' => null,
+        'delay' => null,
+        'ttr' => null,
+        'timeLeft' => null,
         'releaseTime' => null,
-        'file'        => null,
-        'reserves'    => null,
-        'timeouts'    => null,
-        'releases'    => null,
-        'buries'      => null,
-        'kicks'       => null,
+        'file' => null,
+        'reserves' => null,
+        'timeouts' => null,
+        'releases' => null,
+        'buries' => null,
+        'kicks' => null,
     ];
 
     /**
-     * @var \xobotyi\beansclient\BeansClient
+     * @var BeansClient
      */
     private $client;
 
     public
-    function __construct(BeansClient $client, ?int $id = null, ?string $state = null, $payload = null) {
+    function __construct(BeansClient $client, ?int $id = null, ?string $state = null, $payload = null)
+    {
         $this->setClient($client);
 
-        $this->data['id']      = $id;
-        $this->data['state']   = $state;
+        $this->data['id'] = $id;
+        $this->data['state'] = $state;
         $this->data['payload'] = $payload;
     }
 
     public
-    function __get($offset) {
+    function __get($offset)
+    {
         if (!isset($this->data[$offset]) && !array_key_exists($offset, $this->data)) {
             trigger_error(sprintf('Undefined property: %s::%s', self::class, $offset));
 
@@ -104,8 +106,7 @@ class Job
         if (!$this->data['state'] || ($this->data[$offset] === null && $this->data['state'] !== self::STATE_DELETED)) {
             if ((self::STATS_COMMAND_FIELDS[$offset] ?? null) !== null) {
                 $this->stats();
-            }
-            else if ((self::PEEK_COMMAND_FIELDS[$offset] ?? null) !== null) {
+            } else if ((self::PEEK_COMMAND_FIELDS[$offset] ?? null) !== null) {
                 $this->peek();
             }
         }
@@ -122,7 +123,8 @@ class Job
     }
 
     public
-    function stats(): self {
+    function stats(): self
+    {
         if (!$this->data['id']) {
             return $this;
         }
@@ -147,8 +149,7 @@ class Job
                     $this->data[$targetField] *= 1;
                 }
             }
-        }
-        else {
+        } else {
             $this->clearStatsFields();
             $this->data['state'] = self::STATE_DELETED;
         }
@@ -157,7 +158,8 @@ class Job
     }
 
     private
-    function clearStatsFields(): self {
+    function clearStatsFields(): self
+    {
         foreach (self::STATS_COMMAND_FIELDS as $field => $src) {
             $this->data[$field] = null;
         }
@@ -166,7 +168,8 @@ class Job
     }
 
     public
-    function peek(): self {
+    function peek(): self
+    {
         if (!$this->data['id']) {
             return $this;
         }
@@ -175,7 +178,7 @@ class Job
 
         foreach (self::PEEK_COMMAND_FIELDS as $targetField => $sourceField) {
             if ($sourceField === 'payload') {
-                $serializer               = $this->client->getSerializer();
+                $serializer = $this->client->getSerializer();
                 $this->data[$targetField] = (is_string($job[$sourceField]) && $serializer)
                     ? $serializer->unserialize($job[$sourceField])
                     : $job[$sourceField];
@@ -190,12 +193,14 @@ class Job
     }
 
     public
-    function getClient(): ?BeansClient {
+    function getClient(): ?BeansClient
+    {
         return $this->client;
     }
 
     public
-    function setClient(BeansClient $client): self {
+    function setClient(BeansClient $client): self
+    {
         if (!$client->getConnection()->isActive()) {
             throw new JobException('Given client has inactive connection');
         }
@@ -206,32 +211,38 @@ class Job
     }
 
     public
-    function isDeleted(): bool {
+    function isDeleted(): bool
+    {
         return $this->data['state'] === self::STATE_DELETED;
     }
 
     public
-    function isReady(): bool {
+    function isReady(): bool
+    {
         return $this->data['state'] === self::STATE_READY;
     }
 
     public
-    function isReserved(): bool {
+    function isReserved(): bool
+    {
         return $this->data['state'] === self::STATE_RESERVED;
     }
 
     public
-    function isDelayed(): bool {
+    function isDelayed(): bool
+    {
         return $this->data['state'] === self::STATE_DELAYED;
     }
 
     public
-    function isBuried(): bool {
+    function isBuried(): bool
+    {
         return $this->data['state'] === self::STATE_BURIED;
     }
 
     public
-    function getAllData(): array {
+    function getAllData(): array
+    {
         if (!$this->data['id']) {
             return $this->data;
         }
@@ -248,7 +259,8 @@ class Job
     }
 
     public
-    function bury(int $priority = null): self {
+    function bury(int $priority = null): self
+    {
         if (!$this->data['id']) {
             return $this;
         }
@@ -256,13 +268,12 @@ class Job
         $result = $this->client->bury($this->data['id'], $priority === null ? $this->client::DEFAULT_PRIORITY : $priority);
 
         if ($result) {
-            $this->data['state']       = self::STATE_BURIED;
-            $this->data['priority']    = $priority;
-            $this->data['delay']       = 0;
-            $this->data['timeLeft']    = 0;
+            $this->data['state'] = self::STATE_BURIED;
+            $this->data['priority'] = $priority;
+            $this->data['delay'] = 0;
+            $this->data['timeLeft'] = 0;
             $this->data['releaseTime'] = 0;
-        }
-        else {
+        } else {
             $this->stats();
         }
 
@@ -270,7 +281,8 @@ class Job
     }
 
     public
-    function delete(): self {
+    function delete(): self
+    {
         if (!$this->data['id']) {
             return $this;
         }
@@ -284,7 +296,8 @@ class Job
     }
 
     public
-    function kick(): self {
+    function kick(): self
+    {
         if (!$this->data['id']) {
             return $this;
         }
@@ -295,7 +308,8 @@ class Job
     }
 
     public
-    function release($priority = null, int $delay = null): self {
+    function release($priority = null, int $delay = null): self
+    {
         if (!$this->data['id']) {
             return $this;
         }
@@ -303,8 +317,8 @@ class Job
         $delay = $delay === null ? $this->client::DEFAULT_DELAY : $delay;
 
         $result = $this->client->release($this->data['id'],
-                                         $priority,
-                                         $delay);
+            $priority,
+            $delay);
 
         if (!$result) {
             $this->clearStatsFields();
@@ -314,24 +328,22 @@ class Job
         }
 
         if ($result === Response::BURIED) {
-            $this->data['state']       = self::STATE_BURIED;
-            $this->data['priority']    = $priority;
-            $this->data['delay']       = 0;
-            $this->data['timeLeft']    = 0;
+            $this->data['state'] = self::STATE_BURIED;
+            $this->data['priority'] = $priority;
+            $this->data['delay'] = 0;
+            $this->data['timeLeft'] = 0;
             $this->data['releaseTime'] = 0;
-        }
-        else if ($result === Response::RELEASED) {
+        } else if ($result === Response::RELEASED) {
             if ($delay) {
-                $this->data['state']       = self::STATE_DELAYED;
-                $this->data['delay']       = $delay;
-                $this->data['timeLeft']    = $delay;
+                $this->data['state'] = self::STATE_DELAYED;
+                $this->data['delay'] = $delay;
+                $this->data['timeLeft'] = $delay;
                 $this->data['releaseTime'] = time() + $delay;
-            }
-            else {
-                $this->data['state']       = self::STATE_READY;
-                $this->data['delay']       = 0;
+            } else {
+                $this->data['state'] = self::STATE_READY;
+                $this->data['delay'] = 0;
                 $this->data['releaseTime'] = 0;
-                $this->data['timeLeft']    = 0;
+                $this->data['timeLeft'] = 0;
             }
         }
 
@@ -339,17 +351,17 @@ class Job
     }
 
     public
-    function touch(): self {
+    function touch(): self
+    {
         if (!$this->data['id']) {
             return $this;
         }
 
         if ($this->client->touch($this->data['id'])) {
-            $this->data['delay']       = 0;
-            $this->data['timeLeft']    = $this->data['ttr'];
+            $this->data['delay'] = 0;
+            $this->data['timeLeft'] = $this->data['ttr'];
             $this->data['releaseTime'] = time() + $this->data['ttr'];
-        }
-        else {
+        } else {
             $this->stats();
         }
 

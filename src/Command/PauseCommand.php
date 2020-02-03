@@ -11,7 +11,8 @@ use xobotyi\beansclient\Response;
 class PauseCommand extends Command implements CommandInterface
 {
     public
-    function __construct(string $tubeName, $delay) {
+    function __construct(string $tubeName, $delay)
+    {
         if (!($tubeName = trim($tubeName))) {
             throw new CommandException('Tube name has to be a valuable string');
         }
@@ -33,7 +34,8 @@ class PauseCommand extends Command implements CommandInterface
 
 
     public
-    function processResponse(array $responseHeader, ?string $responseBody = null): bool {
+    function processResponse(array $responseHeader, ?string $responseBody = null): bool
+    {
         if ($responseHeader[0] === Response::NOT_FOUND) {
             return false;
         }

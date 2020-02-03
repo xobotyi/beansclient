@@ -6,7 +6,7 @@ include_once __DIR__ . '/../vendor/autoload.php';
 use xobotyi\beansclient\BeansClient;
 use xobotyi\beansclient\Connection;
 
-$connection  = new Connection('127.0.0.1', 11300, 2, false);
+$connection = new Connection('127.0.0.1', 11300, 2);
 $beansClient = new BeansClient($connection);
 
 ##            ##
@@ -14,15 +14,15 @@ $beansClient = new BeansClient($connection);
 ##            ##
 
 $job = $beansClient->useTube('myAwesomeTube')
-                   ->put("job's payload");
+    ->put("job's payload");
 
 ##            ##
 #    WORKER    #
 ##            ##
 
 $job = $beansClient->watchTube('myAwesomeTube')
-                   ->watchTube('myAwesomeTube2')
-                   ->reserve();
+    ->watchTube('myAwesomeTube2')
+    ->reserve();
 
 if ($job) {
     echo "Hey, i received first {$job->payload} of job with id {$job->id}\n";
@@ -42,9 +42,10 @@ if ($job) {
 
     $beansClient->delete($job->id);
     //echo "And i've done it!\n";
-}
-else {
+} else {
     echo "So sad, i have nothing to do\n";
 }
 
 echo "\nAm I still connected? " . ($beansClient->getConnection()->isActive() ? 'Yes' : 'No') . "\n";
+echo "\nHave i anything to do? ";
+echo ($beansClient->reserve(5) ? 'Yes' : 'No') . "\n";

@@ -6,30 +6,48 @@ namespace xobotyi\beansclient\Interfaces;
 
 interface SocketInterface
 {
-    public
-    function getHost(): ?string;
+    public function getHost(): string;
 
-    public
-    function getPort(): ?int;
+    public function getPort(): int;
 
-    public
-    function getTimeout(): ?int;
+    public function getConnectionTimeout(): int;
 
-    public
-    function isPersistent(): ?bool;
+    /**
+     * Writes data to the socket.
+     *
+     * @param string $data
+     * @return int
+     */
+    public function write(string $data): int;
 
-    public
-    function read(int $bytes): string;
+    /**
+     * Reads up to $length bytes from the socket.
+     *
+     * @param int $length
+     * @return string
+     */
+    public function read(int $length): string;
 
-    public
-    function readLine(): string;
+    /**
+     * Read a single line from stream. Reads up to a newline.
+     * Trailing whitespace and newlines not returned.
+     *
+     * @return string
+     */
+    public function readLine(): string;
 
-    public
-    function write(string $data): int;
+    /**
+     * Disconnect the socket. Further usage will cause the exception throw.
+     * Returns true if socket been connected and became disconnected now.
+     *
+     * @return bool
+     */
+    public function disconnect(): bool;
 
-    public
-    function close();
-
-    public
-    function isClosed(): bool;
+    /**
+     * Returns true if socket is connected.
+     *
+     * @return bool
+     */
+    public function isConnected(): bool;
 }
