@@ -52,12 +52,6 @@ interface ConnectionInterface
     function isActive(): bool;
 
     /**
-     * @return bool
-     */
-    public
-    function isPersistent(): bool;
-
-    /**
      * @param int $length
      * @return string
      */
