@@ -14,13 +14,12 @@ interface ConnectionInterface
     /**
      * Connection constructor.
      *
-     * @param string   $host
-     * @param int      $port
+     * @param string $host
+     * @param int $port
      * @param int|null $connectionTimeout
-     * @param bool     $persistent
      */
     public
-    function __construct(string $host = 'localhost', int $port = -1, int $connectionTimeout = null, bool $persistent = false);
+    function __construct(string $host = 'localhost', int $port = -1, int $connectionTimeout = null);
 
     /**
      * @return bool
@@ -44,7 +43,7 @@ interface ConnectionInterface
      * @return int
      */
     public
-    function getTimeout(): ?int;
+    function getConnectionTimeout(): ?int;
 
     /**
      * @return bool
@@ -59,7 +58,7 @@ interface ConnectionInterface
     function isPersistent(): bool;
 
     /**
-     * @param int      $length
+     * @param int $length
      * @param int|null $timeout
      *
      * @return string

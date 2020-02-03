@@ -3,28 +3,32 @@ declare(strict_types=1);
 
 namespace xobotyi\beansclient;
 
-use xobotyi\beansclient\Socket\StreamSocket;
+use xobotyi\beansclient\Exception\SocketException;
+use xobotyi\beansclient\Exception\SocketFactoryException;
+use xobotyi\beansclient\Interfaces\SocketInterface;
+use xobotyi\beansclient\Socket\SocketFactory;
 
 class Connection implements Interfaces\ConnectionInterface
 {
     /**
-     * @var null| \xobotyi\beansclient\Interfaces\SocketInterface
+     * @var null| SocketInterface
      */
     private $socket = null;
 
     /**
      * Connection constructor.
      *
-     * @param string   $host
-     * @param int      $port
+     * @param string $host
+     * @param int $port
      * @param null|int $connectionTimeout
-     * @param bool     $persistent
      *
-     * @throws \xobotyi\beansclient\Exception\SocketException
+     * @throws SocketException
+     * @throws SocketFactoryException
      */
     public
-    function __construct(string $host = 'localhost', int $port = 11300, ?int $connectionTimeout = null, bool $persistent = false) {
-        $this->socket = new StreamSocket($host, $port, $connectionTimeout, $persistent);
+    function __construct(string $host = 'localhost', int $port = 11300, ?int $connectionTimeout = null)
+    {
+        $this->socket = (new SocketFactory($host, $port, $connectionTimeout))->createSocket();
     }
 
     /**
@@ -33,12 +37,13 @@ class Connection implements Interfaces\ConnectionInterface
      * @return bool
      */
     public
-    function disconnect(): bool {
-        if (!$this->socket || $this->socket->isClosed()) {
+    function disconnect(): bool
+    {
+        if (!$this->socket || !$this->socket->isConnected()) {
             return false;
         }
 
-        $this->socket->close();
+        $this->socket->disconnect();
         $this->socket = null;
 
         return true;
@@ -50,7 +55,8 @@ class Connection implements Interfaces\ConnectionInterface
      * @return string
      */
     public
-    function getHost(): ?string {
+    function getHost(): ?string
+    {
         return $this->socket ? $this->socket->getHost() : null;
     }
 
@@ -60,7 +66,8 @@ class Connection implements Interfaces\ConnectionInterface
      * @return int
      */
     public
-    function getPort(): ?int {
+    function getPort(): ?int
+    {
         return $this->socket ? $this->socket->getPort() : null;
     }
 
@@ -70,8 +77,9 @@ class Connection implements Interfaces\ConnectionInterface
      * @return int
      */
     public
-    function getTimeout(): ?int {
-        return $this->socket ? $this->socket->getTimeout() : null;
+    function getConnectionTimeout(): ?int
+    {
+        return $this->socket ? $this->socket->getConnectionTimeout() : null;
     }
 
     /**
@@ -80,8 +88,9 @@ class Connection implements Interfaces\ConnectionInterface
      * @return bool
      */
     public
-    function isActive(): bool {
-        return $this->socket && !$this->socket->isClosed();
+    function isActive(): bool
+    {
+        return $this->socket && $this->socket->isConnected();
     }
 
     /**
@@ -90,21 +99,22 @@ class Connection implements Interfaces\ConnectionInterface
      * @return bool
      */
     public
-    function isPersistent(): bool {
+    function isPersistent(): bool
+    {
         return $this->socket && $this->socket->isPersistent();
     }
 
     /**
      * Reads up to $bytes bytes from the socket
      *
-     * @param int      $bytes   Amount of bytes to read
+     * @param int $bytes Amount of bytes to read
      * @param int|null $timeout Amount of seconds to wait the response
      *
      * @return string
-     * @throws \xobotyi\beansclient\Exception\SocketException
      */
     public
-    function read(int $bytes, int $timeout = null): string {
+    function read(int $bytes, ?int $timeout = null): string
+    {
         return $this->socket->read($bytes, $timeout);
     }
 
@@ -114,10 +124,10 @@ class Connection implements Interfaces\ConnectionInterface
      * @param int|null $timeout Amount of seconds to wait the response
      *
      * @return string
-     * @throws \xobotyi\beansclient\Exception\SocketException
      */
     public
-    function readLine(int $timeout = null): string {
+    function readLine(?int $timeout = null): string
+    {
         return $this->socket->readLine($timeout);
     }
 
@@ -127,10 +137,10 @@ class Connection implements Interfaces\ConnectionInterface
      * @param string $data String to write into the socket
      *
      * @return int
-     * @throws \xobotyi\beansclient\Exception\SocketException
      */
     public
-    function write(string $data): int {
+    function write(string $data): int
+    {
         return $this->socket->write($data);
     }
 }
