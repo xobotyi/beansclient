@@ -27,6 +27,11 @@ class SocketSocket extends SocketBase implements SocketInterface
     {
         parent::__construct($host, $port, $connectionTimeout ?? 10);
 
+        $hostname = gethostbynamel($this->host);
+        if (empty($hostname)) {
+            throw new SocketException(sprintf('Host `%s` not exists or unreachable', $this->host));
+        }
+
         $this->socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
 
         if (!$this->socket) {
@@ -38,11 +43,6 @@ class SocketSocket extends SocketBase implements SocketInterface
 
         socket_set_option($this->socket, SOL_SOCKET, SO_KEEPALIVE, 1);
         $this->setWriteTimeout($connectionTimeout)->setReadTimeout($connectionTimeout);
-
-        $hostname = gethostbynamel($this->host);
-        if (empty($hostname)) {
-            throw new SocketException(sprintf('Host `%s` not exists or unreachable', $this->host));
-        }
 
         if (!@socket_connect($this->socket, $hostname[0], $this->port)) {
             $this->throwLastError(true);
@@ -117,6 +117,11 @@ class SocketSocket extends SocketBase implements SocketInterface
         return true;
     }
 
+    public function __destruct()
+    {
+        $this->disconnect();
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -139,7 +144,7 @@ class SocketSocket extends SocketBase implements SocketInterface
      * {@inheritDoc}
      * @throws SocketException
      */
-    public function read(int $length, ?int $timeout = null): string
+    public function read(int $length): string
     {
         $this->throwIfClosed();
 
@@ -164,7 +169,7 @@ class SocketSocket extends SocketBase implements SocketInterface
      * {@inheritDoc}
      * @throws SocketException
      */
-    public function readLine(?int $timeout = null): string
+    public function readLine(): string
     {
         $this->throwIfClosed();
 
@@ -188,21 +193,33 @@ class SocketSocket extends SocketBase implements SocketInterface
      * @return number
      * @throws SocketException
      */
-    public function write(string $data, ?int $timeout = null): int
+    public function write(string $data): int
     {
         $this->throwIfClosed();
 
         $bytesToWrite = mb_strlen($data, '8BIT');
+        $bytesWritten = 0;
+
+        $attempts = 0;
 
         // write until it writes all the data
-        while (!empty($data)) {
+        while (!empty($data) && $attempts < 10) {
             $writtenBytes = socket_write($this->socket, $data);
 
             if ($writtenBytes === false) {
                 $this->throwLastError();
+            } else if ($writtenBytes === 0) {
+                $attempts++;
+                continue;
             }
 
+            $attempts = 0;
+            $bytesWritten += $writtenBytes;
             $data = mb_substr($data, $writtenBytes, null, '8BIT');
+        }
+
+        if ($bytesToWrite !== $bytesWritten) {
+            throw new SocketException(sprintf('Failed to write data to socket after %s attempts', $attempts));
         }
 
         return $bytesToWrite;

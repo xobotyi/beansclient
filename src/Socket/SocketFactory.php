@@ -119,6 +119,8 @@ class SocketFactory implements SocketFactoryInterface
             case self::IMPL_SOCKETS:
                 return new SocketSocket($this->host, $this->port, $this->connectionTimeout);
 
+            case self::IMPL_STREAM:
+                return new StreamSocket($this->host, $this->port, $this->connectionTimeout);
 
             default:
                 throw new SocketFactoryException(sprintf('Implementation `%s` is not supported', $this->implementation));

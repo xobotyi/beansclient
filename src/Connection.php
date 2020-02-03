@@ -21,14 +21,17 @@ class Connection implements Interfaces\ConnectionInterface
      * @param string $host
      * @param int $port
      * @param null|int $connectionTimeout
+     * @param SocketFactory|null $socketFactory
      *
      * @throws SocketException
      * @throws SocketFactoryException
      */
     public
-    function __construct(string $host = 'localhost', int $port = 11300, ?int $connectionTimeout = null)
+    function __construct(?string $host = 'localhost', ?int $port = 11300, ?int $connectionTimeout = 2, SocketFactory $socketFactory = null)
     {
-        $this->socket = (new SocketFactory($host, $port, $connectionTimeout))->createSocket();
+        $factory = $socketFactory ?? new SocketFactory($host ?? 'localhost', $port ?? 11300, $connectionTimeout ?? 2);
+
+        $this->socket = $factory->createSocket();
     }
 
     /**
@@ -94,41 +97,27 @@ class Connection implements Interfaces\ConnectionInterface
     }
 
     /**
-     * Return true if socket is persistent
-     *
-     * @return bool
-     */
-    public
-    function isPersistent(): bool
-    {
-        return $this->socket && $this->socket->isPersistent();
-    }
-
-    /**
      * Reads up to $bytes bytes from the socket
      *
      * @param int $bytes Amount of bytes to read
-     * @param int|null $timeout Amount of seconds to wait the response
      *
      * @return string
      */
     public
-    function read(int $bytes, ?int $timeout = null): string
+    function read(int $bytes): string
     {
-        return $this->socket->read($bytes, $timeout);
+        return $this->socket->read($bytes);
     }
 
     /**
      * Reads up to newline from socket
      *
-     * @param int|null $timeout Amount of seconds to wait the response
-     *
      * @return string
      */
     public
-    function readLine(?int $timeout = null): string
+    function readLine(): string
     {
-        return $this->socket->readLine($timeout);
+        return $this->socket->readLine();
     }
 
     /**

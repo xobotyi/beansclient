@@ -102,14 +102,12 @@ class BeansClient
     /**
      * @param CommandInterface $command
      *
-     * @param int|null $readTimeout Amount of seconds to wait the response
-     *
      * @return mixed
      * @throws ClientException
      * @throws CommandException
      */
     public
-    function dispatchCommand(CommandInterface $command, int $readTimeout = null)
+    function dispatchCommand(CommandInterface $command)
     {
         if (!$this->connection->isActive()) {
             throw new ClientException('Unable to dispatch command, connection is not active');
@@ -118,7 +116,7 @@ class BeansClient
         $commandString = (string)$command;
         $this->connection->write($commandString . self::CRLF);
 
-        $responseHeaders = $this->connection->readLine($readTimeout);
+        $responseHeaders = $this->connection->readLine();
 
         if (!$responseHeaders) {
             throw new CommandException(sprintf('Got nothing in response to `%s`', $commandString));

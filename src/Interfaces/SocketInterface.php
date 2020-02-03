@@ -16,28 +16,25 @@ interface SocketInterface
      * Writes data to the socket.
      *
      * @param string $data
-     * @param int|null $timeout
      * @return int
      */
-    public function write(string $data, ?int $timeout = null): int;
+    public function write(string $data): int;
 
     /**
      * Reads up to $length bytes from the socket.
      *
      * @param int $length
-     * @param int|null $timeout
      * @return string
      */
-    public function read(int $length, ?int $timeout = null): string;
+    public function read(int $length): string;
 
     /**
      * Read a single line from stream. Reads up to a newline.
      * Trailing whitespace and newlines not returned.
      *
-     * @param int|null $timeout
      * @return string
      */
-    public function readLine(?int $timeout = null): string;
+    public function readLine(): string;
 
     /**
      * Disconnect the socket. Further usage will cause the exception throw.
