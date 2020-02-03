@@ -16,7 +16,7 @@ matrix:
 
 install:
   - travis_retry composer self-update
-  - travis_retry composer update --no-interaction --dev
+  - travis_retry composer update --no-interaction
 
 script:
   - vendor/bin/phpunit --coverage-clover build/logs/clover.xml
