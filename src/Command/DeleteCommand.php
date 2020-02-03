@@ -11,7 +11,8 @@ use xobotyi\beansclient\Response;
 class DeleteCommand extends Command implements CommandInterface
 {
     public
-    function __construct(int $jobId) {
+    function __construct(int $jobId)
+    {
         if ($jobId <= 0) {
             throw new CommandException('Job id must be a positive integer');
         }
@@ -20,7 +21,8 @@ class DeleteCommand extends Command implements CommandInterface
     }
 
     public
-    function processResponse(array $responseHeader, ?string $responseBody = null): bool {
+    function processResponse(array $responseHeader, ?string $responseBody = null): bool
+    {
         if ($responseHeader[0] === Response::DELETED) {
             return true;
         }

@@ -11,7 +11,8 @@ use xobotyi\beansclient\Response;
 class ReleaseCommand extends Command implements CommandInterface
 {
     public
-    function __construct(int $jobId, $priority, int $delay) {
+    function __construct(int $jobId, $priority, int $delay)
+    {
         if ($jobId <= 0) {
             throw new CommandException('Job id must be a positive integer');
         }
@@ -36,7 +37,8 @@ class ReleaseCommand extends Command implements CommandInterface
     }
 
     public
-    function processResponse(array $responseHeader, ?string $responseBody = null): ?string {
+    function processResponse(array $responseHeader, ?string $responseBody = null): ?string
+    {
         if ($responseHeader[0] === Response::NOT_FOUND) {
             return null;
         }

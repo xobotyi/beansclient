@@ -11,7 +11,8 @@ use xobotyi\beansclient\Response;
 class KickCommand extends Command implements CommandInterface
 {
     public
-    function __construct(int $count) {
+    function __construct(int $count)
+    {
         if ($count <= 0) {
             throw new CommandException('Kick count has to be a positive integer');
         }
@@ -20,7 +21,8 @@ class KickCommand extends Command implements CommandInterface
     }
 
     public
-    function processResponse(array $responseHeader, ?string $responseBody = null): int {
+    function processResponse(array $responseHeader, ?string $responseBody = null): int
+    {
         if ($responseHeader[0] === Response::KICKED) {
             return (int)$responseHeader[1];
         }

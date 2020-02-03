@@ -12,7 +12,8 @@ use xobotyi\beansclient\Response;
 class PutCommand extends Command implements CommandInterface
 {
     public
-    function __construct($payload, $priority, int $delay, int $ttr, ?SerializerInterface $serializer = null) {
+    function __construct($payload, $priority, int $delay, int $ttr, ?SerializerInterface $serializer = null)
+    {
         if ($delay < 0) {
             throw new CommandException('Release delay has to be >= 0');
         }
@@ -37,7 +38,8 @@ class PutCommand extends Command implements CommandInterface
     }
 
     public
-    function processResponse(array $responseHeader, ?string $responseBody = null): array {
+    function processResponse(array $responseHeader, ?string $responseBody = null): array
+    {
         if ($responseHeader[0] === Response::DRAINING) {
             throw new CommandException('Server is in `drain mode`, try another server or or disconnect and try later.');
         }
@@ -51,7 +53,7 @@ class PutCommand extends Command implements CommandInterface
         }
 
         return [
-            'id'     => (int)$responseHeader[1],
+            'id' => (int)$responseHeader[1],
             'status' => $responseHeader[0],
         ];
     }

@@ -11,12 +11,14 @@ use xobotyi\beansclient\Response;
 class ListTubesCommand extends Command implements CommandInterface
 {
     public
-    function __construct() {
+    function __construct()
+    {
         parent::__construct(CommandInterface::LIST_TUBES);
     }
 
     public
-    function processResponse(array $responseHeader, ?string $responseBody = null) {
+    function processResponse(array $responseHeader, ?string $responseBody = null)
+    {
         if ($responseHeader[0] !== Response::OK) {
             throw new CommandException(sprintf('Got unexpected status code `%s`', $responseHeader[0]));
         }

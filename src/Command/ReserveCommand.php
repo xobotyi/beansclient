@@ -12,21 +12,22 @@ use xobotyi\beansclient\Response;
 class ReserveCommand extends Command implements CommandInterface
 {
     public
-    function __construct(?int $timeout = null, ?SerializerInterface $serializer = null) {
+    function __construct(?int $timeout = null, ?SerializerInterface $serializer = null)
+    {
         if ($timeout < 0) {
             throw new CommandException('Timeout has to be >= 0');
         }
 
         if ($timeout !== null) {
             parent::__construct(CommandInterface::RESERVE_WITH_TIMEOUT, $serializer, [$timeout]);
-        }
-        else {
+        } else {
             parent::__construct(CommandInterface::RESERVE, $serializer);
         }
     }
 
     public
-    function processResponse(array $responseHeader, ?string $responseBody = null) {
+    function processResponse(array $responseHeader, ?string $responseBody = null)
+    {
         if ($responseHeader[0] === Response::TIMED_OUT) {
             return null;
         }
@@ -40,7 +41,7 @@ class ReserveCommand extends Command implements CommandInterface
         }
 
         return [
-            'id'      => (int)$responseHeader[1],
+            'id' => (int)$responseHeader[1],
             'payload' => ($responseBody && $this->serializer) ? $this->serializer->unserialize($responseBody) : $responseBody,
         ];
     }
