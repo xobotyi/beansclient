@@ -123,7 +123,8 @@ _**Example:**_
 use xobotyi\beansclient\Connection;
 
 $socket = new Connection(); // defaults
-$socket = new Connection('/tmp/beanstalkd.sock', -1); // unix domain socket.
+$connection = new Connection(null,null,null,new SocketFactory('unix:///tmp/beanstalkd.sock',-1,2,SocketFactory::IMPL_STREAM)); // unix domain socket.
+
 ```
 <br>
 
