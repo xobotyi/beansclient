@@ -23,12 +23,16 @@ class StreamSocket extends SocketBase implements SocketInterface
     {
         parent::__construct($host, $port, $connectionTimeout ?? 10);
 
-        $hostname = gethostbynamel($this->host);
-        if (empty($hostname)) {
-            throw new SocketException(sprintf('Host `%s` not exists or unreachable', $this->host));
+        if ($port>0){
+            $hostname = gethostbynamel($this->host);
+            if (empty($hostname)) {
+                throw new SocketException(sprintf('Host `%s` not exists or unreachable', $this->host));
+            }
+    
+            $uri = "tcp://{$hostname[0]}:{$this->port}";    
+        } else {
+            $uri=$host;    
         }
-
-        $uri = "tcp://{$hostname[0]}:{$this->port}";
 
         $this->socket = @stream_socket_client($uri, $errno, $errstr, $connectionTimeout, STREAM_CLIENT_CONNECT, stream_context_create());
 
