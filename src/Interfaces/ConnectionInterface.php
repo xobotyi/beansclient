@@ -1,74 +1,58 @@
-<?php
+<?php declare(strict_types=1);
 
 
 namespace xobotyi\beansclient\Interfaces;
 
 
-/**
- * Interface Connection
- *
- * @package xobotyi\beansclient\Interfaces
- */
+use xobotyi\beansclient\Exceptions\SocketException;
+use xobotyi\beansclient\Socket\SocketsSocket;
+
 interface ConnectionInterface
 {
-    /**
-     * Connection constructor.
-     *
-     * @param string $host
-     * @param int $port
-     * @param int|null $connectionTimeout
-     */
-    public
-    function __construct(string $host = 'localhost', int $port = -1, int $connectionTimeout = null);
+  /**
+   * Creates new TCP socket connection. To use with UNIX sockets - set port to `-1`.
+   *
+   * @param string $host
+   * @param int $port
+   * @param int $connectionTimeout
+   * @param string $socketFQN
+   * @throws SocketException
+   */
+  public function __construct(string $host = 'localhost', int $port = 11300, int $connectionTimeout = 10, string $socketFQN = SocketsSocket::class);
 
-    /**
-     * @return bool
-     */
-    public
-    function disconnect(): bool;
+  public function host(): string;
 
-    /**
-     * @return string
-     */
-    public
-    function getHost(): ?string;
+  public function port(): int;
 
-    /**
-     * @return int
-     */
-    public
-    function getPort(): ?int;
+  public function connectionTimeout(): int;
 
-    /**
-     * @return int
-     */
-    public
-    function getConnectionTimeout(): ?int;
+  /**
+   * Closes socket connection.
+   *
+   * @return bool False in case operation was performed on closed connection.
+   */
+  public function disconnect(): bool;
 
-    /**
-     * @return bool
-     */
-    public
-    function isActive(): bool;
+  /**
+   * Reads $bytes number of bytes from a socket
+   *
+   * @param int $bytes Amount of bytes to read
+   * @return string
+   */
+  public function read(int $bytes): string;
 
-    /**
-     * @param int $length
-     * @return string
-     */
-    public
-    function read(int $length): string;
+  /**
+   * Reads from a socket until '\n' is reached.
+   *
+   * @return string
+   */
+  public function readline(): string;
 
-    /**
-     * @return string
-     */
-    public
-    function readLine(): string;
-
-    /**
-     * @param string $str
-     *
-     * @return int Bytes written
-     */
-    public
-    function write(string $str): int;
+  /**
+   * Writes data to a socket
+   *
+   * @param string $data Data to write
+   * @return int Amount of bytes written
+   */
+  public function write(string $data): int;
 }
