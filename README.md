@@ -66,13 +66,14 @@ composer require xobotyi/beansclient
 <br>
 
 ## Usage
+
 ```php
 <?php
-use xobotyi\beansclient\BeansClient;
+use xobotyi\beansclient\Client;
 use xobotyi\beansclient\Connection;
 
 $connection  = new Connection('127.0.0.1', 11300, 2, true);
-$beansClient = new BeansClient($connection);
+$beansClient = new Client($connection);
 
 ##            ##
 #   PRODUCER   #
@@ -136,12 +137,13 @@ _**Parameters:**_
 _**Throws:**_  
 `xobotyi\beansclient\Exception\Client` - if constructor got inactive connection
 
-_**Example:**_  
+_**Example:**_
+
 ```php
-use xobotyi\beansclient\BeansClient;
+use xobotyi\beansclient\Client;
 use xobotyi\beansclient\Connection;
 
-$client = new BeansClient(new Connection());
+$client = new Client(new Connection());
 $client->getConnection()->isActive();   // true
 $client->getConnection()->getHost();    // 127.0.0.1
 ```
@@ -177,16 +179,17 @@ Beanstalkd job's payload can be only a string, so if we want to use non-string p
 `Serializer` is an interface that requires only 2 methods: `serialize(mixed $data):string` and `unserialize(string $str):mixed`  
 
 Beansclient provides JSON serializer out of the box, but you can use any serializer you want, just implement the `Serializer` interface.
+
 ```php
-use xobotyi\beansclient\BeansClient;
+use xobotyi\beansclient\Client;
 use xobotyi\beansclient\Serializer\JsonSerializer;
 
-$client = new BeansClient(new Connection(), new JsonSerializer());
+$client = new Client(new Connection(), new JsonSerializer());
 $client->getSerializer(); //  instance of \xobotyi\beansclient\Serializer\JsonSerializer
 
 #or
 
-$client = new BeansClient(new Connection());
+$client = new Client(new Connection());
 $beansClient->setSerializer(new JsonSerializer())
             ->getSerializer(); //  instance of \xobotyi\beansclient\Serializer\Json
 ```
