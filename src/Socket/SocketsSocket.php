@@ -14,6 +14,16 @@ class SocketsSocket extends SocketBase implements SocketInterface
   /**
    * @throws SocketException
    */
+  public function __construct(string $host = 'localhost', int $port = 11300, int $connectionTimeout = 10)
+  {
+    parent::__construct(host: $host, port: $port, connectionTimeout: $connectionTimeout);
+
+    $this->connect();
+  }
+
+  /**
+   * @throws SocketException
+   */
   public function __destruct()
   {
     $this->disconnect();
@@ -62,40 +72,40 @@ class SocketsSocket extends SocketBase implements SocketInterface
     $hostname = $this->host;
     $domain   = AF_UNIX;
 
+    # port less than 0 means that unix sockets should be used, otherwise - IPv4
     if ($this->port >= 0) {
       $ips = gethostbynamel($hostname);
       if ($ips === false) {
-        throw new SocketException(sprintf("Could not resolve hostname %s", $hostname));
+        throw new SocketException(sprintf("Could not resolve hostname `%s`", $hostname));
       }
 
       $hostname = $ips[0];
       $domain   = AF_INET;
     }
 
-    # port less than 0 means that unix sockets should be used
     $this->socket = socket_create($domain, SOCK_STREAM, SOL_TCP);
     if ($this->socket === false) {
       $this->throwLastError();
+      throw new SocketException('Unknown socket error occurred during `connect`');
     }
 
     $SNDTIMEO = socket_get_option($this->socket, SOL_SOCKET, SO_SNDTIMEO);
     $RCVTIMEO = socket_get_option($this->socket, SOL_SOCKET, SO_RCVTIMEO);
 
-    if (socket_set_block($this->socket) === false) {
-      $this->throwLastError();
-      throw new SocketException('Failed to set blocking mode on a socket');
-    }
-
-    socket_set_option($this->socket, SOL_SOCKET, SO_KEEPALIVE, 1);
     socket_set_option($this->socket, SOL_SOCKET, SO_KEEPALIVE, 1);
     # set write timeout
     socket_set_option($this->socket, SOL_SOCKET, SO_SNDTIMEO, ['sec' => $this->connectionTimeout, 'usec' => 0]);
     # set read timeout
     socket_set_option($this->socket, SOL_SOCKET, SO_RCVTIMEO, ['sec' => $this->connectionTimeout, 'usec' => 0]);
 
+    if (socket_set_block($this->socket) === false) {
+      $this->throwLastError();
+      throw new SocketException('Failed to set blocking mode on a socket');
+    }
+
     if (@socket_connect($this->socket, $hostname, $this->port) === false) {
       $this->throwLastError();
-      throw new SocketException('Unknown socket error occurred during socket connection');
+      throw new SocketException('Unknown socket error occurred during `socket_connect`');
     }
 
     # reset write timeout back to default
@@ -108,8 +118,6 @@ class SocketsSocket extends SocketBase implements SocketInterface
 
   /**
    * @inheritdoc
-   *
-   * @throws SocketException
    */
   public function disconnect(): bool
   {
@@ -139,7 +147,7 @@ class SocketsSocket extends SocketBase implements SocketInterface
     $bytesRead = 0;
 
     while ($bytesRead < $bytes) {
-      $chunk = socket_read($this->socket, $bytesRead - $bytes, PHP_BINARY_READ);
+      $chunk = socket_read($this->socket, $bytes - $bytesRead);
       if ($chunk === false) {
         $this->throwLastError();
         throw new SocketException('Unknown socket error occurred during `read`');
@@ -165,14 +173,17 @@ class SocketsSocket extends SocketBase implements SocketInterface
 
     $result = "";
 
-    while (mb_substr($result, -1, encoding: '8NIT') !== '\n') {
-      $chunk = socket_read($this->socket, 8192, PHP_NORMAL_READ);
+    while (true) {
+      $chunk = socket_read($this->socket, 1);
       if ($chunk === false) {
         $this->throwLastError();
         throw new SocketException('Unknown socket error occurred during `readline`');
       }
 
       $result .= $chunk;
+      if ($chunk === "\n") {
+        break;
+      }
     }
 
     return rtrim($result);
