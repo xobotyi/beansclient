@@ -1,5 +1,0 @@
-.github/ export-ignore
-examples/ export-ignore
-tests/ export-ignore
-.travis.yml export-ignore
-phpunit.xml.dist export-ignore

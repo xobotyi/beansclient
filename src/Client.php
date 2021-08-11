@@ -340,7 +340,7 @@ class Client
   #[ArrayShape(["id" => "int", "payload" => "mixed"])]
   public function reserveJob(int $jobId): ?array
   {
-    Beanstalkd::validateJobId($jobId);
+    Beanstalkd::validateJobID($jobId);
 
     $cmd = Commander::getCommand(Beanstalkd::CMD_RESERVE_JOB);
 
@@ -371,7 +371,7 @@ class Client
    */
   public function delete(int $jobId): bool
   {
-    Beanstalkd::validateJobId($jobId);
+    Beanstalkd::validateJobID($jobId);
 
     $cmd = Commander::getCommand(Beanstalkd::CMD_DELETE);
 
@@ -399,7 +399,7 @@ class Client
     $priority ??= $this->defaultPriority;
     $delay    ??= $this->defaultDelay;
 
-    Beanstalkd::validateJobId($jobId);
+    Beanstalkd::validateJobID($jobId);
     Beanstalkd::validatePriority($priority);
     Beanstalkd::validateDelay($delay);
 
@@ -433,7 +433,7 @@ class Client
   {
     $priority ??= $this->defaultPriority;
 
-    Beanstalkd::validateJobId($jobId);
+    Beanstalkd::validateJobID($jobId);
     Beanstalkd::validatePriority($priority);
 
     $cmd = Commander::getCommand(Beanstalkd::CMD_BURY);
@@ -456,7 +456,7 @@ class Client
    */
   public function touch(int $jobId): bool
   {
-    Beanstalkd::validateJobId($jobId);
+    Beanstalkd::validateJobID($jobId);
 
     $cmd = Commander::getCommand(Beanstalkd::CMD_TOUCH);
 
@@ -520,7 +520,7 @@ class Client
   #[ArrayShape(["id" => "int", "payload" => "mixed"])]
   public function peek(int $jobId): ?array
   {
-    Beanstalkd::validateJobId($jobId);
+    Beanstalkd::validateJobID($jobId);
 
     $cmd = Commander::getCommand(Beanstalkd::CMD_PEEK);
 
@@ -636,7 +636,7 @@ class Client
    */
   public function kickJob(int $jobId): bool
   {
-    Beanstalkd::validateJobId($jobId);
+    Beanstalkd::validateJobID($jobId);
 
     $cmd = Commander::getCommand(Beanstalkd::CMD_KICK_JOB);
 
@@ -691,7 +691,7 @@ class Client
    */
   public function statsJob(int $jobId): ?array
   {
-    Beanstalkd::validateJobId($jobId);
+    Beanstalkd::validateJobID($jobId);
 
     $cmd = Commander::getCommand(Beanstalkd::CMD_STATS_JOB);
 

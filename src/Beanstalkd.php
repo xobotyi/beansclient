@@ -63,17 +63,17 @@ final class Beanstalkd
     }
   }
 
-  public static function validateJobId(int $jobId)
+  public static function validateJobID(int $jobId)
   {
     if ($jobId < Beanstalkd::JOB_ID_MIN) {
-      throw new \InvalidArgumentException("ttr should be >= " . Beanstalkd::JOB_ID_MIN);
+      throw new \InvalidArgumentException("job id should be >= " . Beanstalkd::JOB_ID_MIN);
     }
   }
 
   public static function validateTubeName(string $name)
   {
-    if (!preg_match('/^[A-Za-z0-9\-+\/;.$_()]{1,200}$/', $name)) {
-      throw new \InvalidArgumentException('tube name should satisfy regexp: /^[A-Za-z0-9\-+/;.$_()]{1,200}$/');
+    if (!preg_match('~^[A-Za-z0-9\-+/;.$_()]{1,200}$~', $name)) {
+      throw new \InvalidArgumentException('tube name should satisfy regexp: /^[A-Za-z0-9-+/;.$_()]{1,200}$/');
     }
   }
 
@@ -103,7 +103,7 @@ final class Beanstalkd
   public const CMD_PAUSE_TUBE           = 'pause-tube';
   public const CMD_QUIT                 = 'quit';
 
-  private const CMDS_LIST = [
+  const CMDS_LIST = [
     self::CMD_PUT => true,
     self::CMD_USE => true,
     self::CMD_RESERVE => true,
@@ -160,7 +160,7 @@ final class Beanstalkd
   public const STATUS_USING           = 'USING';
   public const STATUS_WATCHING        = 'WATCHING';
 
-  private const STATUSES_LIST = [
+  const STATUSES_LIST = [
     self::STATUS_BAD_FORMAT => true,
     self::STATUS_BURIED => true,
     self::STATUS_DEADLINE_SOON => true,
@@ -191,7 +191,7 @@ final class Beanstalkd
     return self::STATUSES_LIST[$status] ?? false;
   }
 
-  private const DATA_STATUSES_LIST = [
+  const DATA_STATUSES_LIST = [
     self::STATUS_OK => true,
     self::STATUS_RESERVED => true,
     self::STATUS_FOUND => true,
@@ -202,7 +202,7 @@ final class Beanstalkd
     return self::DATA_STATUSES_LIST[$status] ?? false;
   }
 
-  private const ERROR_STATUSES_LIST = [
+  const ERROR_STATUSES_LIST = [
     self::STATUS_OUT_OF_MEMORY => true,
     self::STATUS_INTERNAL_ERROR => true,
     self::STATUS_BAD_FORMAT => true,
@@ -214,7 +214,6 @@ final class Beanstalkd
   {
     return self::ERROR_STATUSES_LIST[$status] ?? false;
   }
-
 
   public const JOB_STATE_READY    = 'ready';
   public const JOB_STATE_DELAYED  = 'delayed';
@@ -276,7 +275,7 @@ final class Beanstalkd
       }
     } else {
       foreach ($lines as $line) {
-        if (!preg_match('/([\S]+): (.*)/', $line, $res)) {
+        if (preg_match('/([\S]+): (.+)/', $line, $res) !== 1) {
           throw new ResponseException('Failed to parse YAML string [' . $line . ']');
         }
 
@@ -302,6 +301,7 @@ final class Beanstalkd
       'cmd-peek-delayed' => (int)$arr['cmd-peek-delayed'],
       'cmd-peek-buried' => (int)$arr['cmd-peek-buried'],
       'cmd-reserve' => (int)$arr['cmd-reserve'],
+      'cmd-reserve-with-timeout' => (int)$arr['cmd-reserve-with-timeout'],
       'cmd-use' => (int)$arr['cmd-use'],
       'cmd-watch' => (int)$arr['cmd-watch'],
       'cmd-ignore' => (int)$arr['cmd-ignore'],
@@ -317,6 +317,7 @@ final class Beanstalkd
       'cmd-list-tubes-watched' => (int)$arr['cmd-list-tubes-watched'],
       'cmd-pause-tube' => (int)$arr['cmd-pause-tube'],
       'job-timeouts' => (int)$arr['job-timeouts'],
+      'cmd-touch' => (int)$arr['cmd-touch'],
       'total-jobs' => (int)$arr['total-jobs'],
       'max-job-size' => (int)$arr['max-job-size'],
       'current-tubes' => (int)$arr['current-tubes'],
@@ -327,8 +328,8 @@ final class Beanstalkd
       'total-connections' => (int)$arr['total-connections'],
       'pid' => (int)$arr['pid'],
       'version' => (string)$arr['version'],
-      'rusage-utime' => (int)$arr['rusage-utime'],
-      'rusage-stime' => (int)$arr['rusage-stime'],
+      'rusage-utime' => (float)$arr['rusage-utime'],
+      'rusage-stime' => (float)$arr['rusage-stime'],
       'uptime' => (int)$arr['uptime'],
       'binlog-oldest-index' => (int)$arr['binlog-oldest-index'],
       'binlog-current-index' => (int)$arr['binlog-current-index'],
@@ -338,7 +339,7 @@ final class Beanstalkd
       'draining' => (string)$arr['draining'] === 'true',
       'id' => (string)$arr['id'],
       'hostname' => (string)$arr['hostname'],
-      'os' => (string)$arr['os'] || null,
+      'os' => (string)$arr['os'] ?? null,
       'platform' => (string)$arr['platform'],
     ];
   }
