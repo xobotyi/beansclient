@@ -1,0 +1,52 @@
+name: "CI"
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: "Test"
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v2.3.4
+        with:
+          fetch-depth: 0
+
+      - name: "Fetch dependencies"
+        uses: php-actions/composer@v5
+        with:
+          php_version: 8.0
+          php_extensions: mbstring json sockets
+          version: 2
+
+      - name: "Test"
+        uses: php-actions/phpunit@v2
+        with:
+          configuration: phpunit.xml
+          php_version: 8.0
+          php_extensions: mbstring json sockets
+
+
+      - name: "Upload coverage to Codecov"
+        uses: codecov/codecov-action@v1.5.2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: coverage/clover.xml
+          fail_ci_if_error: true
+
+  dependabot-merge:
+    name: "Dependabot automerge"
+    runs-on: ubuntu-latest
+    needs: [ "test", "build", "lint" ]
+    if: github.actor == 'dependabot[bot]' && github.event_name == 'pull_request'
+    steps:
+      - uses: fastify/github-action-merge-dependabot@v2.2.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
