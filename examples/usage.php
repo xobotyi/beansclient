@@ -1,6 +1,7 @@
 <?php
 
 
+use xobotyi\beansclient\Beanstalkd;
 use xobotyi\beansclient\Client;
 use xobotyi\beansclient\Socket\SocketsSocket;
 
@@ -15,6 +16,9 @@ $client = new Client(socket: $sock, defaultTube: 'myAwesomeTube');
 ##            ##
 
 $job = $client->put("job's payload", delay: 2);
+if($job['state'] === Beanstalkd::JOB_STATE_DELAYED) {
+  echo "Job {$job['id']} is ready to be reserved within 2 seconds\n";
+}
 
 ##            ##
 #    WORKER    #
