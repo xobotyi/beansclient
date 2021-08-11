@@ -6,6 +6,7 @@ namespace xobotyi\beansclient;
 
 use JetBrains\PhpStorm\ArrayShape;
 use xobotyi\beansclient\Exceptions\CommandException;
+use xobotyi\beansclient\Exceptions\ResponseException;
 use xobotyi\beansclient\Interfaces\SerializerInterface;
 
 class Command
@@ -58,7 +59,7 @@ class Command
   }
 
   /**
-   * @throws CommandException
+   * @throws CommandException|ResponseException
    */
   #[ArrayShape(["status" => "string", "headers" => "string[]", 'data' => "null|string",])]
   public function handleResponse(array $response, ?SerializerInterface $serializer): array
@@ -81,7 +82,7 @@ class Command
       "data" => null,
     ];
 
-    if (!empty($response['data'])) {
+    if (!empty($response['data']) && ($this->payloadBody || $this->yamlBody)) {
       $result['data'] = mb_substr($response['data'], 0, -Beanstalkd::CRLF_LEN, '8BIT');
 
       if ($this->payloadBody) {
