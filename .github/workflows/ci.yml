@@ -27,7 +27,7 @@ jobs:
           version: 2
 
       - name: "Test"
-        uses: php-actions/phpunit@v2
+        uses: php-actions/phpunit@v9
         with:
           configuration: phpunit.xml
           php_version: 8.0
