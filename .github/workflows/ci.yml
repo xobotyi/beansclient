@@ -20,22 +20,24 @@ jobs:
           fetch-depth: 0
 
       - name: "Fetch dependencies"
-        uses: php-actions/composer@v5
+        uses: php-actions/composer@v6
         with:
           php_version: 8.0
           php_extensions: mbstring json sockets
           version: 2
 
       - name: "Test"
-        uses: php-actions/phpunit@v2
+        uses: php-actions/phpunit@v3
         with:
           configuration: phpunit.xml
           php_version: 8.0
-          php_extensions: mbstring json sockets
+          php_extensions: mbstring json sockets xdebug
+        env:
+          XDEBUG_MODE: coverage
 
 
       - name: "Upload coverage to Codecov"
-        uses: codecov/codecov-action@v1.5.2
+        uses: codecov/codecov-action@v2.0.2
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: coverage/clover.xml
@@ -47,6 +49,6 @@ jobs:
     needs: [ "test" ]
     if: github.actor == 'dependabot[bot]' && github.event_name == 'pull_request'
     steps:
-      - uses: fastify/github-action-merge-dependabot@v2.2.0
+      - uses: fastify/github-action-merge-dependabot@v2.4.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}

@@ -6,6 +6,8 @@ updates:
       interval: daily
       time: "00:00"
       timezone: "Etc/UTC"
+    ignore:
+      - dependency-name: "php-actions/phpunit"
 
   - package-ecosystem: composer
     directory: /

@@ -3,7 +3,8 @@
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/latest/phpunit.xsd"
          colors="true"
-         cacheResultFile=".cache/.phpunit.result.cache">
+         cacheResultFile=".cache/.phpunit.result.cache"
+         bootstrap="vendor/autoload.php">
     <testsuites>
         <testsuite name="beansclient tests">
             <directory>./tests</directory>
