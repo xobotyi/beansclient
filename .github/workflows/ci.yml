@@ -20,7 +20,7 @@ jobs:
           fetch-depth: 0
 
       - name: "Fetch dependencies"
-        uses: php-actions/composer@v5
+        uses: php-actions/composer@v6
         with:
           php_version: 8.0
           php_extensions: mbstring json sockets
